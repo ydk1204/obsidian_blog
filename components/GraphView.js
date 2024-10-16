@@ -41,12 +41,11 @@ export default function GraphView({ posts, currentSlug }) {
     const links = createLinks(relatedPosts)
 
     // 현재 노드를 찾습니다
-    const currentNode = nodes.find(node => node.id === currentSlug)
-    if (!currentNode) return
+    const currentNode = currentSlug ? nodes.find(node => node.id === currentSlug) : null
 
     // 방사형 레이아웃을 위한 힘 설정
     const radialForce = d3.forceRadial(100, width / 2, height / 2)
-      .strength(node => node === currentNode ? 0 : 0.3)
+      .strength(node => currentNode && node === currentNode ? 0 : 0.3)
 
     const simulation = d3.forceSimulation(nodes)
       .force('link', d3.forceLink(links).id(d => d.id).distance(100))
@@ -82,9 +81,11 @@ export default function GraphView({ posts, currentSlug }) {
       .text(d => d.frontMatter?.title || '')
 
     simulation.on('tick', () => {
-      // 현재 노드를 중앙에 고정
-      currentNode.fx = width / 2
-      currentNode.fy = height / 2
+      // 현재 노드를 중앙에 고정 (현재 노드가 있을 경우에만)
+      if (currentNode) {
+        currentNode.fx = width / 2
+        currentNode.fy = height / 2
+      }
 
       link
         .attr('x1', d => d.source.x)

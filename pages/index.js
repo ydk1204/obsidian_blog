@@ -9,7 +9,7 @@ export default function Home({ posts }) {
       <h1 className="text-3xl font-bold mb-4">Welcome to My Obsidian Blog</h1>
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Graph View</h2>
-        <GraphView posts={posts} />
+        <GraphView posts={posts} currentSlug="" />
       </div>
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Recent Posts</h2>
