@@ -1,0 +1,202 @@
+---
+title: 로컬스토리지의 개념
+description: 로컬스토리지의 개념에 대해 알아보기
+date: 2024-10-05
+tags:
+  - 컴퓨터공학
+  - 네트워크
+  - API
+disqus: true
+---
+
+## 로컬 스토리지 (Local Storage) 개요
+
+로컬 스토리지는 웹 스토리지 API의 핵심 구성 요소 중 하나로, 웹 애플리케이션이 사용자의 브라우저에 데이터를 저장할 수 있게 해주는 메커니즘이다. 로컬 스토리지는 브라우저 세션 간에 데이터를 유지하며, 브라우저가 닫히고 다시 열린 후에도 데이터가 보존된다.
+
+---
+## 주요 특징
+
+1. **영구성**: 로컬 스토리지에 저장된 데이터는 사용자가 브라우저를 닫거나 컴퓨터를 재시작해도 유지된다. 이는 세션 스토리지와의 주요 차이점이다.
+2. **용량**: 로컬 스토리지는 일반적으로 최소 5MB의 저장 공간을 제공한다. 이는 쿠키(대개 4KB)보다 훨씬 큰 용량이다.
+3. **도메인 특정성**: 로컬 스토리지는 도메인 및 프로토콜 특정적이다. 즉, 한 도메인에서 저장한 데이터는 다른 도메인에서 접근할 수 없다.
+4. **문자열 기반**: 로컬 스토리지는 키-값 쌍으로 데이터를 저장하며, 모든 값은 문자열로 저장된다.
+
+---
+## 사용 방법
+
+로컬 스토리지는 다음과 같은 주요 메서드를 제공한다:
+
+```javascript
+// 데이터 저장 
+localStorage.setItem('key', 'value'); 
+
+// 데이터 검색 
+const value = localStorage.getItem('key'); 
+
+// 데이터 삭제 
+localStorage.removeItem('key'); 
+
+// 모든 데이터 삭제 
+localStorage.clear();
+```
+
+---
+## 고급 사용 사례
+
+1. **JSON 데이터 저장**: 객체나 배열을 저장할 때는 JSON.stringify()를 사용하여 문자열로 변환해야 한다. 검색 시에는 JSON.parse()를 사용하여 다시 객체로 변환할 수 있다.
+2. **스토리지 이벤트**: 다른 탭이나 창에서 스토리지가 변경될 때 'storage' 이벤트가 발생한다. 이를 활용하여 실시간으로 데이터 변경을 감지할 수 있다.
+3. **프라이빗 브라우징**: 프라이빗 모드에서는 로컬 스토리지가 세션 스토리지처럼 동작할 수 있다.
+4. **용량 초과 처리**: 스토리지 용량을 초과할 경우 QuotaExceededError가 발생할 수 있으므로, 이를 적절히 처리해야 한다.
+
+---
+## 보안 고려사항
+
+1. **민감한 정보 저장 금지**: 암호나 개인식별정보 같은 민감한 데이터는 로컬 스토리지에 저장하지 않아야 한다.
+2. **XSS 공격 대비**: 저장된 데이터를 사용하기 전에 항상 유효성을 검사해야 한다.
+3. **HTTPS 사용**: 데이터 전송 시 암호화를 위해 HTTPS를 사용해야 한다.
+
+> [!faq]-  XSS란?
+> XSS는 웹 애플리케이션의 취약점을 이용한 공격 방식이다.
+
+### XSS
+
+#### 주요 특징:
+- 악성 스크립트를 신뢰할 수 있는 웹사이트에 주입하는 공격이다.
+- 공격자가 사용자의 브라우저에서 스크립트를 실행하게 만든다.
+- 사용자의 쿠키, 세션 토큰 등 민감한 정보를 탈취할 수 있다.
+
+#### XSS의 공격 유형:
+1. Reflected XSS: 악성 URL을 통해 즉시 반사되는 공격
+2. Stored XSS: 서버에 악성 스크립트를 저장하여 나중에 실행하는 공격
+3. DOM-based XSS: 클라이언트 측 스크립트의 취약점을 이용한 공격
+
+---
+## 로컬 스토리지 vs 세션 스토리지 vs 쿠키
+
+### 지속성
+- 로컬스토리지: 영구적
+- 세션스토리지: 탭/창 종료 시 삭제
+- 쿠키: 설정된 만료 기간에 따라 다름
+### 용량
+- 로컬스토리지: 일반적으로 5MB
+- 세션스토리지: 일반적으로5MB
+- 쿠키: 4KB
+### 서버 통신
+- 로컬스토리지: 클라이언트 측에만 존재
+- 세션스토리지: 클라이언트 측에만 존재
+- 쿠키: 매 HTTP 요청마다 서버로 전송 됨
+
+---
+
+## 다른 저장 방식 비교
+
+로컬 스토리지는 웹 애플리케이션에서 클라이언트 측 데이터 저장을 위한 강력하고 유용한 도구이다. 
+그러나 보안 고려사항과 사용 제한을 잘 이해하고 적절히 사용하는 것이 중요하다. 대규모 애플리케이션이나 복잡한 데이터 구조를 다룰 때는 IndexedDB와 같은 다른 클라이언트 측 저장 옵션도 함께 고려해볼 수 있다.
+
+### IndexedDB과 비교
+- 복잡성: 로컬 스토리지는 간단한 키-값 저장소인 반면, IndexedDB는 `더 복잡한 구조화된 데이터`를 저장할 수 있다.
+- 비동기 작업: IndexedDB는 비동기적으로 작동하여 대량의 데이터 처리에 더 적합할 수 있다.
+
+### IndexedDB의 저장 방식
+IndexedDB는 브라우저에 내장된 NoSQL 데이터베이스로, 복잡한 구조의 데이터를 저장할 수 있다.
+#### IndexedDB의 주요특징
+- 키-값 저장소 방식을 ���용한다.
+- 객체 저장소(Object Store)를 통해 데이터를 구조화한다.
+- 트랜잭션을 지원하여 데이터 무결성을 보장한다.
+
+#### IndexedDB 데이터 저장 예시
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>IndexedDB 테스트</title>
+</head>
+<body>
+	<h1>IndexedDB 테스트</h1>
+	<div id="result"></div>
+	<script src="test.js"></script>
+</body>
+</html>
+```
+
+
+```javascript
+// test.js
+let db;
+const request = indexedDB.open("MyDatabase", 1);
+
+request.onupgradeneeded = (event) => {
+	db = event.target.result;
+	const objectStore = db.createObjectStore("users", { keyPath: "id" });
+	objectStore.createIndex("name", "name", { unique: false });
+	objectStore.createIndex("email", "email", { unique: true });
+};
+
+request.onsuccess = (event) => {
+	db = event.target.result;
+	const transaction = db.transaction(["users"], "readwrite");
+	const objectStore = transaction.objectStore("users");
+
+	const user = {
+		id: 1,
+		name: "YDK",
+		email: "DDUCK@example.com",
+		age: 26,
+		address: {
+			street: "얼음길",
+			city: "심시티",
+			country: "대한민국"
+		},
+		hobbies: ["책싫어��", "멍때리기", "하늘바라보기"]
+	};
+	
+	const addRequest = objectStore.add(user);
+
+	addRequest.onsuccess = () => {
+		document.getElementById('result').textContent = '사용자가 성공적으로 추가되었습니다.';
+		};
+
+	addRequest.onerror = () => {
+		document.getElementById('result').textContent = '사용자 추가 중 오류가 발생했습니다.';
+		};
+};
+
+request.onerror = (event) => {
+	document.getElementById('result').textContent = 'IndexedDB를 열 수 없습니다: ' + event.target.error;
+};
+```
+
+vscode와 같은 코드 에디터를 사용한다면 live server와 같은 확장 프로그램을 이용해 쉽게 브라우저에서 위 코드를 실행시킬 수 있다. IndexedDB는 브라우저 API이기 때문에 브라우저에서 실행 시키는게 편하다.
+1. 실행 브라우저로 이동
+2. 개발자 도구 열기
+3. Application 탭으로 이동
+4. 왼쪽 사이드바에서 "IndexedDB" 클릭
+5. "MyDatabase" 클릭 후 "users" 객체 저장소 클릭 하면 저장된 데이터 확인 가능
+
+IndexedDB는 중첩된 객체와 배열을 포함한 JavaScript 객체를 그대로 저장할 수 있어, 관계형 데이터베이스 보다 더 유연한 데이터 모델을 제공한다.
+
+---
+### 블로그 내 관련 문서
+- [[HTTPS와TLS]]
+
+---
+### 참고 자료
+출처 : 
+
+- <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank">mdn</a>
+- <a href="https://www.geeksforgeeks.org/difference-between-local-storage-session-storage-and-cookies/" target="_blank">geeksforgeeks</a>
+- <a href="https://dev.to/eddiemuhoro/understanding-session-storage-local-storage-and-cookies-in-web-development-1i14" target="_blank">dev.to</a>
+- <a href="https://www.w3schools.com/html/html5_webstorage.asp" target="_blank">w3schools</a>
+- <a href="https://www.freecodecamp.org/news/web-storage-localstorage-vs-sessionstorage-in-javascript/" target="_blank">freecodecamp</a>
+- <a href="https://www.freecodecamp.org/news/web-storage-api-how-to-store-data-on-the-browser/" target="_blank">freecodecamp-2</a>
+- <a href="https://www.freecodecamp.org/news/use-local-storage-in-modern-applications/" target="_blank">freecodecamp-3</a>
+- <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API" target="_blank">mdn-2</a>
+- <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/local" target="_blank">mdn-3</a>
+- <a href="https://developers.google.com/privacy-sandbox/cookies/storage-partitioning?hl=ko" target="_blank">developers.google</a>
+- <a href="https://owasp.org/www-community/attacks/xss/" target="_blank">owasp</a>
+- <a href="https://www.telerik.com/blogs/beginners-guide-indexeddb" target="_blank">telerik</a>
+- <a href="https://web.dev/articles/indexeddb?hl=ko" target="_blank">web.dev</a>
+- <a href="https://ko.javascript.info/indexeddb" target="_blank">javascript.info</a>

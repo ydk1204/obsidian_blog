@@ -1,5 +1,19 @@
+import { ThemeProvider } from '../contexts/ThemeContext'
 import "@/styles/globals.css";
+import 'prismjs/themes/prism.css';
+import Prism from 'prismjs';
+import { useEffect } from 'react';
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    Prism.highlightAll();
+  }, []);
+
+  return (
+    <ThemeProvider>
+      <Component {...pageProps} suppressHydrationWarning />
+    </ThemeProvider>
+  )
 }
+
+export default MyApp

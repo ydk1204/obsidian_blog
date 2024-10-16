@@ -7,21 +7,224 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #1a202c;
+  --foreground: #e2e8f0;
 }
 
 body {
+  background-color: var(--background);
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* 기존 스타일 아래에 추가 */
+
+.node:hover {
+  cursor: pointer;
+}
+
+/* 코드 블록 스타일링 */
+pre {
+  position: relative;
+  background-color: #f4f4f4;
+  border-radius: 4px;
+  padding: 1em;
+  margin: 1em 0;
+  overflow-x: auto;
+}
+
+pre code {
+  display: block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+/* 복사 버튼 스타일 */
+.copy-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 5px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* 제목 스타일링 */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: 2.5em;
+  color: #2c3e50;
+}
+
+h2 {
+  font-size: 2em;
+  color: #34495e;
+}
+
+h3 {
+  font-size: 1.75em;
+  color: #7f8c8d;
+}
+
+h4 {
+  font-size: 1.5em;
+  color: #95a5a6;
+}
+
+svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+/* 콜아웃 스타일 */
+.callout {
+  border-radius: 10px;
+}
+
+.callout:has(> .faq) {
+  border: 2px solid #63dd17;
+  background-color: #63dd1760;
+}
+
+.callout:has(> .info) {
+  border: 2px solid #38a169;
+  background-color: #38a16960;
+}
+
+.callout:has(> .warning) {
+  border: 2px solid #d69e2e;
+  background-color: #d69e2e60;
+}
+
+.callout:has(> .success) {
+  border: 2px solid #38a169;
+  background-color: #38a16960;
+}
+
+.callout-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5em 1em;
+}
+
+.callout-icon-wrapper {
+  display: flex;
+  align-items: center;
+  margin-right: 0.5em;
+}
+
+.callout-icon {
+  font-size: 1.3em;
+}
+
+.callout-title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.callout-title span {
+  padding-right: 0.5em;
+  padding-left: 0.3em;
+}
+
+.callout-content {
+  padding: 0.5em 1em 1em;
+}
+
+/* 각 콜아웃 타입에 대한 색상 설정 */
+
+
+/* 아이콘 색상 설정 */
+.callout-faq .callout-icon {
+  color: #4299e1;
+}
+
+.callout-info .callout-icon {
+  color: #38a169;
+}
+
+.callout-warning .callout-icon {
+  color: #d69e2e;
+}
+
+.callout-success .callout-icon {
+  color: #38a169;
+}
+
+/* 다크 모드 스타일 */
+.dark .callout-faq, .dark .callout-faq .callout-content {
+  background-color: #1a2942;
+}
+
+.dark .callout-info, .dark .callout-info .callout-content {
+  background-color: #1c3329;
+}
+
+.dark .callout-warning, .dark .callout-warning .callout-content {
+  background-color: #3d3424;
+}
+
+.dark .callout-success, .dark .callout-success .callout-content {
+  background-color: #1c3329;
+}
+
+.dark .callout-faq {
+  border-color: #4299e1;
+}
+
+.dark .callout-info {
+  border-color: #38a169;
+}
+
+.dark .callout-warning {
+  border-color: #d69e2e;
+}
+
+.dark .callout-success {
+  border-color: #38a169;
+}
+
+/* 일반 텍스트 스타일 */
+p {
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+/* 콜아웃 아이콘 스타일 */
+.callout-icon {
+  width: 1.3em;
+  height: 1.3em;
+}
+
+/* 다크 모드 스타일 */
+.dark .bg-blue-100 {
+  background-color: #1a2942;
+  color: #4299e1;
+}
+
+.dark .bg-green-100 {
+  background-color: #1c3329;
+  color: #38a169;
+}
+
+.dark .bg-yellow-100 {
+  background-color: #3d3424;
+  color: #d69e2e;
 }
