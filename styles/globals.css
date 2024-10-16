@@ -3,13 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #FAF8F8;
   --foreground: #171717;
+  --sidebar-bg: #FAF8F8;
+  --main-bg: #FAF8F8;
+  --code-bg: #FAF8F8;
+  --code-border: #E5E5E5;
+  --node-text: #000000;
+  --header-one: #161618;
 }
 
 .dark {
-  --background: #1a202c;
+  --background: #161618;
   --foreground: #e2e8f0;
+  --sidebar-bg: #161618;
+  --main-bg: #161618;
+  --code-bg: #161618;
+  --code-border: #E5E5E5;
+  --node-text: #ffffff;
+  --header-one: #e2e8f0;
 }
 
 body {
@@ -30,24 +42,114 @@ body {
   cursor: pointer;
 }
 
+.sidebar svg {
+  border: 1px solid var(--code-border);
+  border-radius: 1em;
+}
+
 /* 코드 블록 스타일링 */
 pre {
   position: relative;
-  background-color: #f4f4f4;
+  background-color: var(--code-bg);
   border-radius: 4px;
   padding: 1em;
   margin: 1em 0;
   overflow-x: auto;
+  border: 1px solid var(--code-border);
+  counter-reset: line;
 }
 
 pre code {
   display: block;
-  font-family: 'Courier New', Courier, monospace;
+  /* font-family: 'Courier New', Courier, monospace; */
   font-size: 14px;
+  font-weight: 500;
   line-height: 1.5;
   white-space: pre;
+  position: relative;
+  padding-left: 3em;
 }
 
+pre code::before {
+  counter-increment: line;
+  content: counter(line);
+  position: absolute;
+  left: -1em;
+  width: 2em;
+  text-align: right;
+  color: #999;
+  user-select: none;
+}
+
+/* 코드 하이라이팅 */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #8c8c8c;
+}
+
+.token.punctuation {
+  color: #7c7c7c;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #4aabff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: #71bd00;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+  color: #ffb82b;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #b372c6;
+}
+
+.token.function {
+  color: #ff7c1e;
+}
+
+.token.regex,
+.token.important {
+  color: #cc6666;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+/* 다크 모드에서의 코드 블록 스타일 */
+.dark pre {
+  background-color: var(--code-bg);
+  color: #e2e8f0;
+}
+
+/* 나머지 스타일은 그대로 유지 */
 /* 복사 버튼 스타일 */
 .copy-button {
   position: absolute;
@@ -67,22 +169,26 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-size: 2.5em;
-  color: #2c3e50;
+  font-weight: 800;
+  color: var(--header-one);
 }
 
 h2 {
   font-size: 2em;
-  color: #34495e;
+  font-weight: 600;
+  color: #EA9900;
 }
 
 h3 {
   font-size: 1.75em;
-  color: #7f8c8d;
+  font-weight: 550;
+  color: #41B658;
 }
 
 h4 {
   font-size: 1.5em;
-  color: #95a5a6;
+  font-weight: 500;
+  color: #42BFC0;
 }
 
 .callout > svg {
@@ -97,22 +203,38 @@ h4 {
 
 .callout:has(> .faq) {
   border: 2px solid #63dd17;
-  background-color: #63dd1760;
+  background-color: #63dd1710;
 }
 
 .callout:has(> .info) {
   border: 2px solid #38a169;
-  background-color: #38a16960;
+  background-color: #38a16910;
 }
 
 .callout:has(> .warning) {
   border: 2px solid #d69e2e;
-  background-color: #d69e2e60;
+  background-color: #d69e2e10;
 }
 
 .callout:has(> .success) {
   border: 2px solid #38a169;
-  background-color: #38a16960;
+  background-color: #38a16910;
+}
+
+.callout:has(> .faq) .callout-title {
+  color: #63dd17;
+}
+
+.callout:has(> .info) .callout-title {
+  color: #38a169;
+}
+
+.callout:has(> .warning) .callout-title {
+  color: #d69e2e;
+}
+
+.callout:has(> .success) .callout-title {
+  color: #38a169;
 }
 
 .callout-header {
@@ -204,7 +326,7 @@ h4 {
 /* 일반 텍스트 스타일 */
 p {
   margin-bottom: 1em;
-  line-height: 1.6;
+  line-height: 1.2;
 }
 
 /* 콜아웃 아이콘 스타일 */
@@ -227,4 +349,34 @@ p {
 .dark .bg-yellow-100 {
   background-color: #3d3424;
   color: #d69e2e;
+}
+
+article {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* 사이드바와 메인 컨텐츠 영역 스타일 */
+.sidebar {
+  background-color: var(--sidebar-bg);
+}
+
+.main-content {
+  background-color: var(--main-bg);
+}
+
+/* 본문 글자 간격 조정 */
+p, li {
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 1.2em;
+}
+
+.callout li {
+  margin-bottom: 0;
+}
+
+.sidebar li {
+  margin-bottom: 0.2em;
 }

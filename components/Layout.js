@@ -33,16 +33,16 @@ export default function Layout({ children, initialPosts }) {
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen)
 
   return (
-    <div className={`${theme} min-h-screen flex`}>
-      <div className="fixed left-0 top-0 h-screen w-64 overflow-y-auto pt-8">
-        <Sidebar onSearchClick={toggleSearch} />
+    <div className={`${theme} min-h-screen flex flex-col md:flex-row`}>
+      <div className="sidebar md:fixed md:left-0 md:top-0 md:h-screen md:w-64 overflow-y-auto pt-8 px-4">
+        <Sidebar onSearchClick={toggleSearch} posts={posts} />
       </div>
-      <main className="flex-1 overflow-y-auto ml-20 mr-20">
-        <div className="max-w-4xl mx-auto px-4 py-8">
+      <main className="main-content flex-1 overflow-y-auto px-4 md:px-6 py-8 md:ml-64 md:mr-64">
+        <div className="max-w-full mx-auto">
           {children}
         </div>
       </main>
-      <div className="fixed right-0 top-0 h-screen w-64 overflow-y-auto pt-8 flex flex-col">
+      <div className="sidebar md:fixed md:right-0 md:top-0 md:h-screen md:w-64 overflow-y-auto pt-8 flex flex-col px-4">
         {isPostPage && <TableOfContents />}
         <div className="flex-grow">
           <GraphView posts={posts} currentSlug={currentSlug} />

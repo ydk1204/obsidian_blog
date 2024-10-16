@@ -11,7 +11,7 @@ export default function GraphView({ posts, currentSlug }) {
         const { width } = ref.current.getBoundingClientRect()
         setDimensions({
           width: width,
-          height: Math.floor(width * 0.66) // 높이를 너비의 2/3로 설정
+          height: Math.floor(width * 0.66)
         })
       }
     }
@@ -29,7 +29,7 @@ export default function GraphView({ posts, currentSlug }) {
     const nodeRadius = 5
 
     const svg = d3.select(ref.current)
-      .html("") // 기존 내용 제거
+      .html("")
       .append('svg')
       .attr('width', width)
       .attr('height', height)
@@ -40,11 +40,19 @@ export default function GraphView({ posts, currentSlug }) {
     const nodes = relatedPosts.map((post, index) => ({ id: post.slug, ...post, index }))
     const links = createLinks(relatedPosts)
 
+    // 현재 노드를 찾습니다
+    const currentNode = nodes.find(node => node.id === currentSlug)
+    if (!currentNode) return
+
+    // 방사형 레이아웃을 위한 힘 설정
+    const radialForce = d3.forceRadial(100, width / 2, height / 2)
+      .strength(node => node === currentNode ? 0 : 0.3)
+
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(50))
-      .force('charge', d3.forceManyBody().strength(-100))
-      .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(nodeRadius * 2))
+      .force('link', d3.forceLink(links).id(d => d.id).distance(100))
+      .force('charge', d3.forceManyBody().strength(-500))
+      .force('radial', radialForce)
+      .force('collision', d3.forceCollide().radius(nodeRadius * 4))
 
     const link = g.append('g')
       .selectAll('line')
@@ -57,7 +65,7 @@ export default function GraphView({ posts, currentSlug }) {
       .selectAll('circle')
       .data(nodes)
       .join('circle')
-      .attr('r', d => d.id === currentSlug ? nodeRadius * 1.5 : nodeRadius)
+      .attr('r', d => d.id === currentSlug ? nodeRadius * 2 : nodeRadius)
       .attr('fill', d => d.id === currentSlug ? 'red' : 'steelblue')
 
     const label = g.append('g')
@@ -68,11 +76,16 @@ export default function GraphView({ posts, currentSlug }) {
       .attr('font-size', '8px')
       .attr('dx', 8)
       .attr('dy', 3)
+      .attr('fill', 'var(--foreground)')
 
     node.append('title')
       .text(d => d.frontMatter?.title || '')
 
     simulation.on('tick', () => {
+      // 현재 노드를 중앙에 고정
+      currentNode.fx = width / 2
+      currentNode.fy = height / 2
+
       link
         .attr('x1', d => d.source.x)
         .attr('y1', d => d.source.y)
@@ -88,30 +101,21 @@ export default function GraphView({ posts, currentSlug }) {
         .attr('y', d => d.y)
     })
 
-    // 줌 기능 추가
     const zoom = d3.zoom()
-      .scaleExtent([0.1, 10])
+      .scaleExtent([0.5, 3])
       .on('zoom', (event) => {
         g.attr('transform', event.transform)
       })
 
     svg.call(zoom)
 
-    // 현재 노드를 중앙으로 이동하고 그래프 크기 조정
-    const currentNode = nodes.find(node => node.id === currentSlug)
-    if (currentNode) {
-      simulation.stop()
-      
-      const scale = 1.5 // 그래프 크기를 1.5배로 증가
-      const x = width / 2 - currentNode.x * scale
-      const y = height / 2 - currentNode.y * scale
+    // 초기 줌 레벨 설정
+    const initialScale = 0.8
+    const initialTranslateX = (width - width * initialScale) / 2
+    const initialTranslateY = (height - height * initialScale) / 2
 
-      g.transition()
-        .duration(750)
-        .call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale))
-    }
+    svg.call(zoom.transform, d3.zoomIdentity.translate(initialTranslateX, initialTranslateY).scale(initialScale))
 
-    // 클릭 이벤트 추가
     node.on('click', (event, d) => {
       if (d && d.id) {
         window.location.href = `/posts/${d.id}`
@@ -138,16 +142,16 @@ function findRelatedPosts(posts, currentSlug) {
   if (!currentPost) return posts
 
   return posts.filter(post => {
-    // 현재 포스트 포함
     if (post.slug === currentSlug) return true
 
-    // 태그 기반 관련성 확인
+    // 태그 기반 관련성
     const hasCommonTags = currentPost.frontMatter.tags?.some(tag => 
       post.frontMatter.tags?.includes(tag)
     )
 
-    // 백링크 확인
-    const isBacklinked = currentPost.content.includes(post.slug)
+    // 백링크 기반 관련성
+    const isBacklinked = currentPost.content.includes(post.slug) || 
+                         post.content.includes(currentSlug)
 
     return hasCommonTags || isBacklinked
   })
