@@ -70,6 +70,10 @@ export default function GraphView({ posts, currentSlug }) {
       .join('circle')
       .attr('r', d => d.type === 'tag' ? nodeRadius * 1.5 : (d.id === currentSlug ? nodeRadius * 2 : nodeRadius))
       .attr('fill', d => d.type === 'tag' ? '#4CAF50' : (d.id === currentSlug ? 'red' : 'steelblue'))
+      .call(d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended))
 
     const label = g.append('g')
       .selectAll('text')
@@ -121,13 +125,58 @@ export default function GraphView({ posts, currentSlug }) {
 
     svg.call(zoom.transform, d3.zoomIdentity.translate(initialTranslateX, initialTranslateY).scale(initialScale))
 
-    node.on('click', (event, d) => {
-      if (d.type === 'post' && d.id) {
-        window.location.href = `/posts/${d.id}`
-      } else if (d.type === 'tag') {
-        window.location.href = `/tags/${d.id}`
-      }
+    let clickTimer
+    node.on('mousedown', (event, d) => {
+      clickTimer = setTimeout(() => {
+        highlightConnectedNodes(d, node, link)
+      }, 500)
     })
+    .on('mouseup', (event, d) => {
+      clearTimeout(clickTimer)
+      if (event.timeStamp - event.target.__data__.lastClick < 500) {
+        if (d.type === 'post' && d.id) {
+          window.location.href = `/posts/${d.id}`
+        } else if (d.type === 'tag') {
+          window.location.href = `/tags/${d.id}`
+        }
+      }
+      event.target.__data__.lastClick = event.timeStamp
+    })
+
+    function dragstarted(event) {
+      if (!event.active) simulation.alphaTarget(0.3).restart()
+      event.subject.fx = event.subject.x
+      event.subject.fy = event.subject.y
+    }
+
+    function dragged(event) {
+      event.subject.fx = event.x
+      event.subject.fy = event.y
+    }
+
+    function dragended(event) {
+      if (!event.active) simulation.alphaTarget(0)
+      event.subject.fx = null
+      event.subject.fy = null
+    }
+
+    function highlightConnectedNodes(d, node, link) {
+      const connectedNodeIds = new Set()
+      connectedNodeIds.add(d.id)
+
+      link.each(function(l) {
+        if (l.source.id === d.id) connectedNodeIds.add(l.target.id)
+        if (l.target.id === d.id) connectedNodeIds.add(l.source.id)
+      })
+
+      node.attr('opacity', n => connectedNodeIds.has(n.id) ? 1 : 0.1)
+      link.attr('opacity', l => connectedNodeIds.has(l.source.id) && connectedNodeIds.has(l.target.id) ? 1 : 0.1)
+
+      setTimeout(() => {
+        node.attr('opacity', 1)
+        link.attr('opacity', 1)
+      }, 2000)
+    }
 
     return () => {
       simulation.stop()
