@@ -37,8 +37,12 @@ export default function GraphView({ posts, currentSlug }) {
     const g = svg.append('g')
 
     const relatedPosts = findRelatedPosts(posts, currentSlug)
-    const nodes = relatedPosts.map((post, index) => ({ id: post.slug, ...post, index }))
-    const links = createLinks(relatedPosts)
+    const tags = [...new Set(relatedPosts.flatMap(post => post.frontMatter.tags || []))]
+    const nodes = [
+      ...relatedPosts.map((post, index) => ({ id: post.slug, type: 'post', ...post, index })),
+      ...tags.map((tag, index) => ({ id: tag, type: 'tag', index: relatedPosts.length + index }))
+    ]
+    const links = createLinks(relatedPosts, tags)
 
     // 현재 노드를 찾습니다
     const currentNode = currentSlug ? nodes.find(node => node.id === currentSlug) : null
@@ -64,21 +68,21 @@ export default function GraphView({ posts, currentSlug }) {
       .selectAll('circle')
       .data(nodes)
       .join('circle')
-      .attr('r', d => d.id === currentSlug ? nodeRadius * 2 : nodeRadius)
-      .attr('fill', d => d.id === currentSlug ? 'red' : 'steelblue')
+      .attr('r', d => d.type === 'tag' ? nodeRadius * 1.5 : (d.id === currentSlug ? nodeRadius * 2 : nodeRadius))
+      .attr('fill', d => d.type === 'tag' ? '#4CAF50' : (d.id === currentSlug ? 'red' : 'steelblue'))
 
     const label = g.append('g')
       .selectAll('text')
       .data(nodes)
       .join('text')
-      .text(d => d.frontMatter?.title || '')
+      .text(d => d.type === 'tag' ? d.id : (d.frontMatter?.title || ''))
       .attr('font-size', '8px')
       .attr('dx', 8)
       .attr('dy', 3)
       .attr('fill', 'var(--foreground)')
 
     node.append('title')
-      .text(d => d.frontMatter?.title || '')
+      .text(d => d.type === 'tag' ? `Tag: ${d.id}` : (d.frontMatter?.title || ''))
 
     simulation.on('tick', () => {
       // 현재 노드를 중앙에 고정 (현재 노드가 있을 경우에만)
@@ -118,8 +122,10 @@ export default function GraphView({ posts, currentSlug }) {
     svg.call(zoom.transform, d3.zoomIdentity.translate(initialTranslateX, initialTranslateY).scale(initialScale))
 
     node.on('click', (event, d) => {
-      if (d && d.id) {
+      if (d.type === 'post' && d.id) {
         window.location.href = `/posts/${d.id}`
+      } else if (d.type === 'tag') {
+        window.location.href = `/tags/${d.id}`
       }
     })
 
@@ -158,21 +164,26 @@ function findRelatedPosts(posts, currentSlug) {
   })
 }
 
-function createLinks(posts) {
+function createLinks(posts, tags) {
   const links = []
   posts.forEach((post, i) => {
+    // 포스트 간 링크
     posts.slice(i + 1).forEach(otherPost => {
-      // 태그 기반 링크
       const hasCommonTags = post.frontMatter.tags?.some(tag => 
         otherPost.frontMatter.tags?.includes(tag)
       )
-
-      // 백링크 기반 링크
       const isBacklinked = post.content.includes(otherPost.slug) || 
                            otherPost.content.includes(post.slug)
 
       if (hasCommonTags || isBacklinked) {
         links.push({ source: post.slug, target: otherPost.slug })
+      }
+    })
+
+    // 포스트와 태그 간 링크
+    post.frontMatter.tags?.forEach(tag => {
+      if (tags.includes(tag)) {
+        links.push({ source: post.slug, target: tag })
       }
     })
   })
