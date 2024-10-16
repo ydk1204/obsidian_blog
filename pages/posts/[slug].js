@@ -64,7 +64,7 @@ export default function Post({ source, frontMatter, posts }) {
 
   return (
     <Layout initialPosts={posts}>
-      <div className="flex-1" ref={contentRef}>
+      <div ref={contentRef}>
         <article className="prose lg:prose-xl">
           <PostHeader 
             title={frontMatter.title} 

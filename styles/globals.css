@@ -85,7 +85,7 @@ h4 {
   color: #95a5a6;
 }
 
-svg {
+.callout > svg {
   width: 1.1em;
   height: 1.1em;
 }
