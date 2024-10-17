@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useTheme } from '../contexts/ThemeContext'  // 테마 컨텍스트 import
+import { useTheme } from '../contexts/ThemeContext'
+import ReactMarkdown from 'react-markdown'
 
 export default function Search({ posts, isOpen, onClose }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -9,7 +10,7 @@ export default function Search({ posts, isOpen, onClose }) {
   const [selectedPost, setSelectedPost] = useState(null)
   const searchRef = useRef(null)
   const router = useRouter()
-  const { theme } = useTheme()  // 테마 정보 가져오기
+  const { theme } = useTheme()
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -37,12 +38,13 @@ export default function Search({ posts, isOpen, onClose }) {
   }, [router, onClose])
 
   const handleSearch = (e) => {
-    const term = e.target.value
+    const term = e.target.value.toLowerCase()
     setSearchTerm(term)
 
     const filtered = posts.filter(post => 
-      post.frontMatter.title.toLowerCase().includes(term.toLowerCase()) ||
-      post.content.toLowerCase().includes(term.toLowerCase())
+      post.frontMatter.title.toLowerCase().includes(term) ||
+      post.content.toLowerCase().includes(term) ||
+      post.frontMatter.tags?.some(tag => tag.toLowerCase().includes(term))
     )
 
     setSearchResults(filtered)
@@ -53,50 +55,70 @@ export default function Search({ posts, isOpen, onClose }) {
     setSelectedPost(post)
   }
 
+  const handleSelectedPostClick = () => {
+    if (selectedPost) {
+      router.push(`/posts/${selectedPost.slug}`)
+      onClose()
+    }
+  }
+
   if (!isOpen) return null
 
   return (
     <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4 backdrop-blur ${theme}`}>
       <div 
         ref={searchRef} 
+        className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-4xl h-[80vh] flex flex-col"
         style={{
-          backgroundColor: theme === 'dark' ? '#374151' : '#ffffff'
+          backgroundColor: theme === 'dark' ? '#1F2937' : '#ffffff'
         }}
-        className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-4xl">
+      >
         <input
           type="text"
-          placeholder="검색어를 입력하세요..."
+          placeholder="제목, 내용 또는 태그로 검색..."
           value={searchTerm}
           onChange={handleSearch}
-          className="w-full p-2 border border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="w-full p-2 mb-4 border border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           style={{
             backgroundColor: theme === 'dark' ? '#374151' : '#ffffff',
             color: theme === 'dark' ? '#ffffff' : '#000000',
           }}
           autoFocus
         />
-        <div className="mt-4 flex">
-          <ul className="w-1/2 pr-4 overflow-y-auto max-h-96">
+        <div className="flex flex-1 overflow-hidden">
+          <div className="w-1/3 pr-4 overflow-y-auto border-r border-gray-300 dark:border-gray-600 scrollbar-hide" style={{ maxHeight: 'calc(100% - 2rem)' }}>
             {searchResults.map(post => (
-              <li key={post.slug} className="mb-2">
-                <button
-                  onClick={() => handlePostClick(post)}
-                  className="text-blue-500 hover:underline text-left w-full dark:text-blue-400"
-                >
-                  {post.frontMatter.title}
-                </button>
-              </li>
+              <div 
+                key={post.slug} 
+                className={`py-1 px-2 mb-1 cursor-pointer rounded ${selectedPost === post ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                onClick={() => handlePostClick(post)}
+              >
+                <h3 className={`font-semibold text-sm ${theme === 'dark' ? 'text-white' : 'text-black'}`}>{post.frontMatter.title}</h3>
+                {post.frontMatter.tags && (
+                  <div className="flex flex-wrap mt-1">
+                    {post.frontMatter.tags.map(tag => (
+                      <span key={tag} className="text-xs mr-1 mb-1 px-1 bg-gray-200 dark:bg-gray-600 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
-          </ul>
-          {selectedPost && (
-            <div className="w-1/2 pl-4 border-l border-gray-300 dark:border-gray-600">
-              <h3 className="text-xl font-bold mb-2 dark:text-white">{selectedPost.frontMatter.title}</h3>
-              <p className="dark:text-gray-300">{selectedPost.content.substring(0, 300)}...</p>
-              <Link href={`/posts/${selectedPost.slug}`} className="text-blue-500 hover:underline dark:text-blue-400">
-                더 읽기
-              </Link>
-            </div>
-          )}
+          </div>
+          <div className="w-2/3 pl-4 overflow-y-auto">
+            {selectedPost && (
+              <div 
+                className="cursor-pointer" 
+                onClick={handleSelectedPostClick}
+              >
+                <h2 className="text-2xl font-bold mb-2 dark:text-white">{selectedPost.frontMatter.title}</h2>
+                <div className="prose dark:prose-invert max-w-none">
+                  <ReactMarkdown>{selectedPost.content}</ReactMarkdown>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
