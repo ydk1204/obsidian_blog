@@ -5,10 +5,10 @@ import Layout from '../../components/Layout'
 import { getAllPosts } from '../../lib/mdxUtils'
 import { useTheme } from '@/contexts/ThemeContext'
 
-export default function TagPage({ posts }) {
+export default function TagPage({ posts, tag: initialTag }) {
   const router = useRouter()
   const { tag } = router.query
-  const [selectedTag, setSelectedTag] = useState(tag)
+  const [selectedTag, setSelectedTag] = useState(tag || initialTag)
   const { theme } = useTheme()
 
   const filteredPosts = posts.filter(post => 
@@ -16,7 +16,7 @@ export default function TagPage({ posts }) {
   )
 
   return (
-    <Layout>
+    <Layout initialPosts={posts}>
       <h1 className="text-3xl font-bold mb-6">태그: {selectedTag}</h1>
       <ul>
         {filteredPosts.map(post => (
@@ -61,10 +61,12 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const posts = getAllPosts()
+  const { tag } = params
 
   return {
     props: {
-      posts
+      posts,
+      tag
     }
   }
 }
