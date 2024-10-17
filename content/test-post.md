@@ -13,6 +13,7 @@ disqus: true
 
 로컬 스토리지는 웹 스토리지 API의 핵심 구성 요소 중 하나로, 웹 애플리케이션이 사용자의 브라우저에 데이터를 저장할 수 있게 해주는 메커니즘이다. 로컬 스토리지는 브라우저 세션 간에 데이터를 유지하며, 브라우저가 닫히고 다시 열린 후에도 데이터가 보존된다.
 
+
 ---
 ## 주요 특징
 
@@ -100,7 +101,7 @@ localStorage.clear();
 ### IndexedDB의 저장 방식
 IndexedDB는 브라우저에 내장된 NoSQL 데이터베이스로, 복잡한 구조의 데이터를 저장할 수 있다.
 #### IndexedDB의 주요특징
-- 키-값 저장소 방식을 ���용한다.
+- 키-값 저장소 방식을 용한다.
 - 객체 저장소(Object Store)를 통해 데이터를 구조화한다.
 - 트랜잭션을 지원하여 데이터 무결성을 보장한다.
 
@@ -150,7 +151,7 @@ request.onsuccess = (event) => {
 			city: "심시티",
 			country: "대한민국"
 		},
-		hobbies: ["책싫어��", "멍때리기", "하늘바라보기"]
+		hobbies: ["책싫어", "멍때리기", "하늘바라보기"]
 	};
 	
 	const addRequest = objectStore.add(user);
@@ -200,3 +201,4 @@ IndexedDB는 중첩된 객체와 배열을 포함한 JavaScript 객체를 그대
 - <a href="https://www.telerik.com/blogs/beginners-guide-indexeddb" target="_blank">telerik</a>
 - <a href="https://web.dev/articles/indexeddb?hl=ko" target="_blank">web.dev</a>
 - <a href="https://ko.javascript.info/indexeddb" target="_blank">javascript.info</a>
+

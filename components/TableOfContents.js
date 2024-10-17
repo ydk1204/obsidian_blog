@@ -55,7 +55,6 @@ function TableOfContents() {
 
   return (
     <nav className="sticky top-0 max-h-screen overflow-y-auto">
-      <h2 className="text-lg font-semibold mb-2">Table of Contents</h2>
       <ul>
         {headings.map(heading => (
           <li key={heading.id} style={{ marginLeft: `${(heading.level - 1) * 1}rem` }}>

@@ -173,12 +173,15 @@ export default function Layout({ children, initialPosts }) {
              style={{ minHeight: '110vh' }}>
           <div className="flex flex-col h-full">
             {isPostPage && (
+              <>
+              <h2 className="text-lg font-semibold mb-2 mt-4">Table of Contents</h2>
               <div className="mb-4 flex-shrink-0 overflow-y-auto max-h-[30vh]">
                 <TableOfContents 
                   key={router.asPath} 
                   onLinkClick={handleTocClick} 
                 />
               </div>
+              </>
             )}
             <div className="flex-grow flex flex-col min-h-0">
               <div className="w-full max-h-max" style={{ minHeight: '150px', maxHeight: '50vh' }}>

@@ -1,23 +1,15 @@
-import Link from 'next/link'
+import { MDXComponents } from './MDXComponents'
 
 export default function PostHeader({ title, date, tags }) {
   return (
-    <header className="mb-8">
-      <nav className="text-sm breadcrumbs">
-        <ul>
-          <li><Link href="/">Home</Link></li>
-          <li>{title}</li>
-        </ul>
-      </nav>
-      <h1 className="text-4xl font-bold mt-4 mb-2">{title}</h1>
-      <div className="text-gray-600 mb-2">{new Date(date).toLocaleDateString()}</div>
-      <div className="flex flex-wrap">
+    <div className="mt-4">
+      <h1 className="text-3xl font-bold mt-0">{title}</h1>
+      <p className="text-gray-500 mt-2">{new Date(date).toLocaleDateString('ko-KR')}</p>
+      <div className="mt-4">
         {tags.map(tag => (
-          <span key={tag} className="bg-gray-200 text-gray-700 px-2 py-1 rounded mr-2 mb-2">
-            {tag}
-          </span>
+          <MDXComponents.Tag key={tag}>{tag}</MDXComponents.Tag>
         ))}
       </div>
-    </header>
+    </div>
   )
 }
