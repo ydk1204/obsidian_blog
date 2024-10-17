@@ -129,6 +129,20 @@ export default function Layout({ children, initialPosts }) {
     console.log('Page changed:', router.asPath)
   }, [router.asPath])
 
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setLeftSidebarOpen(false)
+      setRightSidebarOpen(false)
+      setIsSearchOpen(false)
+    }
+
+    router.events.on('routeChangeStart', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange)
+    }
+  }, [router])
+
   return (
     <div className={`${theme} min-h-screen flex justify-center`}>
       <div className="w-full max-w-7xl flex flex-col lg:flex-row relative">
