@@ -1,0 +1,177 @@
+{
+  "main": {
+    "id": "9eac73f08f0bb1cf",
+    "type": "split",
+    "children": [
+      {
+        "id": "5cf114f0fa33fb8d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "59daabe9ea9eae3e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "content/테스트 파일.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a5977ac3431ab6bb",
+    "type": "split",
+    "children": [
+      {
+        "id": "389deeaefa262625",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5436663389d484e0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "2ca18973acd249e0",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8c3a248e326cff27",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "94b86baffd9c7d18",
+    "type": "split",
+    "children": [
+      {
+        "id": "59f20c936cfbfccb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "10c754da71d3a1b3",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "content/테스트 파일.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "e7f3f2fb4c6e3e63",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "content/테스트 파일.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "4d91ebd268e31fcd",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "2727ca49dcd52bc0",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "content/테스트 파일.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:퀵 스위처 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 데일리 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false
+    }
+  },
+  "active": "59daabe9ea9eae3e",
+  "lastOpenFiles": [
+    "node_modules/hast-util-raw/index.d.ts",
+    "node_modules/hast-util-raw/readme.md",
+    "node_modules/hast-util-raw/package.json",
+    "node_modules/hast-util-raw/index.js",
+    "node_modules/hast-util-raw/lib/index.d.ts",
+    "node_modules/hast-util-raw/lib/index.js",
+    "node_modules/hast-util-raw/lib/index.d.ts.map",
+    "node_modules/hast-util-raw/lib",
+    "node_modules/hast-util-raw/license",
+    "node_modules/hast-util-parse-selector/lib/index.d.ts",
+    "node_modules/hast-util-parse-selector/lib/index.js",
+    "node_modules/hast-util-parse-selector/readme.md",
+    "node_modules/hast-util-parse-selector/index.js",
+    "node_modules/hastscript/readme.md",
+    "node_modules/vfile-location/readme.md",
+    "node_modules/entities/readme.md",
+    "node_modules/web-namespaces/readme.md",
+    "node_modules/parse5/README.md",
+    "node_modules/hast-util-to-parse5/readme.md",
+    "node_modules/html-void-elements/readme.md",
+    "node_modules/hast-util-from-parse5/readme.md",
+    "node_modules/rehype-raw/readme.md",
+    "Template/포스팅 템플릿.md",
+    "content/테스트 파일.md",
+    "content/test-post.md"
+  ]
+}
