@@ -380,3 +380,59 @@ p, li {
 .sidebar li {
   margin-bottom: 0.2em;
 }
+
+@keyframes rotate360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-360 {
+  animation: rotate360 0.5s linear;
+}
+
+@keyframes dialRotate {
+  0% {
+    transform: rotate(0deg) translateX(0) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(20px) rotate(-360deg);
+  }
+}
+
+.dial-rotate {
+  animation: dialRotate 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+@keyframes iconEnter {
+  0% {
+    transform: translate(-100%, 100%) scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes iconExit {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100%, 100%) scale(0);
+    opacity: 0;
+  }
+}
+
+.icon-enter {
+  animation: iconEnter 0.5s forwards;
+}
+
+.icon-exit {
+  animation: iconExit 0.5s forwards;
+}

@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
+import { useRouter } from 'next/router'
 
 export default function GraphView({ posts, currentSlug }) {
   const ref = useRef(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+  const router = useRouter()
 
   useEffect(() => {
     function updateDimensions() {
@@ -44,10 +46,8 @@ export default function GraphView({ posts, currentSlug }) {
     ]
     const links = createLinks(relatedPosts, tags)
 
-    // 현재 노드를 찾습니다
     const currentNode = currentSlug ? nodes.find(node => node.id === currentSlug) : null
 
-    // 방사형 레이아웃을 위한 힘 설정
     const radialForce = d3.forceRadial(100, width / 2, height / 2)
       .strength(node => currentNode && node === currentNode ? 0 : 0.3)
 
@@ -63,6 +63,7 @@ export default function GraphView({ posts, currentSlug }) {
       .join('line')
       .attr('stroke', '#999')
       .attr('stroke-opacity', 0.6)
+      .attr('stroke-width', 1)
 
     const node = g.append('g')
       .selectAll('circle')
@@ -74,6 +75,16 @@ export default function GraphView({ posts, currentSlug }) {
         .on('start', dragstarted)
         .on('drag', dragged)
         .on('end', dragended))
+      .on('click', function(event, d) {
+        event.preventDefault()
+        event.stopPropagation()
+        // 클릭 시 페이지 이동 기능 복원
+        if (d.type === 'post') {
+          router.push(`/posts/${d.id}`)
+        } else if (d.type === 'tag') {
+          router.push(`/tags/${d.id}`)
+        }
+      })
 
     const label = g.append('g')
       .selectAll('text')
@@ -89,7 +100,6 @@ export default function GraphView({ posts, currentSlug }) {
       .text(d => d.type === 'tag' ? `Tag: ${d.id}` : (d.frontMatter?.title || ''))
 
     simulation.on('tick', () => {
-      // 현재 노드를 중앙에 고정 (현재 노드가 있을 경우에만)
       if (currentNode) {
         currentNode.fx = width / 2
         currentNode.fy = height / 2
@@ -118,29 +128,42 @@ export default function GraphView({ posts, currentSlug }) {
 
     svg.call(zoom)
 
-    // 초기 줌 레벨 설정
     const initialScale = 0.8
     const initialTranslateX = (width - width * initialScale) / 2
     const initialTranslateY = (height - height * initialScale) / 2
 
     svg.call(zoom.transform, d3.zoomIdentity.translate(initialTranslateX, initialTranslateY).scale(initialScale))
 
-    let clickTimer
-    node.on('mousedown', (event, d) => {
-      clickTimer = setTimeout(() => {
-        highlightConnectedNodes(d, node, link)
+    let pressTimer
+    let isLongPress = false
+
+    node.on('mousedown touchstart', function(event, d) {
+      pressTimer = setTimeout(() => {
+        isLongPress = true
+        highlightConnectedNodes(d)
       }, 500)
     })
-    .on('mouseup', (event, d) => {
-      clearTimeout(clickTimer)
-      if (event.timeStamp - event.target.__data__.lastClick < 500) {
-        if (d.type === 'post' && d.id) {
-          window.location.href = `/posts/${d.id}`
+    .on('mouseup touchend', function(event, d) {
+      clearTimeout(pressTimer)
+      if (!isLongPress) {
+        // 짧은 클릭: 페이지 이동
+        if (d.type === 'post') {
+          router.push(`/posts/${d.id}`)
         } else if (d.type === 'tag') {
-          window.location.href = `/tags/${d.id}`
+          router.push(`/tags/${d.id}`)
         }
+      } else {
+        // 길게 누르기 종료: 강조 해제
+        resetHighlight()
       }
-      event.target.__data__.lastClick = event.timeStamp
+      isLongPress = false
+    })
+    .on('mouseleave', function() {
+      clearTimeout(pressTimer)
+      if (isLongPress) {
+        resetHighlight()
+        isLongPress = false
+      }
     })
 
     function dragstarted(event) {
@@ -160,7 +183,7 @@ export default function GraphView({ posts, currentSlug }) {
       event.subject.fy = null
     }
 
-    function highlightConnectedNodes(d, node, link) {
+    function highlightConnectedNodes(d) {
       const connectedNodeIds = new Set()
       connectedNodeIds.add(d.id)
 
@@ -169,19 +192,39 @@ export default function GraphView({ posts, currentSlug }) {
         if (l.target.id === d.id) connectedNodeIds.add(l.source.id)
       })
 
-      node.attr('opacity', n => connectedNodeIds.has(n.id) ? 1 : 0.1)
-      link.attr('opacity', l => connectedNodeIds.has(l.source.id) && connectedNodeIds.has(l.target.id) ? 1 : 0.1)
+      node.transition().duration(300)
+        .attr('fill', n => connectedNodeIds.has(n.id) ? (n.type === 'tag' ? '#2E7D32' : '#1565C0') : (n.type === 'tag' ? '#A5D6A7' : '#BBDEFB'))
+        .attr('r', n => connectedNodeIds.has(n.id) ? (n.type === 'tag' ? nodeRadius * 2.5 : nodeRadius * 3) : (n.type === 'tag' ? nodeRadius * 1.2 : nodeRadius * 0.8))
+        .attr('opacity', n => connectedNodeIds.has(n.id) ? 1 : 0.3)
 
-      setTimeout(() => {
-        node.attr('opacity', 1)
-        link.attr('opacity', 1)
-      }, 2000)
+      link.transition().duration(300)
+        .attr('stroke', l => connectedNodeIds.has(l.source.id) && connectedNodeIds.has(l.target.id) ? '#FF4500' : '#999')
+        .attr('stroke-opacity', l => connectedNodeIds.has(l.source.id) && connectedNodeIds.has(l.target.id) ? 1 : 0.2)
+        .attr('stroke-width', l => connectedNodeIds.has(l.source.id) && connectedNodeIds.has(l.target.id) ? 3 : 0.5)
+
+      label.transition().duration(300)
+        .attr('opacity', n => connectedNodeIds.has(n.id) ? 1 : 0.3)
+    }
+
+    function resetHighlight() {
+      node.transition().duration(300)
+        .attr('r', d => d.type === 'tag' ? nodeRadius * 1.5 : (d.id === currentSlug ? nodeRadius * 2 : nodeRadius))
+        .attr('fill', d => d.type === 'tag' ? '#4CAF50' : (d.id === currentSlug ? 'red' : 'steelblue'))
+        .attr('opacity', 1)
+
+      link.transition().duration(300)
+        .attr('stroke', '#999')
+        .attr('stroke-opacity', 0.6)
+        .attr('stroke-width', 1)
+
+      label.transition().duration(300)
+        .attr('opacity', 1)
     }
 
     return () => {
       simulation.stop()
     }
-  }, [posts, currentSlug, dimensions])
+  }, [posts, currentSlug, dimensions, router])
 
   return (
     <div className="w-full h-full" style={{ minHeight: '300px' }}>

@@ -4,21 +4,44 @@ import { FaSun, FaMoon } from 'react-icons/fa'
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme()
-  const [position, setPosition] = useState('right')
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [displayTheme, setDisplayTheme] = useState(theme)
 
   useEffect(() => {
-    setPosition(theme === 'dark' ? 'left' : 'right')
-  }, [theme])
+    if (!isAnimating) {
+      setDisplayTheme(theme)
+    }
+  }, [theme, isAnimating])
+
+  const handleToggle = () => {
+    setIsAnimating(true)
+    toggleTheme()
+    setTimeout(() => {
+      setIsAnimating(false)
+    }, 500)
+  }
 
   return (
     <button
-      onClick={toggleTheme}
+      onClick={handleToggle}
       className="fixed bottom-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition-all duration-300 ease-in-out"
-      style={{ width: '60px', height: '30px', overflow: 'hidden' }}
+      style={{ width: '40px', height: '40px', overflow: 'hidden' }}
     >
-      <div className={`flex items-center justify-between transition-transform duration-300 ease-in-out ${position === 'left' ? 'transform translate-x-0' : 'transform translate-x-[-30px]'}`}>
-        <FaMoon className="text-gray-700 dark:text-yellow-300" />
-        <FaSun className="text-yellow-500 dark:text-gray-400" />
+      <div className="relative w-full h-full">
+        <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isAnimating ? 'icon-exit' : ''}`}>
+          {displayTheme === 'light' ? (
+            <FaMoon className="text-gray-700" />
+          ) : (
+            <FaSun className="text-yellow-400" />
+          )}
+        </div>
+        <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isAnimating ? 'icon-enter' : 'opacity-0 scale-0'}`}>
+          {displayTheme === 'light' ? (
+            <FaSun className="text-yellow-400" />
+          ) : (
+            <FaMoon className="text-gray-700" />
+          )}
+        </div>
       </div>
     </button>
   )
