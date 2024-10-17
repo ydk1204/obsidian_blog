@@ -1,6 +1,9 @@
 import Link from 'next/link'
+import { useTheme } from '../contexts/ThemeContext'
 
 export default function Sidebar({ onSearchClick, posts }) {
+  const { theme } = useTheme()
+
   return (
     <aside className="w-64 p-4 overflow-y-auto">
       <div className="mb-4">
@@ -9,7 +12,11 @@ export default function Sidebar({ onSearchClick, posts }) {
         </Link>
       </div>
       <div className="mb-4">
-        <button onClick={onSearchClick} className="w-full p-2 bg-gray-200 dark:bg-gray-700 rounded text-gray-800 dark:text-gray-200">
+        <button onClick={onSearchClick} className="w-full p-2 rounded"
+          style={{
+            backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
+          }}
+        >
           검색
         </button>
       </div>

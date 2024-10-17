@@ -92,14 +92,23 @@ export default function Search({ posts, isOpen, onClose }) {
               {searchResults.map(post => (
                 <div 
                   key={post.slug} 
-                  className={`flex-shrink-0 w-48 lg:w-auto py-1 px-2 mb-1 mr-2 lg:mr-0 cursor-pointer rounded ${selectedPost === post ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                  className={`flex-shrink-0 w-48 flex flex-col justify-center items-start lg:w-auto py-1 px-2 mb-1 mr-2 lg:mr-0 cursor-pointer rounded`}
+                  style={{
+                    backgroundColor: selectedPost === post ? '#FD8B51' : theme === 'dark' ? '#171717' : '#FAF8F8',
+                    color: theme === 'dark' ? '#000000' : '#ffffff',
+                  }}
                   onClick={() => handlePostClick(post)}
                 >
-                  <h3 className={`font-semibold text-sm ${theme === 'dark' ? 'text-white' : 'text-black'}`}>{post.frontMatter.title}</h3>
+                  <h3 className={`font-semibold mt-0 text-sm ${theme === 'dark' ? 'text-white' : 'text-black'}`}>{post.frontMatter.title}</h3>
                   {post.frontMatter.tags && (
                     <div className="flex flex-wrap mt-1">
                       {post.frontMatter.tags.map(tag => (
-                        <span key={tag} className="text-xs mr-1 mb-1 px-1 bg-gray-200 dark:bg-gray-600 rounded">
+                        <span key={tag} className="text-xs mr-1 mb-1 px-1 rounded"
+                          style={{
+                            backgroundColor: theme === 'dark' ? '#171750' : '#FAF8F8',
+                            color: theme === 'dark' ? '#ffffff' : '#000000',
+                          }}
+                        >
                           {tag}
                         </span>
                       ))}

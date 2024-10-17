@@ -30,7 +30,7 @@ export default function ThemeToggle() {
       <div className="relative w-full h-full">
         <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isAnimating ? 'icon-exit' : ''}`}>
           {displayTheme === 'light' ? (
-            <FaMoon className="text-gray-700" />
+            <FaMoon className="text-yellow-200" />
           ) : (
             <FaSun className="text-yellow-400" />
           )}
@@ -39,7 +39,7 @@ export default function ThemeToggle() {
           {displayTheme === 'light' ? (
             <FaSun className="text-yellow-400" />
           ) : (
-            <FaMoon className="text-gray-700" />
+            <FaMoon className="text-yellow-200" />
           )}
         </div>
       </div>

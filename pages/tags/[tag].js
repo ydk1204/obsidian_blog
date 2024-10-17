@@ -3,11 +3,13 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Layout from '../../components/Layout'
 import { getAllPosts } from '../../lib/mdxUtils'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export default function TagPage({ posts }) {
   const router = useRouter()
   const { tag } = router.query
   const [selectedTag, setSelectedTag] = useState(tag)
+  const { theme } = useTheme()
 
   const filteredPosts = posts.filter(post => 
     post.frontMatter.tags && post.frontMatter.tags.includes(selectedTag)
@@ -29,8 +31,11 @@ export default function TagPage({ posts }) {
               {post.frontMatter.tags.map(tag => (
                 <span
                   key={tag}
-                  className="inline-block bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 dark:text-gray-300 mr-2 mb-2 cursor-pointer"
+                  className="inline-block rounded-xl px-3 py-1 text-sm font-semibold mr-2 mb-2 cursor-pointer"
                   onClick={() => setSelectedTag(tag)}
+                  style={{
+                    backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
+                  }}
                 >
                   {tag}
                 </span>
