@@ -130,39 +130,58 @@ export default function Layout({ children, initialPosts }) {
   }, [router.asPath])
 
   return (
-    <div className={`${theme} min-h-screen flex flex-col md:flex-row relative`}>
-      {/* Overlay with smooth transition and extended height */}
+    <div className={`${theme} min-h-screen flex flex-col lg:flex-row relative`}>
+      {/* Overlay */}
       <div 
-        className={`fixed inset-0 bg-black transition-opacity duration-300 ease-in-out z-40 md:hidden ${
+        className={`fixed inset-0 bg-black transition-opacity duration-300 ease-in-out z-40 lg:hidden ${
           leftSidebarOpen || rightSidebarOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'
         }`} 
         style={{ minHeight: '110vh' }}
         onClick={closeAllSidebars}
       ></div>
       
-      <div ref={leftSidebarRef} className={`sidebar md:fixed md:left-0 md:top-0 md:h-screen md:w-64 overflow-y-auto pt-8 px-4 transition-transform duration-300 ease-in-out ${leftSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed top-0 left-0 h-full w-4/5 max-w-xs z-50 bg-white dark:bg-gray-800`}
+      {/* Left Sidebar */}
+      <div ref={leftSidebarRef} className={`sidebar lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:w-64 overflow-y-auto pt-8 px-4 transition-transform duration-300 ease-in-out ${leftSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed top-0 left-0 h-full w-4/5 max-w-xs z-50 bg-white dark:bg-gray-800`}
            style={{ minHeight: '110vh' }}>
         <Sidebar onSearchClick={toggleSearch} posts={posts} />
       </div>
-      <main ref={mainContentRef} className="main-content flex-1 overflow-y-auto px-4 md:px-6 py-8 md:ml-64 md:mr-64">
+
+      {/* Main Content */}
+      <main ref={mainContentRef} className="main-content flex-1 overflow-y-auto px-4 lg:px-6 py-8 lg:ml-64 lg:mr-64">
         <div className="max-w-full mx-auto">
           {children}
         </div>
       </main>
-      <div ref={rightSidebarRef} className={`sidebar md:fixed md:right-0 md:top-0 md:h-screen md:w-64 overflow-y-auto pt-8 flex flex-col px-4 transition-transform duration-300 ease-in-out ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} md:translate-x-0 fixed top-0 right-0 h-full w-4/5 max-w-xs z-50 bg-white dark:bg-gray-800`}
+
+      {/* Right Sidebar */}
+      <div ref={rightSidebarRef} className={`sidebar lg:fixed lg:right-0 lg:top-0 lg:h-screen lg:w-64 pt-8 flex flex-col px-4 transition-transform duration-300 ease-in-out ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0 fixed top-0 right-0 h-full w-4/5 max-w-xs z-50 bg-white dark:bg-gray-800`}
            style={{ minHeight: '110vh' }}>
-        {isPostPage && (
-          <TableOfContents 
-            key={router.asPath} 
-            onLinkClick={handleTocClick} 
-          />
-        )}
-        <div className="flex-grow">
-          <GraphView posts={posts} currentSlug={currentSlug} />
+        <div className="flex flex-col h-full">
+          {isPostPage && (
+            <div className="mb-4 flex-shrink-0 overflow-y-auto max-h-[30vh]">
+              <TableOfContents 
+                key={router.asPath} 
+                onLinkClick={handleTocClick} 
+              />
+            </div>
+          )}
+          <div className="flex-grow flex flex-col min-h-0">
+            <div className="w-full max-h-max" style={{ minHeight: '150px', maxHeight: '50vh' }}> {/* 그래프 뷰 컨테이너 수정 */}
+              <GraphView posts={posts} currentSlug={currentSlug} />
+            </div>
+            <div className="mt-4 flex-shrink-0 overflow-y-auto flex-grow"> {/* 백링크 컨테이너 수정 */}
+              <Backlinks currentSlug={currentSlug} posts={posts} />
+            </div>
+          </div>
         </div>
-        <Backlinks currentSlug={currentSlug} posts={posts} />
       </div>
-      <ThemeToggle />
+
+      {/* Theme Toggle Button */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
+      {/* Search Component */}
       <Search posts={posts} isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>
   )

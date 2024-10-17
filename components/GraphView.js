@@ -227,7 +227,7 @@ export default function GraphView({ posts, currentSlug }) {
   }, [posts, currentSlug, dimensions, router])
 
   return (
-    <div className="w-full h-full" style={{ minHeight: '300px' }}>
+    <div className="w-full max-h-max" style={{ minHeight: '150px' }}>
       <h2 className="text-lg font-semibold mb-2">Graph View</h2>
       <div ref={ref} className="w-full h-full">
         {dimensions.width === 0 && <p>Loading graph...</p>}
