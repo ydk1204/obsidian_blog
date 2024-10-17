@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
 import ThemeToggle from './ThemeToggle'
@@ -19,6 +19,11 @@ export default function Layout({ children, initialPosts }) {
   const router = useRouter()
   const currentSlug = router.query.slug || ''
   const isPostPage = router.pathname === '/posts/[slug]'
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(false)
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(false)
+  const mainContentRef = useRef(null)
+  const leftSidebarRef = useRef(null)
+  const rightSidebarRef = useRef(null)
 
   useEffect(() => {
     if (!initialPosts) {
@@ -32,17 +37,89 @@ export default function Layout({ children, initialPosts }) {
 
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen)
 
+  useEffect(() => {
+    let touchStartX = 0
+    let touchEndX = 0
+    
+    const handleTouchStart = (e) => {
+      touchStartX = e.touches[0].clientX
+    }
+    
+    const handleTouchEnd = (e) => {
+      touchEndX = e.changedTouches[0].clientX
+      handleSwipe()
+    }
+    
+    const handleSwipe = () => {
+      const swipeThreshold = 50
+      if (touchEndX < touchStartX - swipeThreshold) {
+        if (!rightSidebarOpen && !leftSidebarOpen) {
+          setRightSidebarOpen(true)
+        } else if (leftSidebarOpen) {
+          setLeftSidebarOpen(false)
+        }
+      }
+      if (touchEndX > touchStartX + swipeThreshold) {
+        if (!leftSidebarOpen && !rightSidebarOpen) {
+          setLeftSidebarOpen(true)
+        } else if (rightSidebarOpen) {
+          setRightSidebarOpen(false)
+        }
+      }
+    }
+    
+    const addSwipeListeners = (element) => {
+      if (element) {
+        element.addEventListener('touchstart', handleTouchStart)
+        element.addEventListener('touchend', handleTouchEnd)
+      }
+    }
+    
+    const removeSwipeListeners = (element) => {
+      if (element) {
+        element.removeEventListener('touchstart', handleTouchStart)
+        element.removeEventListener('touchend', handleTouchEnd)
+      }
+    }
+    
+    addSwipeListeners(mainContentRef.current)
+    addSwipeListeners(leftSidebarRef.current)
+    addSwipeListeners(rightSidebarRef.current)
+    
+    return () => {
+      removeSwipeListeners(mainContentRef.current)
+      removeSwipeListeners(leftSidebarRef.current)
+      removeSwipeListeners(rightSidebarRef.current)
+    }
+  }, [leftSidebarOpen, rightSidebarOpen])
+
+  const closeAllSidebars = () => {
+    setLeftSidebarOpen(false)
+    setRightSidebarOpen(false)
+  }
+
   return (
-    <div className={`${theme} min-h-screen flex flex-col md:flex-row`}>
-      <div className="sidebar md:fixed md:left-0 md:top-0 md:h-screen md:w-64 overflow-y-auto pt-8 px-4">
+    <div className={`${theme} min-h-screen flex flex-col md:flex-row relative`}>
+      {/* Overlay with smooth transition and extended height */}
+      <div 
+        className={`fixed inset-0 bg-black transition-opacity duration-300 ease-in-out z-40 md:hidden ${
+          leftSidebarOpen || rightSidebarOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'
+        }`} 
+        style={{ minHeight: '110vh' }}
+        onClick={closeAllSidebars}
+      ></div>
+      
+      <div ref={leftSidebarRef} className={`sidebar md:fixed md:left-0 md:top-0 md:h-screen md:w-64 overflow-y-auto pt-8 px-4 transition-transform duration-300 ease-in-out ${leftSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed top-0 left-0 h-full w-4/5 max-w-xs z-50 bg-white dark:bg-gray-800`}
+           style={{ minHeight: '110vh' }}>
         <Sidebar onSearchClick={toggleSearch} posts={posts} />
       </div>
-      <main className="main-content flex-1 overflow-y-auto px-4 md:px-6 py-8 md:ml-64 md:mr-64">
+      <main ref={mainContentRef} className="main-content flex-1 overflow-y-auto px-4 md:px-6 py-8 md:ml-64 md:mr-64">
         <div className="max-w-full mx-auto">
           {children}
         </div>
       </main>
-      <div className="sidebar md:fixed md:right-0 md:top-0 md:h-screen md:w-64 overflow-y-auto pt-8 flex flex-col px-4">
+      <div ref={rightSidebarRef} className={`sidebar md:fixed md:right-0 md:top-0 md:h-screen md:w-64 overflow-y-auto pt-8 flex flex-col px-4 transition-transform duration-300 ease-in-out ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} md:translate-x-0 fixed top-0 right-0 h-full w-4/5 max-w-xs z-50 bg-white dark:bg-gray-800`}
+           style={{ minHeight: '110vh' }}>
         {isPostPage && <TableOfContents />}
         <div className="flex-grow">
           <GraphView posts={posts} currentSlug={currentSlug} />
