@@ -98,6 +98,37 @@ export default function Layout({ children, initialPosts }) {
     setRightSidebarOpen(false)
   }
 
+  // 사이드바 상태에 따라 본문 스크롤 제어
+  useEffect(() => {
+    if (leftSidebarOpen || rightSidebarOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [leftSidebarOpen, rightSidebarOpen])
+
+  // Table of Contents 클릭 이벤트 핸들러
+  const handleTocClick = (e, targetId) => {
+    e.preventDefault()
+    const targetElement = document.getElementById(targetId)
+    if (targetElement) {
+      closeAllSidebars()
+      setTimeout(() => {
+        targetElement.scrollIntoView({ behavior: 'smooth' })
+      }, 300)
+    }
+  }
+
+  // 페이지 변경 감지를 위한 useEffect
+  useEffect(() => {
+    // 페이지가 변경될 때마다 실행됩니다.
+    console.log('Page changed:', router.asPath)
+  }, [router.asPath])
+
   return (
     <div className={`${theme} min-h-screen flex flex-col md:flex-row relative`}>
       {/* Overlay with smooth transition and extended height */}
@@ -120,7 +151,12 @@ export default function Layout({ children, initialPosts }) {
       </main>
       <div ref={rightSidebarRef} className={`sidebar md:fixed md:right-0 md:top-0 md:h-screen md:w-64 overflow-y-auto pt-8 flex flex-col px-4 transition-transform duration-300 ease-in-out ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} md:translate-x-0 fixed top-0 right-0 h-full w-4/5 max-w-xs z-50 bg-white dark:bg-gray-800`}
            style={{ minHeight: '110vh' }}>
-        {isPostPage && <TableOfContents />}
+        {isPostPage && (
+          <TableOfContents 
+            key={router.asPath} 
+            onLinkClick={handleTocClick} 
+          />
+        )}
         <div className="flex-grow">
           <GraphView posts={posts} currentSlug={currentSlug} />
         </div>
