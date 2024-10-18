@@ -43,7 +43,7 @@ const components = {
   Callout,
 };
 
-export default function Post({ source, frontMatter, posts }) {
+export default function Post({ source, frontMatter, posts, slug }) {
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -66,13 +66,14 @@ export default function Post({ source, frontMatter, posts }) {
     <Layout initialPosts={posts}>
       <div ref={contentRef}>
         <article className="prose lg:prose-xl">
-          <PostHeader 
-            title={frontMatter.title} 
-            date={frontMatter.date} 
-            tags={frontMatter.tags || []} 
+          <PostHeader
+            title={frontMatter.title}
+            date={frontMatter.date}
+            slug={slug}
+            tags={frontMatter.tags}
           />
           <MDXRemote {...source} components={components} />
-          <DisqusComments slug={frontMatter.slug} title={frontMatter.title} />
+          <DisqusComments slug={slug} title={frontMatter.title} />
         </article>
       </div>
     </Layout>
@@ -112,6 +113,7 @@ export async function getStaticProps({ params }) {
         source: mdxSource,
         frontMatter: post.frontMatter,
         posts,
+        slug,
       },
     }
   } catch (error) {
@@ -129,4 +131,3 @@ export async function getStaticPaths() {
     fallback: false,
   }
 }
-

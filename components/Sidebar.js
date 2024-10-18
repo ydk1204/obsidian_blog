@@ -54,6 +54,9 @@ export default function Sidebar({ onSearchClick, posts }) {
 
   return (
     <div>
+      <Link href="/" className="block mb-4">
+        <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
+      </Link>
       <button 
         onClick={onSearchClick} 
         className="w-full p-2 rounded mb-4 transition-colors"
