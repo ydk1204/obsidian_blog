@@ -119,8 +119,9 @@ export default function FullGraphView({ posts, isOpen, onClose }) {
 
     return () => {
       simulation.stop()
+      onClose()  // onClose 추가
     }
-  }, [isOpen, posts, theme, router])
+  }, [isOpen, posts, theme, router, onClose])  // onClose 의존성 추가
 
   if (!isOpen) return null
 

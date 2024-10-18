@@ -21,11 +21,11 @@ export async function getStaticPaths() {
   const posts = getAllPosts()
   const folders = [...new Set(posts.flatMap(post => {
     const parts = post.slug.split('/')
-    return parts.slice(0, -1).map((_, index) => parts.slice(0, index + 1).join('/'))
+    return parts.slice(0, -1).map((_, index) => parts.slice(0, index + 1))
   }))]
 
   return {
-    paths: folders.map(folder => ({ params: { folder: folder.split('/') } })),
+    paths: folders.map(folder => ({ params: { folder } })),
     fallback: false
   }
 }

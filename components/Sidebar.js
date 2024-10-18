@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { useSidebar } from '../contexts/SidebarContext'
 import { useTheme } from '../contexts/ThemeContext'
+import Image from 'next/image'
 
 export default function Sidebar({ onSearchClick, posts }) {
   const { openFolders, toggleFolder } = useSidebar()
@@ -55,7 +56,8 @@ export default function Sidebar({ onSearchClick, posts }) {
   return (
     <div>
       <Link href="/" className="block mb-4">
-        <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
+        {/* <Image src="/logo.png" alt="Logo" width={32} height={32} /> */}
+        <h1 className="text-2xl font-bold">My Blog</h1>
       </Link>
       <button 
         onClick={onSearchClick} 
