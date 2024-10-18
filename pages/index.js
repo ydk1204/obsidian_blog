@@ -17,7 +17,7 @@ export default function Home({ posts }) {
           {posts.map((post) => (
             <li key={post.slug} className="mb-2">
               <Link href={`/posts/${post.slug}`} className="text-blue-500 hover:underline">
-                {post.frontMatter.title}
+                {post.frontMatter && post.frontMatter.title ? post.frontMatter.title : post.name.replace('.md', '')}
               </Link>
             </li>
           ))}
@@ -29,5 +29,8 @@ export default function Home({ posts }) {
 
 export async function getStaticProps() {
   const posts = getAllPosts()
-  return { props: { posts } }
+  return { 
+    props: { posts: JSON.parse(JSON.stringify(posts)) },
+    revalidate: 1
+  }
 }

@@ -24,8 +24,8 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={handleToggle}
-      className="fixed bottom-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition-all duration-300 ease-in-out"
-      style={{ width: '40px', height: '40px', overflow: 'hidden' }}
+      className="fixed bottom-4 right-4 p-2 rounded-full transition-all duration-300 ease-in-out"
+      style={{ width: '40px', height: '40px', overflow: 'hidden', backgroundColor: '#1F2937' }}
     >
       <div className="relative w-full h-full">
         <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isAnimating ? 'icon-exit' : ''}`}>

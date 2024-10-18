@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/테스트 파일.md",
+                "file": "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "content/테스트 파일.md",
+                "file": "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "content/테스트 파일.md",
+                "file": "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "content/테스트 파일.md"
+                "file": "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md"
               }
             }
           }
@@ -148,6 +148,16 @@
   },
   "active": "59daabe9ea9eae3e",
   "lastOpenFiles": [
+    "content/테스트 파일.md",
+    "pages/posts/[...slug].js",
+    "content/your-post.md",
+    "content/third-post.md",
+    "content/second-post.md",
+    "content/first-post.md",
+    "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
+    "content/test-post.md",
+    "content/컴퓨터공학/네트워크",
+    "content/컴퓨터공학",
     "node_modules/hast-util-raw/index.d.ts",
     "node_modules/hast-util-raw/readme.md",
     "node_modules/hast-util-raw/package.json",
@@ -156,11 +166,7 @@
     "node_modules/hast-util-raw/lib/index.js",
     "node_modules/hast-util-raw/lib/index.d.ts.map",
     "node_modules/hast-util-raw/lib",
-    "node_modules/hast-util-raw/license",
-    "node_modules/hast-util-parse-selector/lib/index.d.ts",
-    "node_modules/hast-util-parse-selector/lib/index.js",
     "node_modules/hast-util-parse-selector/readme.md",
-    "node_modules/hast-util-parse-selector/index.js",
     "node_modules/hastscript/readme.md",
     "node_modules/vfile-location/readme.md",
     "node_modules/entities/readme.md",
@@ -170,8 +176,6 @@
     "node_modules/html-void-elements/readme.md",
     "node_modules/hast-util-from-parse5/readme.md",
     "node_modules/rehype-raw/readme.md",
-    "Template/포스팅 템플릿.md",
-    "content/테스트 파일.md",
-    "content/test-post.md"
+    "Template/포스팅 템플릿.md"
   ]
 }

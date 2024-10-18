@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
 import ThemeToggle from './ThemeToggle'
@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic'
 import { getAllPosts } from '../lib/mdxUtils'
 import { useTheme } from '../contexts/ThemeContext'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const TableOfContents = dynamic(() => import('./TableOfContents'), { ssr: false })
 
@@ -24,6 +25,58 @@ export default function Layout({ children, initialPosts }) {
   const mainContentRef = useRef(null)
   const leftSidebarRef = useRef(null)
   const rightSidebarRef = useRef(null)
+  const [touchStart, setTouchStart] = useState(null)
+  const [touchEnd, setTouchEnd] = useState(null)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
+  const minSwipeDistance = 50
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX)
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd || isTransitioning) return
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+    if (isLeftSwipe && leftSidebarOpen) {
+      closeSidebar('left')
+    } else if (isRightSwipe && !leftSidebarOpen && !rightSidebarOpen) {
+      openSidebar('left')
+    } else if (isRightSwipe && rightSidebarOpen) {
+      closeSidebar('right')
+    } else if (isLeftSwipe && !rightSidebarOpen && !leftSidebarOpen) {
+      openSidebar('right')
+    }
+  }
+
+  const openSidebar = (side) => {
+    if (isTransitioning) return
+    setIsTransitioning(true)
+    if (side === 'left') {
+      setLeftSidebarOpen(true)
+      setRightSidebarOpen(false)
+    } else {
+      setRightSidebarOpen(true)
+      setLeftSidebarOpen(false)
+    }
+    setTimeout(() => setIsTransitioning(false), 300)
+  }
+
+  const closeSidebar = (side) => {
+    if (isTransitioning) return
+    setIsTransitioning(true)
+    if (side === 'left') {
+      setLeftSidebarOpen(false)
+    } else {
+      setRightSidebarOpen(false)
+    }
+    setTimeout(() => setIsTransitioning(false), 300)
+  }
 
   useEffect(() => {
     if (!initialPosts) {
@@ -32,87 +85,21 @@ export default function Layout({ children, initialPosts }) {
         setPosts(allPosts)
       }
       fetchPosts()
+    } else {
+      setPosts(initialPosts)
     }
   }, [initialPosts])
 
-  const toggleSearch = () => setIsSearchOpen(!isSearchOpen)
-
-  useEffect(() => {
-    let touchStartX = 0
-    let touchEndX = 0
-    
-    const handleTouchStart = (e) => {
-      touchStartX = e.touches[0].clientX
-    }
-    
-    const handleTouchEnd = (e) => {
-      touchEndX = e.changedTouches[0].clientX
-      handleSwipe()
-    }
-    
-    const handleSwipe = () => {
-      const swipeThreshold = 50
-      if (touchEndX < touchStartX - swipeThreshold) {
-        if (!rightSidebarOpen && !leftSidebarOpen) {
-          setRightSidebarOpen(true)
-        } else if (leftSidebarOpen) {
-          setLeftSidebarOpen(false)
-        }
-      }
-      if (touchEndX > touchStartX + swipeThreshold) {
-        if (!leftSidebarOpen && !rightSidebarOpen) {
-          setLeftSidebarOpen(true)
-        } else if (rightSidebarOpen) {
-          setRightSidebarOpen(false)
-        }
-      }
-    }
-    
-    const addSwipeListeners = (element) => {
-      if (element) {
-        element.addEventListener('touchstart', handleTouchStart)
-        element.addEventListener('touchend', handleTouchEnd)
-      }
-    }
-    
-    const removeSwipeListeners = (element) => {
-      if (element) {
-        element.removeEventListener('touchstart', handleTouchStart)
-        element.removeEventListener('touchend', handleTouchEnd)
-      }
-    }
-    
-    addSwipeListeners(mainContentRef.current)
-    addSwipeListeners(leftSidebarRef.current)
-    addSwipeListeners(rightSidebarRef.current)
-    
-    return () => {
-      removeSwipeListeners(mainContentRef.current)
-      removeSwipeListeners(leftSidebarRef.current)
-      removeSwipeListeners(rightSidebarRef.current)
-    }
-  }, [leftSidebarOpen, rightSidebarOpen])
-
-  const closeAllSidebars = () => {
+  const closeAllSidebars = useCallback(() => {
     setLeftSidebarOpen(false)
     setRightSidebarOpen(false)
-  }
+  }, [])
 
-  // 사이드바 상태에 따라 본문 스크롤 제어
-  useEffect(() => {
-    if (leftSidebarOpen || rightSidebarOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'auto'
-    }
+  const toggleSearch = useCallback(() => {
+    setIsSearchOpen(prev => !prev)
+  }, [])
 
-    return () => {
-      document.body.style.overflow = 'auto'
-    }
-  }, [leftSidebarOpen, rightSidebarOpen])
-
-  // Table of Contents 클릭 이벤트 핸들러
-  const handleTocClick = (e, targetId) => {
+  const handleTocClick = useCallback((e, targetId) => {
     e.preventDefault()
     const targetElement = document.getElementById(targetId)
     if (targetElement) {
@@ -121,18 +108,11 @@ export default function Layout({ children, initialPosts }) {
         targetElement.scrollIntoView({ behavior: 'smooth' })
       }, 300)
     }
-  }
-
-  // 페이지 변경 감지를 위한 useEffect
-  useEffect(() => {
-    // 페이지가 변경될 때마다 실행됩니다.
-    console.log('Page changed:', router.asPath)
-  }, [router.asPath])
+  }, [closeAllSidebars])
 
   useEffect(() => {
     const handleRouteChange = () => {
-      setLeftSidebarOpen(false)
-      setRightSidebarOpen(false)
+      closeAllSidebars()
       setIsSearchOpen(false)
     }
 
@@ -141,10 +121,15 @@ export default function Layout({ children, initialPosts }) {
     return () => {
       router.events.off('routeChangeStart', handleRouteChange)
     }
-  }, [router])
+  }, [router, closeAllSidebars])
 
   return (
-    <div className={`${theme} min-h-screen flex justify-center`}>
+    <div 
+      className={`${theme} min-h-screen flex justify-center`}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       <div className="w-full max-w-7xl flex flex-col lg:flex-row relative">
         {/* Overlay */}
         <div 

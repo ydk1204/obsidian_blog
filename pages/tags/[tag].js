@@ -1,19 +1,31 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Layout from '../../components/Layout'
 import { getAllPosts } from '../../lib/mdxUtils'
 import { useTheme } from '@/contexts/ThemeContext'
 
-export default function TagPage({ posts, tag: initialTag }) {
+export default function TagPage({ posts, initialTag }) {
   const router = useRouter()
-  const { tag } = router.query
-  const [selectedTag, setSelectedTag] = useState(tag || initialTag)
   const { theme } = useTheme()
+  const [selectedTag, setSelectedTag] = useState(initialTag)
+  const [filteredPosts, setFilteredPosts] = useState([])
 
-  const filteredPosts = posts.filter(post => 
-    post.frontMatter.tags && post.frontMatter.tags.includes(selectedTag)
-  )
+  useEffect(() => {
+    if (router.query.tag) {
+      setSelectedTag(router.query.tag)
+    }
+  }, [router.query.tag])
+
+  useEffect(() => {
+    setFilteredPosts(posts.filter(post => 
+      post.frontMatter.tags && post.frontMatter.tags.includes(selectedTag)
+    ))
+  }, [selectedTag, posts])
+
+  const handleTagClick = (tag) => {
+    router.push(`/tags/${tag}`, undefined, { shallow: true })
+  }
 
   return (
     <Layout initialPosts={posts}>
@@ -32,7 +44,7 @@ export default function TagPage({ posts, tag: initialTag }) {
                 <span
                   key={tag}
                   className="inline-block rounded-xl px-3 py-1 text-sm font-semibold mr-2 mb-2 cursor-pointer"
-                  onClick={() => setSelectedTag(tag)}
+                  onClick={() => handleTagClick(tag)}
                   style={{
                     backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
                   }}
@@ -66,7 +78,7 @@ export async function getStaticProps({ params }) {
   return {
     props: {
       posts,
-      tag
+      initialTag: tag
     }
   }
 }
