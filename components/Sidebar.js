@@ -1,57 +1,48 @@
 import Link from 'next/link'
+import { useSidebar } from '../contexts/SidebarContext'
 import { useTheme } from '../contexts/ThemeContext'
-import { useState } from 'react'
 
-function FileExplorer({ posts }) {
-  const [expandedFolders, setExpandedFolders] = useState({})
+export default function Sidebar({ onSearchClick, posts }) {
+  const { openFolders, toggleFolder } = useSidebar()
+  const { theme } = useTheme()
 
-  const toggleFolder = (folderPath) => {
-    setExpandedFolders(prev => ({
-      ...prev,
-      [folderPath]: !prev[folderPath]
-    }))
-  }
-
-  const groupPostsByPath = (posts) => {
-    const structure = {}
-    posts.forEach(post => {
-      if (!post.slug) return // slug가 없는 경우 건너뛰기
-      const parts = post.slug.split('/')
-      let current = structure
-      parts.forEach((part, index) => {
-        if (index === parts.length - 1) {
-          current[part] = post
-        } else {
-          current[part] = current[part] || {}
-          current = current[part]
-        }
-      })
+  const folderStructure = posts.reduce((acc, post) => {
+    const parts = post.slug.split('/')
+    let current = acc
+    parts.forEach((part, index) => {
+      if (!current[part]) {
+        current[part] = index === parts.length - 1 ? post : {}
+      }
+      current = current[part]
     })
-    return structure
-  }
+    return acc
+  }, {})
 
-  const renderStructure = (structure, basePath = '') => {
+  const renderFolder = (folder, path = []) => {
+    const entries = Object.entries(folder)
     return (
       <ul className="pl-4">
-        {Object.entries(structure).map(([key, value]) => {
-          const currentPath = `${basePath}/${key}`
+        {entries.map(([key, value]) => {
+          const newPath = [...path, key]
+          const isOpen = openFolders[newPath.join('/')]
           if (typeof value === 'object' && !value.slug) {
             return (
-              <li key={currentPath}>
-                <span 
-                  className="cursor-pointer font-semibold"
-                  onClick={() => toggleFolder(currentPath)}
+              <li key={key} className="my-1">
+                <button
+                  onClick={() => toggleFolder(newPath.join('/'))}
+                  className="flex items-center text-left w-full"
                 >
-                  {expandedFolders[currentPath] ? '▼' : '▶'} {key}
-                </span>
-                {expandedFolders[currentPath] && renderStructure(value, currentPath)}
+                  <span className={`mr-1 ${isOpen ? 'transform rotate-90' : ''}`}>▶</span>
+                  {key}
+                </button>
+                {isOpen && renderFolder(value, newPath)}
               </li>
             )
           } else {
             return (
-              <li key={currentPath}>
+              <li key={key} className="my-1 pl-4">
                 <Link href={`/posts/${value.slug}`} className="hover:underline">
-                  {value.frontMatter && value.frontMatter.title ? value.frontMatter.title : key.replace('.md', '')}
+                  {value.frontMatter.title}
                 </Link>
               </li>
             )
@@ -61,33 +52,20 @@ function FileExplorer({ posts }) {
     )
   }
 
-  const groupedPosts = groupPostsByPath(posts)
-  return renderStructure(groupedPosts)
-}
-
-export default function Sidebar({ onSearchClick, posts }) {
-  const { theme } = useTheme()
-
   return (
-    <aside className="w-64 p-4 overflow-y-auto">
-      <div className="mb-4">
-        <Link href="/" className="text-xl font-bold">
-          My Obsidian Blog
-        </Link>
-      </div>
-      <div className="mb-4">
-        <button onClick={onSearchClick} className="w-full p-2 rounded"
-          style={{
-            backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
-          }}
-        >
-          검색
-        </button>
-      </div>
-      <nav>
-        <h2 className="text-lg font-semibold mb-2">페이지</h2>
-        <FileExplorer posts={posts} />
-      </nav>
-    </aside>
+    <div>
+      <button 
+        onClick={onSearchClick} 
+        className="w-full p-2 rounded mb-4 transition-colors"
+        style={{
+          backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
+          color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
+        }}
+      >
+        Search
+      </button>
+      <h2 className="text-lg font-semibold mb-2">Pages</h2>
+      {renderFolder(folderStructure)}
+    </div>
   )
 }

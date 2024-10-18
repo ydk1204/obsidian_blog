@@ -66,10 +66,11 @@ export default function Post({ source, frontMatter, posts }) {
     <Layout initialPosts={posts}>
       <div ref={contentRef}>
         <article className="prose lg:prose-xl">
-          <PostHeader 
-            title={frontMatter.title} 
-            date={frontMatter.date} 
-            tags={frontMatter.tags || []} 
+          <PostHeader
+            title={frontMatter.title}
+            date={frontMatter.date}
+            slug={frontMatter.slug}
+            tags={frontMatter.tags}
           />
           <MDXRemote {...source} components={components} />
           <DisqusComments slug={frontMatter.slug} title={frontMatter.title} />

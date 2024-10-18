@@ -2,15 +2,38 @@ import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
 import { useRouter } from 'next/router'
 import { useTheme } from '../contexts/ThemeContext'
+import FullGraphView from './FullGraphView'
 
-export default function GraphView({ posts, currentSlug }) {
+export default function GraphView({ posts, currentSlug, onOpenFullView }) {
   const ref = useRef(null)
   const router = useRouter()
   const { theme } = useTheme()
   const [zoomLevel, setZoomLevel] = useState(100)
+  const [isFullViewOpen, setIsFullViewOpen] = useState(false)
+  const simulationRef = useRef(null)
 
   useEffect(() => {
     if (!posts || posts.length === 0 || !ref.current) return
+
+    const updateDimensions = () => {
+      const container = ref.current
+      const width = container.clientWidth
+      const height = Math.min(200, width * 0.8)  // 높이를 너비의 80%로 설정하되, 최대 200px로 제한
+
+      // SVG 크기 업데이트
+      d3.select(ref.current)
+        .select('svg')
+        .attr('width', width)
+        .attr('height', height)
+
+      // 시뮬레이션 중심점 업데이트
+      if (simulationRef.current) {
+        simulationRef.current.force('center', d3.forceCenter(width / 2, height / 2))
+      }
+    }
+
+    updateDimensions()
+    window.addEventListener('resize', updateDimensions)
 
     // currentSlug를 문자열로 변환
     const normalizedCurrentSlug = Array.isArray(currentSlug) ? currentSlug.join('/') : currentSlug
@@ -18,8 +41,8 @@ export default function GraphView({ posts, currentSlug }) {
     console.log('Current slug:', normalizedCurrentSlug) // 디버깅용 로그
     console.log('Posts:', posts) // 디버깅용 로그
 
-    const width = 270
-    const height = 200
+    const width = ref.current.clientWidth
+    const height = Math.min(200, width * 0.8)
     const nodeRadius = 5
 
     const svg = d3.select(ref.current)
@@ -74,7 +97,7 @@ export default function GraphView({ posts, currentSlug }) {
     console.log('Nodes:', nodes) // 디버깅용 로그
     console.log('Links:', links) // 디버깅용 로그
 
-    const simulation = d3.forceSimulation(nodes)
+    simulationRef.current = d3.forceSimulation(nodes)
       .force('link', d3.forceLink(links).id(d => d.id).distance(50))
       .force('charge', d3.forceManyBody().strength(-150))
       .force('center', d3.forceCenter(width / 2, height / 2))
@@ -121,7 +144,7 @@ export default function GraphView({ posts, currentSlug }) {
       labels.attr('display', scale > 0.5 ? null : 'none')
     }
 
-    simulation.on('tick', () => {
+    simulationRef.current.on('tick', () => {
       link
         .attr('x1', d => d.source.x)
         .attr('y1', d => d.source.y)
@@ -133,7 +156,7 @@ export default function GraphView({ posts, currentSlug }) {
     })
 
     function dragstarted(event) {
-      if (!event.active) simulation.alphaTarget(0.3).restart()
+      if (!event.active) simulationRef.current.alphaTarget(0.3).restart()
       event.subject.fx = event.subject.x
       event.subject.fy = event.subject.y
     }
@@ -144,21 +167,40 @@ export default function GraphView({ posts, currentSlug }) {
     }
 
     function dragended(event) {
-      if (!event.active) simulation.alphaTarget(0)
+      if (!event.active) simulationRef.current.alphaTarget(0)
       event.subject.fx = null
       event.subject.fy = null
     }
 
     return () => {
-      simulation.stop()
+      if (simulationRef.current) {
+        simulationRef.current.stop()
+      }
+      window.removeEventListener('resize', updateDimensions)
     }
   }, [posts, currentSlug, router, theme])
+
+  const openFullGraphView = () => {
+    setIsFullViewOpen(true)
+  }
 
   return (
     <div>
       <h2 className="text-lg font-semibold mb-2">Graph View</h2>
-      <div ref={ref} className="w-full h-full" style={{ minHeight: '200px' }}></div>
-      <div className="text-xs text-gray-400 mt-2">Zoom: {zoomLevel}%</div>
+      <div ref={ref} className="w-full" style={{ minHeight: '150px' }}></div>
+      <div className="text-xs text-gray-400 mt-2 flex justify-between items-center">
+        <span>Zoom: {zoomLevel}%</span>
+        <button onClick={onOpenFullView} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
+        </button>
+      </div>
+      <FullGraphView
+        posts={posts}
+        isOpen={isFullViewOpen}
+        onClose={() => setIsFullViewOpen(false)}
+      />
     </div>
   )
 }

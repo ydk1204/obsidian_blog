@@ -5,6 +5,7 @@ import ThemeToggle from './ThemeToggle'
 import Search from './Search'
 import GraphView from './GraphView'
 import Backlinks from './Backlinks'
+import FullGraphView from './FullGraphView'
 import dynamic from 'next/dynamic'
 import { getAllPosts } from '../lib/mdxUtils'
 import { useTheme } from '../contexts/ThemeContext'
@@ -28,6 +29,7 @@ export default function Layout({ children, initialPosts }) {
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [isFullGraphViewOpen, setIsFullGraphViewOpen] = useState(false)
 
   const minSwipeDistance = 50
 
@@ -106,6 +108,7 @@ export default function Layout({ children, initialPosts }) {
       closeAllSidebars()
       setTimeout(() => {
         targetElement.scrollIntoView({ behavior: 'smooth' })
+        document.body.style.overflow = 'auto'
       }, 300)
     }
   }, [closeAllSidebars])
@@ -122,6 +125,30 @@ export default function Layout({ children, initialPosts }) {
       router.events.off('routeChangeStart', handleRouteChange)
     }
   }, [router, closeAllSidebars])
+
+  useEffect(() => {
+    const handleBodyScroll = () => {
+      if (leftSidebarOpen || rightSidebarOpen) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = 'auto'
+      }
+    }
+
+    handleBodyScroll()
+
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [leftSidebarOpen, rightSidebarOpen])
+
+  const openFullGraphView = useCallback(() => {
+    setIsFullGraphViewOpen(true)
+  }, [])
+
+  const closeFullGraphView = useCallback(() => {
+    setIsFullGraphViewOpen(false)
+  }, [])
 
   return (
     <div 
@@ -157,20 +184,20 @@ export default function Layout({ children, initialPosts }) {
         <div ref={rightSidebarRef} className={`sidebar lg:sticky lg:top-0 lg:h-screen lg:w-64 w-4/5 pt-8 flex flex-col px-4 transition-transform duration-300 ease-in-out ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0 fixed top-0 right-0 h-full z-50`}
              style={{ minHeight: '110vh' }}>
           <div className="flex flex-col h-full">
-            {isPostPage && (
+            {!router.pathname.startsWith('/tags/') && router.pathname !== '/' && (
               <>
-              <h2 className="text-lg font-semibold mb-2 mt-4">Table of Contents</h2>
-              <div className="mb-4 flex-shrink-0 overflow-y-auto max-h-[30vh]">
-                <TableOfContents 
-                  key={router.asPath} 
-                  onLinkClick={handleTocClick} 
-                />
-              </div>
+                <h2 className="text-lg font-semibold mb-2 mt-4">Table of Contents</h2>
+                <div className="mb-4 flex-shrink-0 overflow-y-auto max-h-[30vh]">
+                  <TableOfContents 
+                    key={router.asPath} 
+                    onLinkClick={handleTocClick} 
+                  />
+                </div>
               </>
             )}
             <div className="flex-grow flex flex-col min-h-0">
               <div className="w-full max-h-max" style={{ minHeight: '150px', maxHeight: '50vh' }}>
-                <GraphView posts={posts} currentSlug={currentSlug} />
+                <GraphView posts={posts} currentSlug={currentSlug} onOpenFullView={openFullGraphView} />
               </div>
               <div className="mt-4 flex-shrink-0 overflow-y-auto flex-grow">
                 <Backlinks currentSlug={currentSlug} posts={posts} />
@@ -186,6 +213,13 @@ export default function Layout({ children, initialPosts }) {
 
         {/* Search Component */}
         <Search posts={posts} isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
+        {/* Full Graph View */}
+        <FullGraphView
+          posts={posts}
+          isOpen={isFullGraphViewOpen}
+          onClose={closeFullGraphView}
+        />
       </div>
     </div>
   )
