@@ -30,7 +30,6 @@ export default function Home({ posts }) {
 export async function getStaticProps() {
   const posts = getAllPosts()
   return { 
-    props: { posts: JSON.parse(JSON.stringify(posts)) },
-    revalidate: 1
+    props: { posts: JSON.parse(JSON.stringify(posts)) }
   }
 }
