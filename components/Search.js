@@ -41,14 +41,19 @@ export default function Search({ posts, isOpen, onClose }) {
     const term = e.target.value.toLowerCase()
     setSearchTerm(term)
 
-    const filtered = posts.filter(post => 
-      post.frontMatter.title.toLowerCase().includes(term) ||
-      post.content.toLowerCase().includes(term) ||
-      post.frontMatter.tags?.some(tag => tag.toLowerCase().includes(term))
-    )
+    if (term) {
+      const filtered = posts.filter(post => 
+        post.frontMatter.title.toLowerCase().includes(term) ||
+        post.content.toLowerCase().includes(term) ||
+        post.frontMatter.tags?.some(tag => tag.toLowerCase().includes(term))
+      )
 
-    setSearchResults(filtered)
-    setSelectedPost(filtered.length > 0 ? filtered[0] : null)
+      setSearchResults(filtered)
+      setSelectedPost(filtered.length > 0 ? filtered[0] : null)
+    } else {
+      setSearchResults([])
+      setSelectedPost(null)
+    }
   }
 
   const handlePostClick = (post) => {
@@ -71,7 +76,7 @@ export default function Search({ posts, isOpen, onClose }) {
         className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-4xl mt-20 flex flex-col"
         style={{
           backgroundColor: theme === 'dark' ? '#1F2937' : '#ffffff',
-          maxHeight: 'calc(100vh - 40px)'  // 검색 창의 최대 높이 설정
+          maxHeight: searchTerm ? 'calc(100vh - 40px)' : 'auto'  // 검색어가 있을 때만 최대 높이 설정
         }}
       >
         <input
@@ -86,52 +91,54 @@ export default function Search({ posts, isOpen, onClose }) {
           }}
           autoFocus
         />
-        <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
-          <div className="w-full lg:w-1/3 mb-4 lg:mb-0 lg:pr-4 overflow-x-auto lg:overflow-y-auto lg:border-r border-gray-300 dark:border-gray-600 scrollbar-hide">
-            <div className="flex lg:flex-col">
-              {searchResults.map(post => (
+        {searchTerm && (
+          <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
+            <div className="w-full lg:w-1/3 mb-4 lg:mb-0 lg:pr-4 overflow-x-auto lg:overflow-y-auto lg:border-r border-gray-300 dark:border-gray-600 scrollbar-hide">
+              <div className="flex lg:flex-col">
+                {searchResults.map(post => (
+                  <div 
+                    key={post.slug} 
+                    className={`flex-shrink-0 w-48 flex flex-col justify-center items-start lg:w-auto py-1 px-2 mb-1 mr-2 lg:mr-0 cursor-pointer rounded`}
+                    style={{
+                      backgroundColor: selectedPost === post ? '#FD8B51' : theme === 'dark' ? '#171717' : '#FAF8F8',
+                      color: theme === 'dark' ? '#000000' : '#ffffff',
+                    }}
+                    onClick={() => handlePostClick(post)}
+                  >
+                    <h3 className={`font-semibold mt-0 text-sm ${theme === 'dark' ? 'text-white' : 'text-black'}`}>{post.frontMatter.title}</h3>
+                    {post.frontMatter.tags && (
+                      <div className="flex flex-wrap mt-1">
+                        {post.frontMatter.tags.map(tag => (
+                          <span key={tag} className="text-xs mr-1 mb-1 px-1 rounded"
+                            style={{
+                              backgroundColor: theme === 'dark' ? '#171750' : '#FAF8F8',
+                              color: theme === 'dark' ? '#ffffff' : '#000000',
+                            }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="w-full lg:w-2/3 lg:pl-4 overflow-y-auto" style={{ height: 'calc(100vh - 300px)' }}>
+              {selectedPost && (
                 <div 
-                  key={post.slug} 
-                  className={`flex-shrink-0 w-48 flex flex-col justify-center items-start lg:w-auto py-1 px-2 mb-1 mr-2 lg:mr-0 cursor-pointer rounded`}
-                  style={{
-                    backgroundColor: selectedPost === post ? '#FD8B51' : theme === 'dark' ? '#171717' : '#FAF8F8',
-                    color: theme === 'dark' ? '#000000' : '#ffffff',
-                  }}
-                  onClick={() => handlePostClick(post)}
+                  className="cursor-pointer" 
+                  onClick={handleSelectedPostClick}
                 >
-                  <h3 className={`font-semibold mt-0 text-sm ${theme === 'dark' ? 'text-white' : 'text-black'}`}>{post.frontMatter.title}</h3>
-                  {post.frontMatter.tags && (
-                    <div className="flex flex-wrap mt-1">
-                      {post.frontMatter.tags.map(tag => (
-                        <span key={tag} className="text-xs mr-1 mb-1 px-1 rounded"
-                          style={{
-                            backgroundColor: theme === 'dark' ? '#171750' : '#FAF8F8',
-                            color: theme === 'dark' ? '#ffffff' : '#000000',
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  <h2 className="text-2xl font-bold mb-2 dark:text-white">{selectedPost.frontMatter.title}</h2>
+                  <div className="prose dark:prose-invert max-w-none overflow-y-auto">
+                    <ReactMarkdown>{selectedPost.content}</ReactMarkdown>
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
-          <div className="w-full lg:w-2/3 lg:pl-4 overflow-y-auto" style={{ height: 'calc(100vh - 300px)' }}>
-            {selectedPost && (
-              <div 
-                className="cursor-pointer" 
-                onClick={handleSelectedPostClick}
-              >
-                <h2 className="text-2xl font-bold mb-2 dark:text-white">{selectedPost.frontMatter.title}</h2>
-                <div className="prose dark:prose-invert max-w-none overflow-y-auto">
-                  <ReactMarkdown>{selectedPost.content}</ReactMarkdown>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   )
