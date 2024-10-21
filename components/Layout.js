@@ -12,9 +12,12 @@ import { useTheme } from '../contexts/ThemeContext'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-const TableOfContents = dynamic(() => import('./TableOfContents'), { ssr: false })
+const TableOfContents = dynamic(() => import('./TableOfContents'), { 
+  ssr: false,
+  loading: () => <p>목차를 불러오는 중...</p>
+})
 
-export default function Layout({ children, initialPosts }) {
+export default function Layout({ children, initialPosts, folderStructure }) {
   const { theme } = useTheme()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [posts, setPosts] = useState(initialPosts || [])
@@ -170,7 +173,7 @@ export default function Layout({ children, initialPosts }) {
         {/* Left Sidebar */}
         <div ref={leftSidebarRef} className={`sidebar lg:sticky lg:top-0 lg:h-screen lg:w-64 w-4/5 overflow-y-auto pt-8 px-4 transition-transform duration-300 ease-in-out ${leftSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed top-0 left-0 h-full z-50`}
              style={{ minHeight: '110vh' }}>
-          <Sidebar onSearchClick={toggleSearch} posts={posts} />
+          <Sidebar onSearchClick={toggleSearch} posts={posts} folderStructure={folderStructure} />
         </div>
 
         {/* Main Content */}

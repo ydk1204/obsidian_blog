@@ -148,6 +148,7 @@
   },
   "active": "59daabe9ea9eae3e",
   "lastOpenFiles": [
+    "pages/posts/[slug].js",
     "out/folders/컴퓨터공학.html",
     "out/posts/테스트 파일.html",
     "out/index.html",
@@ -158,7 +159,6 @@
     "out/_next/data/vi0KJnGJ8EYj44Ef8--11/tags/컴퓨터공학.json",
     "out/_next/data/vi0KJnGJ8EYj44Ef8--11/tags/Test.json",
     "out/_next/data/vi0KJnGJ8EYj44Ef8--11/tags/API.json",
-    "out/_next/data/vi0KJnGJ8EYj44Ef8--11/posts/테스트 파일.json",
     "node_modules/rehype-stringify/readme.md",
     "node_modules/hast-util-to-html/readme.md",
     "content/테스트 파일.md",

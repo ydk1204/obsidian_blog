@@ -1,11 +1,11 @@
 import Layout from '../components/Layout'
 import GraphView from '../components/GraphView'
-import { getAllPosts } from '../lib/mdxUtils'
+import { getAllPosts, getFolderStructure } from '../lib/mdxUtils'
 import Link from 'next/link'
 
-export default function Home({ posts }) {
+export default function Home({ posts, folderStructure }) {
   return (
-    <Layout initialPosts={posts}>
+    <Layout initialPosts={posts} folderStructure={folderStructure}>
       <h1 className="text-3xl font-bold mb-4 mt-4">Welcome to My Obsidian Blog</h1>
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Graph View</h2>
@@ -29,7 +29,11 @@ export default function Home({ posts }) {
 
 export async function getStaticProps() {
   const posts = getAllPosts()
-  return { 
-    props: { posts: JSON.parse(JSON.stringify(posts)) }
+  const folderStructure = getFolderStructure(posts)
+  return {
+    props: {
+      posts,
+      folderStructure
+    }
   }
 }

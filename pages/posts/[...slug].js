@@ -3,13 +3,15 @@ import { serialize } from 'next-mdx-remote/serialize'
 import Layout from '../../components/Layout'
 import PostHeader from '../../components/PostHeader'
 import DisqusComments from '../../components/DisqusComments'
-import { getPostBySlug, getAllPosts } from '../../lib/mdxUtils'
+import { getPostBySlug, getAllPosts, getFolderStructure } from '../../lib/mdxUtils'
 import Callout from '../../components/Callout'
 import { useEffect, useRef } from 'react'
 import Prism from 'prismjs'
 import { FaCopy } from 'react-icons/fa'
 import remarkCallouts from 'remark-callouts'
 import slugify from 'slugify'
+import Link from 'next/link'
+import { useTheme } from '../../contexts/ThemeContext'
 
 const components = {
   span: ({ children, style, className }) => {
@@ -41,12 +43,18 @@ const components = {
     </pre>
   ),
   Callout,
+  DisqusComments: () => {
+    console.log('DisqusComments rendered from MDX')
+    return null // 임시로 null을 반환
+  },
 };
 
-export default function Post({ source, frontMatter, posts, slug }) {
+export default function Post({ source, frontMatter, posts, slug, folderStructure }) {
   const contentRef = useRef(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
+    console.log('Post component rendered')
     Prism.highlightAll();
 
     if (contentRef.current) {
@@ -62,63 +70,82 @@ export default function Post({ source, frontMatter, posts, slug }) {
     }
   }, [source]);
 
+  const folderPath = slug.split('/').slice(0, -1);
+  const breadcrumbs = [
+    { name: 'Home', href: '/' },
+    ...folderPath.map((folder, index) => ({
+      name: folder,
+      href: `/folders/${folderPath.slice(0, index + 1).join('/')}`,
+    })),
+  ];
+
   return (
-    <Layout initialPosts={posts}>
+    <Layout initialPosts={posts} folderStructure={folderStructure}>
+      <div className="mb-2">
+        {breadcrumbs.map((crumb, index) => (
+          <span key={crumb.href}>
+            <Link href={crumb.href} className="text-gray-500 hover:underline">
+              {crumb.name}
+            </Link>
+            {index < breadcrumbs.length - 1 && <span className="mx-1 text-gray-500">/</span>}
+          </span>
+        ))}
+      </div>
       <div ref={contentRef}>
-        <article className="prose lg:prose-xl">
-          <PostHeader
-            title={frontMatter.title}
-            date={frontMatter.date}
-            slug={slug}
-            tags={frontMatter.tags}
-          />
+        <article className="prose dark:prose-dark max-w-none">
+          <h1 className="text-3xl font-bold mb-4">{frontMatter.title}</h1>
+          <div className="text-sm text-gray-500 mb-4">
+            {new Date(frontMatter.date).toLocaleDateString('ko-KR')}
+          </div>
+          <div className="mb-4">
+            {frontMatter.tags && frontMatter.tags.map(tag => (
+              <Link key={tag} href={`/tags/${tag}`}>
+                <span 
+                  className="inline-block rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2"
+                  style={{
+                    backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
+                    color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
+                  }}
+                >
+                  #{tag}
+                </span>
+              </Link>
+            ))}
+          </div>
           <MDXRemote {...source} components={components} />
-          <DisqusComments slug={slug} title={frontMatter.title} />
         </article>
       </div>
+      {frontMatter.disqus && (
+        <DisqusComments slug={slug} title={frontMatter.title} />
+      )}
     </Layout>
   )
 }
 
 export async function getStaticProps({ params }) {
-  const slug = Array.isArray(params.slug) ? params.slug.join('/') : params.slug
+  const slug = Array.isArray(params.slug) ? params.slug.join('/') : params.slug;
   const post = getPostBySlug(slug)
-  
   if (!post) {
-    console.error(`Post not found for slug: ${slug}`)
     return { notFound: true }
   }
 
-  try {
-    const mdxSource = await serialize(post.content, {
-      mdxOptions: {
-        remarkPlugins: [
-          [remarkCallouts, { 
-            titleTagName: 'strong',
-            classPrefix: 'callout-',
-            customTypes: {
-              faq: { title: 'FAQ', icon: 'question-circle' },
-              info: { title: 'Info', icon: 'info-circle' },
-              warning: { title: 'Warning', icon: 'exclamation-triangle' },
-              success: { title: 'Success', icon: 'check-circle' }
-            }
-          }]
-        ],
-      },
-    })
-    const posts = getAllPosts()
+  const mdxSource = await serialize(post.content, {
+    mdxOptions: {
+      remarkPlugins: [remarkCallouts],
+      rehypePlugins: [],
+    },
+  })
+  const posts = getAllPosts()
+  const folderStructure = getFolderStructure(posts)
 
-    return {
-      props: {
-        source: mdxSource,
-        frontMatter: post.frontMatter,
-        posts,
-        slug,
-      },
-    }
-  } catch (error) {
-    console.error(`Error serializing post content for slug ${slug}:`, error)
-    return { notFound: true }
+  return {
+    props: {
+      source: mdxSource,
+      frontMatter: post.frontMatter,
+      posts,
+      slug,
+      folderStructure,
+    },
   }
 }
 

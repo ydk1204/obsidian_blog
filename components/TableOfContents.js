@@ -6,6 +6,7 @@ function TableOfContents() {
   const [activeId, setActiveId] = useState('')
 
   const getHeadings = useCallback(() => {
+    if (typeof window === 'undefined') return [] // 서버 사이드에서는 빈 배열 반환
     const article = document.querySelector('article')
     if (!article) return []
 

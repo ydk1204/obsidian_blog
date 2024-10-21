@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router'
 import Layout from '../../components/Layout'
 import FolderPage from '../../components/FolderPage'
-import { getAllPosts } from '../../lib/mdxUtils'
+import { getAllPosts, getFolderStructure } from '../../lib/mdxUtils'
 
-export default function Folder({ posts }) {
+export default function Folder({ posts, folderStructure }) {
   const router = useRouter()
   const { folder } = router.query
 
@@ -11,7 +11,7 @@ export default function Folder({ posts }) {
   const folderPosts = posts.filter(post => post.slug.startsWith(folderPath))
 
   return (
-    <Layout>
+    <Layout initialPosts={posts} folderStructure={folderStructure}>
       <FolderPage folderName={folderPath} posts={folderPosts} />
     </Layout>
   )
@@ -32,5 +32,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps() {
   const posts = getAllPosts()
-  return { props: { posts } }
+  const folderStructure = getFolderStructure(posts)
+  return { props: { posts, folderStructure } }
 }

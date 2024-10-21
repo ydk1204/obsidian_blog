@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Layout from '../../components/Layout'
-import { getAllPosts } from '../../lib/mdxUtils'
+import { getAllPosts, getFolderStructure } from '../../lib/mdxUtils'
 import { useTheme } from '@/contexts/ThemeContext'
 
-export default function TagPage({ posts, initialTag }) {
+export default function TagPage({ posts, initialTag, folderStructure }) {
   const router = useRouter()
   const { theme } = useTheme()
   const [selectedTag, setSelectedTag] = useState(initialTag)
@@ -28,7 +28,7 @@ export default function TagPage({ posts, initialTag }) {
   }
 
   return (
-    <Layout initialPosts={posts}>
+    <Layout initialPosts={posts} folderStructure={folderStructure}>
       <h1 className="text-3xl font-bold mb-6">태그: {selectedTag}</h1>
       <ul>
         {filteredPosts.map(post => (
@@ -74,11 +74,13 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const posts = getAllPosts()
   const { tag } = params
+  const folderStructure = getFolderStructure(posts)
 
   return {
     props: {
       posts,
-      initialTag: tag
+      initialTag: tag,
+      folderStructure
     }
   }
 }

@@ -3,23 +3,16 @@ import { useSidebar } from '../contexts/SidebarContext'
 import { useTheme } from '../contexts/ThemeContext'
 import Image from 'next/image'
 
-export default function Sidebar({ onSearchClick, posts }) {
+export default function Sidebar({ onSearchClick, posts, folderStructure }) {
   const { openFolders, toggleFolder } = useSidebar()
   const { theme } = useTheme()
 
-  const folderStructure = posts.reduce((acc, post) => {
-    const parts = post.slug.split('/')
-    let current = acc
-    parts.forEach((part, index) => {
-      if (!current[part]) {
-        current[part] = index === parts.length - 1 ? post : {}
-      }
-      current = current[part]
-    })
-    return acc
-  }, {})
-
   const renderFolder = (folder, path = []) => {
+    if (!folder || typeof folder !== 'object') {
+      console.error('Invalid folder structure:', folder)
+      return null
+    }
+
     const entries = Object.entries(folder)
     return (
       <ul className="pl-4">
@@ -56,7 +49,6 @@ export default function Sidebar({ onSearchClick, posts }) {
   return (
     <div>
       <Link href="/" className="block mb-4">
-        {/* <Image src="/logo.png" alt="Logo" width={32} height={32} /> */}
         <h1 className="text-2xl font-bold">My Blog</h1>
       </Link>
       <button 
@@ -70,7 +62,11 @@ export default function Sidebar({ onSearchClick, posts }) {
         Search
       </button>
       <h2 className="text-lg font-semibold mb-2">Pages</h2>
-      {renderFolder(folderStructure)}
+      {folderStructure ? (
+        renderFolder(folderStructure)
+      ) : (
+        <p>폴더 구조를 불러오는 중입니다...</p>
+      )}
     </div>
   )
 }
