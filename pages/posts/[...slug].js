@@ -5,7 +5,7 @@ import PostHeader from '../../components/PostHeader'
 import DisqusComments from '../../components/DisqusComments'
 import { getPostBySlug, getAllPosts, getFolderStructure } from '../../lib/mdxUtils'
 import Callout from '../../components/Callout'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import Prism from 'prismjs'
 import { FaCopy } from 'react-icons/fa'
 import remarkCallouts from 'remark-callouts'
@@ -53,8 +53,17 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
   const contentRef = useRef(null);
   const { theme } = useTheme();
 
+  const folderPath = useMemo(() => slug.split('/').slice(0, -1), [slug]);
+  const breadcrumbs = useMemo(() => [
+    { name: 'Home', href: '/' },
+    ...folderPath.map((folder, index) => ({
+      name: folder,
+      href: `/folders/${folderPath.slice(0, index + 1).join('/')}`,
+    })),
+  ], [folderPath]);
+
   useEffect(() => {
-    console.log('Post component rendered')
+    console.log('Post component rendered');
     Prism.highlightAll();
 
     if (contentRef.current) {
@@ -68,16 +77,7 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
         });
       }
     }
-  }, [source]);
-
-  const folderPath = slug.split('/').slice(0, -1);
-  const breadcrumbs = [
-    { name: 'Home', href: '/' },
-    ...folderPath.map((folder, index) => ({
-      name: folder,
-      href: `/folders/${folderPath.slice(0, index + 1).join('/')}`,
-    })),
-  ];
+  }, []);  // 빈 의존성 배열로 변경
 
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
@@ -116,7 +116,7 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
         </article>
       </div>
       {frontMatter.disqus && (
-        <DisqusComments slug={slug} title={frontMatter.title} />
+        <DisqusComments key={slug} slug={slug} title={frontMatter.title} />
       )}
     </Layout>
   )

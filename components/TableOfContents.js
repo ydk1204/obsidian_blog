@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import slugify from 'slugify'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
+import { useRouter } from 'next/router'
 
 function TableOfContents() {
   const [headings, setHeadings] = useState([])
   const [activeId, setActiveId] = useState('')
+  const router = useRouter()
+  const observerRef = useRef(null)
 
   const getHeadings = useCallback(() => {
-    if (typeof window === 'undefined') return [] // 서버 사이드에서는 빈 배열 반환
     const article = document.querySelector('article')
     if (!article) return []
 
@@ -18,10 +19,25 @@ function TableOfContents() {
   }, [])
 
   useEffect(() => {
-    const newHeadings = getHeadings()
-    setHeadings(newHeadings)
+    const updateHeadings = () => {
+      const newHeadings = getHeadings()
+      setHeadings(newHeadings)
+    }
 
-    const observer = new IntersectionObserver(
+    updateHeadings()
+    router.events.on('routeChangeComplete', updateHeadings)
+
+    return () => {
+      router.events.off('routeChangeComplete', updateHeadings)
+    }
+  }, [getHeadings, router.events])
+
+  useEffect(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect()
+    }
+
+    observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -29,16 +45,20 @@ function TableOfContents() {
           }
         })
       },
-      { rootMargin: '0px 0px -40% 0px' }
+      { rootMargin: '-20% 0px -80% 0px' }
     )
 
-    newHeadings.forEach(heading => {
+    headings.forEach(heading => {
       const element = document.getElementById(heading.id)
-      if (element) observer.observe(element)
+      if (element) observerRef.current.observe(element)
     })
 
-    return () => observer.disconnect()
-  }, [getHeadings])
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+    }
+  }, [headings])
 
   const scrollToHeading = useCallback((id) => {
     const element = document.getElementById(id)
@@ -78,4 +98,4 @@ function TableOfContents() {
   )
 }
 
-export default React.memo(TableOfContents)
+export default TableOfContents
