@@ -63,21 +63,8 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
   ], [folderPath]);
 
   useEffect(() => {
-    console.log('Post component rendered');
     Prism.highlightAll();
-
-    if (contentRef.current) {
-      const articleElement = contentRef.current.querySelector('article');
-      if (articleElement) {
-        const headings = articleElement.querySelectorAll('h1, h2, h3, h4, h5, h6');
-        headings.forEach((heading, index) => {
-          const text = heading.textContent;
-          const id = `heading-${index}-${slugify(text, { lower: true, strict: true })}`;
-          heading.id = id;
-        });
-      }
-    }
-  }, []);  // 빈 의존성 배열로 변경
+  }, []);
 
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>

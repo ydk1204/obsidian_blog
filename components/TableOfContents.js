@@ -1,36 +1,43 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/router'
+import slugify from 'slugify'
 
 function TableOfContents() {
   const [headings, setHeadings] = useState([])
   const [activeId, setActiveId] = useState('')
   const router = useRouter()
   const observerRef = useRef(null)
+  const headingsRef = useRef([])
 
   const getHeadings = useCallback(() => {
     const article = document.querySelector('article')
     if (!article) return []
 
-    return Array.from(article.querySelectorAll('h1, h2, h3, h4, h5, h6')).map(element => ({
-      id: element.id,
-      text: element.textContent,
-      level: Number(element.tagName.substring(1))
-    }))
+    return Array.from(article.querySelectorAll('h1, h2, h3, h4, h5, h6')).map((element, index) => {
+      const id = element.id || `heading-${index}-${slugify(element.textContent, { lower: true, strict: true })}`
+      element.id = id
+      return {
+        id,
+        text: element.textContent,
+        level: Number(element.tagName.substring(1))
+      }
+    })
   }, [])
 
-  useEffect(() => {
-    const updateHeadings = () => {
-      const newHeadings = getHeadings()
-      setHeadings(newHeadings)
-    }
+  const updateHeadings = useCallback(() => {
+    const newHeadings = getHeadings()
+    setHeadings(newHeadings)
+    headingsRef.current = newHeadings
+  }, [getHeadings])
 
+  useEffect(() => {
     updateHeadings()
     router.events.on('routeChangeComplete', updateHeadings)
 
     return () => {
       router.events.off('routeChangeComplete', updateHeadings)
     }
-  }, [getHeadings, router.events])
+  }, [updateHeadings, router.events])
 
   useEffect(() => {
     if (observerRef.current) {
@@ -48,7 +55,7 @@ function TableOfContents() {
       { rootMargin: '-20% 0px -80% 0px' }
     )
 
-    headings.forEach(heading => {
+    headingsRef.current.forEach(heading => {
       const element = document.getElementById(heading.id)
       if (element) observerRef.current.observe(element)
     })
