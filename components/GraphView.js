@@ -38,9 +38,6 @@ export default function GraphView({ posts, currentSlug, onOpenFullView }) {
     // currentSlug를 문자열로 변환
     const normalizedCurrentSlug = Array.isArray(currentSlug) ? currentSlug.join('/') : currentSlug
 
-    console.log('Current slug:', normalizedCurrentSlug) // 디버깅용 로그
-    console.log('Posts:', posts) // 디버깅용 로그
-
     const width = ref.current.clientWidth
     const height = Math.min(200, width * 0.8)
     const nodeRadius = 5
@@ -71,13 +68,9 @@ export default function GraphView({ posts, currentSlug, onOpenFullView }) {
       relatedTags = [...new Set(posts.flatMap(post => post.frontMatter?.tags || []))]
     } else {
       const currentPost = posts.find(post => post.slug === normalizedCurrentSlug)
-      console.log('Current post:', currentPost) // 디버깅용 로그
       relatedPosts = findRelatedPosts(posts, currentPost)
       relatedTags = currentPost?.frontMatter?.tags || []
     }
-
-    console.log('Related posts:', relatedPosts) // 디버깅용 로그
-    console.log('Related tags:', relatedTags) // 디버깅용 로그
 
     // 현재 페이지가 관련 포스트에 없다면 추가
     if (!isMainPage && !relatedPosts.some(post => post.slug === normalizedCurrentSlug)) {
@@ -93,9 +86,6 @@ export default function GraphView({ posts, currentSlug, onOpenFullView }) {
     ]
 
     const links = createLinks(relatedPosts, relatedTags)
-
-    console.log('Nodes:', nodes) // 디버깅용 로그
-    console.log('Links:', links) // 디버깅용 로그
 
     simulationRef.current = d3.forceSimulation(nodes)
       .force('link', d3.forceLink(links).id(d => d.id).distance(50))
@@ -186,7 +176,7 @@ export default function GraphView({ posts, currentSlug, onOpenFullView }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-2">Graph View</h2>
+      <h2 className="text-lg font-semibold mb-2 mt-4">Graph View</h2>
       <div ref={ref} className="w-full" style={{ minHeight: '150px' }}></div>
       <div className="text-xs text-gray-400 mt-2 flex justify-between items-center">
         <span>Zoom: {zoomLevel}%</span>

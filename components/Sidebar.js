@@ -49,7 +49,7 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
   return (
     <div>
       <Link href="/" className="block mb-4">
-        <h1 className="text-2xl font-bold">My Blog</h1>
+        <h1 className="text-2xl font-bold mt-4">My Blog</h1>
       </Link>
       <button 
         onClick={onSearchClick} 

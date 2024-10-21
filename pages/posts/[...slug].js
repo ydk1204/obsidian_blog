@@ -68,7 +68,7 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
 
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
-      <div className="mb-2">
+      <div className="mb-2 mt-4">
         {breadcrumbs.map((crumb, index) => (
           <span key={crumb.href}>
             <Link href={crumb.href} className="text-gray-500 hover:underline">
@@ -80,7 +80,7 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
       </div>
       <div ref={contentRef}>
         <article className="prose dark:prose-dark max-w-none">
-          <h1 className="text-3xl font-bold mb-4">{frontMatter.title}</h1>
+          <h1 className="text-3xl font-bold mb-4 mt-0">{frontMatter.title}</h1>
           <div className="text-sm text-gray-500 mb-4">
             {new Date(frontMatter.date).toLocaleDateString('ko-KR')}
           </div>

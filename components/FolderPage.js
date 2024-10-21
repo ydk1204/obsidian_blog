@@ -21,7 +21,7 @@ export default function FolderPage({ folderName, posts }) {
 
   return (
     <div className={`${theme} p-4`}>
-      <h1 className="text-2xl font-bold mb-4">{folderName}</h1>
+      <h1 className="text-3xl font-bold mb-4 mt-0">폴더: {folderName}</h1>
       <div className="mb-4">
         <button
           className={`mr-2 px-3 py-1 rounded ${sortBy === 'name' ? 'font-bold' : ''}`}

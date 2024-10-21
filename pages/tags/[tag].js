@@ -29,7 +29,7 @@ export default function TagPage({ posts, initialTag, folderStructure }) {
 
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
-      <h1 className="text-3xl font-bold mb-6">태그: {selectedTag}</h1>
+      <h1 className="text-3xl font-bold mb-6 mt-4">태그: {selectedTag}</h1>
       <ul>
         {filteredPosts.map(post => (
           <li key={post.slug} className="mb-6 p-4 border border-gray-200 rounded-lg">
