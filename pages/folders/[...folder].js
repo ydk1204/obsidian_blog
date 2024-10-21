@@ -11,7 +11,11 @@ export default function Folder({ posts, folderStructure }) {
   const folderPosts = posts.filter(post => post.slug.startsWith(folderPath))
 
   return (
-    <Layout initialPosts={posts} folderStructure={folderStructure}>
+    <Layout 
+      initialPosts={posts} 
+      folderStructure={folderStructure}
+      filteredPosts={folderPosts}  // 이 줄을 추가합니다
+    >
       <FolderPage folderName={folderPath} posts={folderPosts} />
     </Layout>
   )

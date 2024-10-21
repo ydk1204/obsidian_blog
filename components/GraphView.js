@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useTheme } from '../contexts/ThemeContext'
 import FullGraphView from './FullGraphView'
 
-export default function GraphView({ posts, currentSlug, onOpenFullView }) {
+export default function GraphView({ posts, currentSlug, onOpenFullView, filteredPosts }) {
   const ref = useRef(null)
   const router = useRouter()
   const { theme } = useTheme()
@@ -63,7 +63,11 @@ export default function GraphView({ posts, currentSlug, onOpenFullView }) {
     const isMainPage = normalizedCurrentSlug === ""
     let relatedPosts, relatedTags
 
-    if (isMainPage) {
+    if (filteredPosts) {
+      // 태그 페이지나 폴더 페이지인 경우
+      relatedPosts = filteredPosts
+      relatedTags = [...new Set(filteredPosts.flatMap(post => post.frontMatter?.tags || []))]
+    } else if (isMainPage) {
       relatedPosts = posts
       relatedTags = [...new Set(posts.flatMap(post => post.frontMatter?.tags || []))]
     } else {
@@ -168,7 +172,7 @@ export default function GraphView({ posts, currentSlug, onOpenFullView }) {
       }
       window.removeEventListener('resize', updateDimensions)
     }
-  }, [posts, currentSlug, router, theme])
+  }, [posts, currentSlug, router, theme, filteredPosts])
 
   const openFullGraphView = () => {
     setIsFullViewOpen(true)

@@ -17,7 +17,7 @@ const TableOfContents = dynamic(() => import('./TableOfContents'), {
   loading: () => <p>목차를 불러오는 중...</p>
 })
 
-export default function Layout({ children, initialPosts, folderStructure }) {
+export default function Layout({ children, initialPosts, folderStructure, filteredPosts }) {
   const { theme } = useTheme()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [posts, setPosts] = useState(initialPosts || [])
@@ -200,7 +200,12 @@ export default function Layout({ children, initialPosts, folderStructure }) {
             )}
             <div className="flex-grow flex flex-col min-h-0">
               <div className="w-full max-h-max" style={{ minHeight: '150px', maxHeight: '50vh' }}>
-                <GraphView posts={posts} currentSlug={currentSlug} onOpenFullView={openFullGraphView} />
+                <GraphView 
+                  posts={posts} 
+                  currentSlug={currentSlug} 
+                  onOpenFullView={openFullGraphView}
+                  filteredPosts={filteredPosts}
+                />
               </div>
               <div className="mt-4 flex-shrink-0 overflow-y-auto flex-grow">
                 <Backlinks currentSlug={currentSlug} posts={posts} />
