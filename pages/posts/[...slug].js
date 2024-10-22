@@ -34,19 +34,24 @@ const components = {
     }
     return <span style={styleObject} {...props}>{children}</span>;
   },
-  mark: ({ children, style }) => {
-    if (style && typeof style === 'string') {
-      const styleObject = style.split(';').reduce((acc, item) => {
-        const [key, value] = item.split(':');
-        if (key && value) {
-          const camelCaseKey = key.trim().replace(/-([a-z])/g, g => g[1].toUpperCase());
-          acc[camelCaseKey] = value.trim();
-        }
-        return acc;
-      }, {});
-      return <mark style={{...styleObject}}>{children}</mark>;
+  mark: ({ children, style, ...props }) => {
+    let styleObject = style;
+    if (typeof style === 'string') {
+      try {
+        styleObject = style.split(';').reduce((acc, item) => {
+          const [key, value] = item.split(':');
+          if (key && value) {
+            const camelCaseKey = key.trim().replace(/-([a-z])/g, g => g[1].toUpperCase());
+            acc[camelCaseKey] = value.trim();
+          }
+          return acc;
+        }, {});
+      } catch (error) {
+        console.error('Failed to parse style string:', style);
+        styleObject = {};
+      }
     }
-    return <mark>{children}</mark>;
+    return <mark style={styleObject} {...props}>{children}</mark>;
   },
   pre: ({ children }) => (
     <pre>
@@ -65,8 +70,8 @@ const components = {
 
 function preprocessContent(content) {
   return content.replace(
-    /<span style="([^"]+)">([^<]+)<\/span>/g,
-    (match, style, text) => {
+    /<(span|mark) style="([^"]+)">([^<]+)<\/(span|mark)>/g,
+    (match, tag, style, text) => {
       const styleObject = style.split(';').reduce((acc, item) => {
         const [key, value] = item.split(':');
         if (key && value) {
@@ -75,7 +80,7 @@ function preprocessContent(content) {
         }
         return acc;
       }, {});
-      return `<span style={${JSON.stringify(styleObject)}}>${text}</span>`;
+      return `<${tag} style={${JSON.stringify(styleObject)}}>${text}</${tag}>`;
     }
   );
 }
