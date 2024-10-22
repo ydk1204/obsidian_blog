@@ -12,27 +12,41 @@ import remarkCallouts from 'remark-callouts'
 import slugify from 'slugify'
 import Link from 'next/link'
 import { useTheme } from '../../contexts/ThemeContext'
+import { inlineStylePlugin } from '../../lib/mdxPlugins'
 
 const components = {
-  span: ({ children, style, className }) => {
-    if (style) {
-      const styleObject = typeof style === 'string' 
-        ? style.split(';').reduce((acc, item) => {
-            const [key, value] = item.split(':');
-            if (key && value) {
-              const camelCaseKey = key.trim().replace(/-([a-z])/g, g => g[1].toUpperCase());
-              acc[camelCaseKey] = value.trim();
-            }
-            return acc;
-          }, {})
-        : style;
-      return <span style={styleObject}>{children}</span>;
+  span: ({ children, style, ...props }) => {
+    let styleObject = style;
+    if (typeof style === 'string') {
+      try {
+        styleObject = style.split(';').reduce((acc, item) => {
+          const [key, value] = item.split(':');
+          if (key && value) {
+            const camelCaseKey = key.trim().replace(/-([a-z])/g, g => g[1].toUpperCase());
+            acc[camelCaseKey] = value.trim();
+          }
+          return acc;
+        }, {});
+      } catch (error) {
+        console.error('Failed to parse style string:', style);
+        styleObject = {};
+      }
     }
-    return className ? <span className={className}>{children}</span> : <span>{children}</span>;
+    return <span style={styleObject} {...props}>{children}</span>;
   },
   mark: ({ children, style }) => {
-    const className = style && style.background === '#FF5582A6' ? 'bg-red-200' : 'bg-yellow-200';
-    return <span className={className}>{children}</span>;
+    if (style && typeof style === 'string') {
+      const styleObject = style.split(';').reduce((acc, item) => {
+        const [key, value] = item.split(':');
+        if (key && value) {
+          const camelCaseKey = key.trim().replace(/-([a-z])/g, g => g[1].toUpperCase());
+          acc[camelCaseKey] = value.trim();
+        }
+        return acc;
+      }, {});
+      return <mark style={{...styleObject}}>{children}</mark>;
+    }
+    return <mark>{children}</mark>;
   },
   pre: ({ children }) => (
     <pre>
@@ -48,6 +62,23 @@ const components = {
     return null // 임시로 null을 반환
   },
 };
+
+function preprocessContent(content) {
+  return content.replace(
+    /<span style="([^"]+)">([^<]+)<\/span>/g,
+    (match, style, text) => {
+      const styleObject = style.split(';').reduce((acc, item) => {
+        const [key, value] = item.split(':');
+        if (key && value) {
+          const camelCaseKey = key.trim().replace(/-([a-z])/g, g => g[1].toUpperCase());
+          acc[camelCaseKey] = value.trim();
+        }
+        return acc;
+      }, {});
+      return `<span style={${JSON.stringify(styleObject)}}>${text}</span>`;
+    }
+  );
+}
 
 export default function Post({ source, frontMatter, posts, slug, folderStructure }) {
   const contentRef = useRef(null);
@@ -116,11 +147,14 @@ export async function getStaticProps({ params }) {
     return { notFound: true }
   }
 
-  const mdxSource = await serialize(post.content, {
+  const preprocessedContent = preprocessContent(post.content);
+
+  const mdxSource = await serialize(preprocessedContent, {
     mdxOptions: {
       remarkPlugins: [remarkCallouts],
       rehypePlugins: [],
     },
+    scope: post.frontMatter,
   })
   const posts = getAllPosts()
   const folderStructure = getFolderStructure(posts)
