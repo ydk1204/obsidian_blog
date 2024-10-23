@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaQuestionCircle, FaInfoCircle, FaExclamationTriangle, FaCheckCircle, FaChevronDown, FaChevronUp, FaLightbulb, FaBug, FaQuoteLeft } from 'react-icons/fa';
+import { FaQuestionCircle, FaInfoCircle, FaExclamationTriangle, FaCheckCircle, FaChevronDown, FaChevronUp, FaLightbulb, FaBug, FaQuoteLeft, FaTimesCircle } from 'react-icons/fa';
 import { MdNoteAlt, MdErrorOutline } from 'react-icons/md';
 import { BiAbacus } from 'react-icons/bi';
 import { AiOutlineExperiment } from 'react-icons/ai';
@@ -7,11 +7,12 @@ import { AiOutlineExperiment } from 'react-icons/ai';
 const icons = {
   note: <MdNoteAlt className="callout-icon" />,
   abstract: <BiAbacus className="callout-icon" />,
-  success: <FaCheckCircle className="callout-icon" />,
   info: <FaInfoCircle className="callout-icon" />,
   tip: <FaLightbulb className="callout-icon" />,
+  success: <FaCheckCircle className="callout-icon" />,
+  question: <FaQuestionCircle className="callout-icon" />,
   warning: <FaExclamationTriangle className="callout-icon" />,
-  fail: <MdErrorOutline className="callout-icon" />,
+  fail: <FaTimesCircle className="callout-icon" />,
   error: <MdErrorOutline className="callout-icon" />,
   bug: <FaBug className="callout-icon" />,
   example: <AiOutlineExperiment className="callout-icon" />,
@@ -47,7 +48,7 @@ export default function Callout({ children, type, title, isCollapsible }) {
         )}
       </div>
       <div ref={contentRef} className={`callout-content ${isOpen ? 'open' : ''}`}>
-        {children}
+        {typeof children === 'string' ? <p>{children}</p> : children}
       </div>
     </div>
   );

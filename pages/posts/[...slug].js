@@ -135,11 +135,12 @@ function preprocessContent(content) {
 
   // 콜아웃 처리 로직 수정
   content = content.replace(
-    /^>\s*\[!(faq|info|warning|success)\]-?\s*(.+)\n((?:>.*(?:\n|$))*)/gm,
+    /^>\s*\[!(note|abstract|info|tip|success|question|warning|fail|error|bug|example|quote|faq)\]\s*(.*)\n((?:>\s*.*(?:\n|$))*)/gm,
     (match, type, title, content) => {
-      const isCollapsible = match.includes(`[!${type}]-`);
       const processedContent = content.replace(/^>\s?/gm, '').trim();
-      return `<Callout type="${type}" title="${title}" isCollapsible={${isCollapsible}}>${processedContent}</Callout>`;
+      const isCollapsible = title.startsWith('-') || title.startsWith('+');
+      const finalTitle = isCollapsible ? title.slice(1).trim() : title.trim() || type;
+      return `<Callout type="${type}" title="${finalTitle}" isCollapsible={${isCollapsible}}>${processedContent}</Callout>`;
     }
   );
 
