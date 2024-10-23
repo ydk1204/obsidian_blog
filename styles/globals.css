@@ -134,14 +134,14 @@ pre[class*="language-"] {
 .language-css .token.string,
 .style .token.string,
 .token.variable {
-  color: #d4d4d4;
+  color: #848484;
 }
 
 .token.atrule,
 .token.attr-value,
 .token.function,
 .token.class-name {
-  color: #dcdcaa;
+  color: #c7c728;
 }
 
 .token.keyword {
@@ -254,47 +254,132 @@ h4 {
 
 .callout-toggle {
   margin-left: 0.5em;
+  transition: transform 0.3s ease;
 }
 
 .callout-content {
-  margin-top: 0.5em;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.5s ease, margin-top 0.5s ease;
 }
 
-.callout-faq {
-  border-color: #4299e1;
-  background-color: #ebf8ff;
+.callout-content.open {
+  max-height: 1000px; /* 적절한 값으로 조정 */
+  opacity: 1;
+  margin-top: 1em;
 }
 
-.callout-info {
-  border-color: #38a169;
-  background-color: #e6fffa;
+/* 타입별 스타일 */
+.callout-note {
+  background-color: #e7f5ff;
+  border-color: #74c0fc;
 }
 
-.callout-warning {
-  border-color: #d69e2e;
-  background-color: #fffbeb;
+.callout-abstract {
+  background-color: #e3fafc;
+  border-color: #66d9e8;
 }
 
 .callout-success {
-  border-color: #38a169;
-  background-color: #f0fff4;
+  background-color: #ebfbee;
+  border-color: #51cf66;
+}
+
+.callout-info {
+  background-color: #e3fafc;
+  border-color: #3bc9db;
+}
+
+.callout-tip {
+  background-color: #fff9db;
+  border-color: #fcc419;
+}
+
+.callout-warning {
+  background-color: #fff4e6;
+  border-color: #ffa94d;
+}
+
+.callout-fail, .callout-error {
+  background-color: #fff5f5;
+  border-color: #ff6b6b;
+}
+
+.callout-bug {
+  background-color: #f8f0fc;
+  border-color: #da77f2;
+}
+
+.callout-example {
+  background-color: #f4fce3;
+  border-color: #a9e34b;
+}
+
+.callout-quote {
+  background-color: #f1f3f5;
+  border-color: #adb5bd;
+}
+
+.callout-faq {
+  background-color: #f3f0ff;
+  border-color: #7950f2;
 }
 
 /* 다크 모드 스타일 */
-.dark .callout-faq {
-  background-color: #2a4365;
+.dark .callout-note {
+  background-color: #1864ab;
+  border-color: #74c0fc;
 }
 
-.dark .callout-info {
-  background-color: #234e52;
-}
-
-.dark .callout-warning {
-  background-color: #744210;
+.dark .callout-abstract {
+  background-color: #0b7285;
+  border-color: #66d9e8;
 }
 
 .dark .callout-success {
-  background-color: #22543d;
+  background-color: #2b8a3e;
+  border-color: #51cf66;
+}
+
+.dark .callout-info {
+  background-color: #0b7285;
+  border-color: #3bc9db;
+}
+
+.dark .callout-tip {
+  background-color: #e67700;
+  border-color: #fcc419;
+}
+
+.dark .callout-warning {
+  background-color: #d9480f;
+  border-color: #ffa94d;
+}
+
+.dark .callout-fail, .dark .callout-error {
+  background-color: #c92a2a;
+  border-color: #ff6b6b;
+}
+
+.dark .callout-bug {
+  background-color: #862e9c;
+  border-color: #da77f2;
+}
+
+.dark .callout-example {
+  background-color: #5c940d;
+  border-color: #a9e34b;
+}
+
+.dark .callout-quote {
+  background-color: #495057;
+  border-color: #adb5bd;
+}
+
+.dark .callout-faq {
+  background-color: #5f3dc4;
+  border-color: #7950f2;
 }
 
 /* 일반 텍스트 스타일 */
