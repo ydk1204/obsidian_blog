@@ -5,7 +5,7 @@ import PostHeader from '../../components/PostHeader'
 import DisqusComments from '../../components/DisqusComments'
 import { getPostBySlug, getAllPosts, getFolderStructure } from '../../lib/mdxUtils'
 import Callout from '../../components/Callout'
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo, useState } from 'react'
 import Prism from 'prismjs'
 import { FaCopy } from 'react-icons/fa'
 import remarkCallouts from 'remark-callouts'
@@ -13,6 +13,62 @@ import slugify from 'slugify'
 import Link from 'next/link'
 import { useTheme } from '../../contexts/ThemeContext'
 import { inlineStylePlugin } from '../../lib/mdxPlugins'
+
+// Prism 언어 지원을 위한 import
+import 'prismjs/components/prism-javascript'
+import 'prismjs/components/prism-typescript'
+import 'prismjs/components/prism-python'
+import 'prismjs/components/prism-jsx'
+import 'prismjs/components/prism-tsx'
+import 'prismjs/components/prism-css'
+import 'prismjs/components/prism-markdown'
+
+const PreComponent = ({ children }) => {
+  const [isMounted, setIsMounted] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const codeRef = useRef(null);
+  const code = children.props.children.trim();
+  const language = children.props.className ? children.props.className.replace('language-', '') : '';
+  const lines = code.split('\n');
+  
+  useEffect(() => {
+    setIsMounted(true);
+    if (codeRef.current) {
+      Prism.highlightElement(codeRef.current);
+    }
+  }, []);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000); // 2초 후에 메시지 숨김
+  };
+
+  if (!isMounted) {
+    return <pre className={`language-${language}`}><code>{code}</code></pre>;
+  }
+
+  return (
+    <pre className={`language-${language} relative`}>
+      <code ref={codeRef} className={`language-${language}`}>
+        {lines.map((line, index) => (
+          <div key={index} className="table-row">
+            <span className="table-cell text-right pr-4 select-none text-gray-500 dark:text-gray-400" style={{userSelect: 'none', width: '2em'}}>{index + 1}</span>
+            <span className="table-cell" dangerouslySetInnerHTML={{ __html: Prism.highlight(line, Prism.languages[language], language) }} />
+          </div>
+        ))}
+      </code>
+      <button className="copy-button absolute top-2 right-2" onClick={handleCopy}>
+        <FaCopy />
+      </button>
+      {isCopied && (
+        <span className="absolute top-10 right-2 bg-gray-800 text-white px-2 py-1 rounded text-sm">
+          Copy!
+        </span>
+      )}
+    </pre>
+  );
+};
 
 const components = {
   span: ({ children, style, ...props }) => {
@@ -53,14 +109,7 @@ const components = {
     }
     return <mark style={styleObject} {...props}>{children}</mark>;
   },
-  pre: ({ children }) => (
-    <pre>
-      {children}
-      <button className="copy-button" onClick={() => navigator.clipboard.writeText(children.props.children)}>
-        <FaCopy />
-      </button>
-    </pre>
-  ),
+  pre: PreComponent,
   Callout,
   DisqusComments: () => {
     console.log('DisqusComments rendered from MDX')
@@ -100,7 +149,7 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
 
   useEffect(() => {
     Prism.highlightAll();
-  }, []);
+  }, [source]);
 
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>

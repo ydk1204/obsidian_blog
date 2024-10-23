@@ -7,10 +7,11 @@
   --foreground: #171717;
   --sidebar-bg: #FAF8F8;
   --main-bg: #FAF8F8;
-  --code-bg: #FAF8F8;
+  --code-bg: #f4f4f4;
   --code-border: #E5E5E5;
   --node-text: #000000;
   --header-one: #161618;
+  --code-text: #333333;
 }
 
 .dark {
@@ -18,10 +19,11 @@
   --foreground: #e2e8f0;
   --sidebar-bg: #161618;
   --main-bg: #161618;
-  --code-bg: #161618;
-  --code-border: #E5E5E5;
+  --code-bg: #1e1e1e;
+  --code-border: #333333;
   --node-text: #ffffff;
   --header-one: #e2e8f0;
+  --code-text: #f8f8f2;
 }
 
 body {
@@ -56,58 +58,74 @@ pre {
   margin: 1em 0;
   overflow-x: auto;
   border: 1px solid var(--code-border);
-  counter-reset: line;
 }
 
 pre code {
-  display: block;
-  /* font-family: 'Courier New', Courier, monospace; */
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.5;
-  white-space: pre;
-  position: relative;
-  padding-left: 3em;
+  display: table;
+  min-width: 100%;
+  counter-reset: line;
+  color: var(--code-text);
 }
 
-pre code::before {
-  counter-increment: line;
-  content: counter(line);
-  position: absolute;
-  left: -1em;
-  width: 2em;
-  text-align: right;
-  color: #999;
+pre code .table-row {
+  display: table-row;
+}
+
+pre code .table-cell {
+  display: table-cell;
+}
+
+pre code .table-cell:first-child {
+  padding-right: 1em;
   user-select: none;
 }
 
-/* 코드 하이라이팅 */
+/* Prism.js 테마 스타일 오버라이드 */
+pre[class*="language-"] {
+  background: var(--code-bg);
+  color: var(--code-text);
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+  text-shadow: none;
+}
+
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: #8c8c8c;
+  color: #6a9955;
 }
 
 .token.punctuation {
-  color: #7c7c7c;
+  color: var(--code-text);
+}
+
+.token.namespace {
+  opacity: .7;
 }
 
 .token.property,
 .token.tag,
-.token.boolean,
-.token.number,
 .token.constant,
-.token.symbol {
-  color: #4aabff;
+.token.symbol,
+.token.deleted {
+  color: #569cd6;
+}
+
+.token.boolean,
+.token.number {
+  color: #b5cea8;
 }
 
 .token.selector,
 .token.attr-name,
 .token.string,
 .token.char,
-.token.builtin {
-  color: #71bd00;
+.token.builtin,
+.token.inserted {
+  color: #ce9178;
 }
 
 .token.operator,
@@ -116,22 +134,23 @@ pre code::before {
 .language-css .token.string,
 .style .token.string,
 .token.variable {
-  color: #ffb82b;
+  color: #d4d4d4;
 }
 
 .token.atrule,
 .token.attr-value,
-.token.keyword {
-  color: #b372c6;
+.token.function,
+.token.class-name {
+  color: #dcdcaa;
 }
 
-.token.function {
-  color: #ff7c1e;
+.token.keyword {
+  color: #569cd6;
 }
 
 .token.regex,
 .token.important {
-  color: #cc6666;
+  color: #d16969;
 }
 
 .token.important,
@@ -143,22 +162,36 @@ pre code::before {
   font-style: italic;
 }
 
-/* 다크 모드에서의 코드 블록 스타일 */
-.dark pre {
-  background-color: var(--code-bg);
-  color: #e2e8f0;
+.token.entity {
+  cursor: help;
 }
 
-/* 나머지 스타일은 그대로 유지 */
+/* 다크 모드에서의 코드 블록 스타일 */
+.dark pre[class*="language-"] {
+  background: #282a36;
+}
+
+.dark code[class*="language-"],
+.dark pre[class*="language-"] {
+  color: #f8f8f2;
+}
+
+/* 나머지 스타일 유지 */
 /* 복사 버튼 스타일 */
 .copy-button {
   position: absolute;
   top: 5px;
   right: 5px;
   padding: 5px;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.1);
   border: none;
+  border-radius: 4px;
   cursor: pointer;
+  color: var(--code-text);
+}
+
+.dark .copy-button {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* 제목 스타일링 */
