@@ -135,12 +135,13 @@ function preprocessContent(content) {
 
   // 콜아웃 처리 로직 수정
   content = content.replace(
-    /^>\s*\[!(note|abstract|info|tip|success|question|warning|fail|error|bug|example|quote|faq)\]\s*(.*)\n((?:>\s*.*(?:\n|$))*)/gm,
-    (match, type, title, content) => {
+    /^>\s*\[!(note|abstract|info|tip|success|question|warning|fail|error|bug|example|quote|faq)\](\+|-|)\s*(.*)\n((?:>\s*.*(?:\n|$))*)/gm,
+    (match, type, collapsibleState, title, content) => {
       const processedContent = content.replace(/^>\s?/gm, '').trim();
-      const isCollapsible = title.startsWith('-') || title.startsWith('+');
-      const finalTitle = isCollapsible ? title.slice(1).trim() : title.trim() || type;
-      return `<Callout type="${type}" title="${finalTitle}" isCollapsible={${isCollapsible}}>${processedContent}</Callout>`;
+      const isCollapsible = collapsibleState === '+' || collapsibleState === '-';
+      const isInitiallyOpen = collapsibleState === '+' || collapsibleState === '';
+      const finalTitle = title.trim() || type;
+      return `<Callout type="${type}" title="${finalTitle}" isCollapsible={${isCollapsible}} isInitiallyOpen={${isInitiallyOpen}}>${processedContent}</Callout>`;
     }
   );
 

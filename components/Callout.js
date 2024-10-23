@@ -20,13 +20,21 @@ const icons = {
   faq: <FaQuestionCircle className="callout-icon" />,
 };
 
-export default function Callout({ children, type, title, isCollapsible }) {
-  const [isOpen, setIsOpen] = useState(!isCollapsible);
+export default function Callout({ children, type, title, isCollapsible, isInitiallyOpen }) {
+  const [isOpen, setIsOpen] = useState(isInitiallyOpen !== undefined ? isInitiallyOpen : !isCollapsible);
   const contentRef = useRef(null);
 
   useEffect(() => {
     if (contentRef.current) {
-      contentRef.current.style.maxHeight = isOpen ? `${contentRef.current.scrollHeight}px` : '0';
+      if (isOpen) {
+        contentRef.current.style.maxHeight = `${contentRef.current.scrollHeight}px`;
+        contentRef.current.style.opacity = '1';
+        contentRef.current.style.visibility = 'visible';
+      } else {
+        contentRef.current.style.maxHeight = '0';
+        contentRef.current.style.opacity = '0';
+        contentRef.current.style.visibility = 'hidden';
+      }
     }
   }, [isOpen]);
 
@@ -42,7 +50,7 @@ export default function Callout({ children, type, title, isCollapsible }) {
         <span className="callout-icon-wrapper">{icons[type.toLowerCase()]}</span>
         <span className="callout-title">{title}</span>
         {isCollapsible && (
-          <span className={`callout-toggle ${isOpen ? 'rotate-180' : ''}`} style={{ transition: 'transform 0.3s ease' }}>
+          <span className={`callout-toggle ${isOpen ? 'rotate-180' : ''}`}>
             <FaChevronDown />
           </span>
         )}
