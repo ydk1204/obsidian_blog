@@ -552,3 +552,15 @@ blockquote.callout {
 .callout-toggle.rotate-180 {
   transform: rotate(180deg);
 }
+
+.callout-content p {
+  margin: 0.5em 0;
+}
+
+.callout-content p:first-child {
+  margin-top: 0;
+}
+
+.callout-content p:last-child {
+  margin-bottom: 0;
+}

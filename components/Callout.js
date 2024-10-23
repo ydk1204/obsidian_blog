@@ -44,6 +44,15 @@ export default function Callout({ children, type, title, isCollapsible, isInitia
     }
   };
 
+  const renderContent = () => {
+    if (typeof children === 'string') {
+      return children.split('\n').map((line, index) => (
+        <p key={index}>{line}</p>
+      ));
+    }
+    return children;
+  };
+
   return (
     <div className={`callout callout-${type.toLowerCase()}`}>
       <div className="callout-header" onClick={toggleOpen}>
@@ -56,7 +65,7 @@ export default function Callout({ children, type, title, isCollapsible, isInitia
         )}
       </div>
       <div ref={contentRef} className={`callout-content ${isOpen ? 'open' : ''}`}>
-        {typeof children === 'string' ? <p>{children}</p> : children}
+        {renderContent()}
       </div>
     </div>
   );
