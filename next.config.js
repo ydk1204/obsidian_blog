@@ -6,6 +6,13 @@ const nextConfig = {
     unoptimized: true,
   },
   // ... 다른 설정들
+  webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      test: /\.md$/,
+      use: 'raw-loader',
+    })
+    return config
+  },
 };
 
 module.exports = nextConfig;

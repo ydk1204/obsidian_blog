@@ -3,12 +3,11 @@ import { serialize } from 'next-mdx-remote/serialize'
 import Layout from '../../components/Layout'
 import PostHeader from '../../components/PostHeader'
 import DisqusComments from '../../components/DisqusComments'
+import Callout from '../../components/Callout'  // Callout 컴포넌트 import
 import { getPostBySlug, getAllPosts, getFolderStructure } from '../../lib/mdxUtils'
-import Callout from '../../components/Callout'
 import { useEffect, useRef, useMemo, useState } from 'react'
 import Prism from 'prismjs'
 import { FaCopy } from 'react-icons/fa'
-import remarkCallouts from 'remark-callouts'
 import slugify from 'slugify'
 import Link from 'next/link'
 import { useTheme } from '../../contexts/ThemeContext'
@@ -110,7 +109,7 @@ const components = {
     return <mark style={styleObject} {...props}>{children}</mark>;
   },
   pre: PreComponent,
-  Callout,
+  Callout: Callout,  // Callout 컴포넌트 추가
   DisqusComments: () => {
     console.log('DisqusComments rendered from MDX')
     return null // 임시로 null을 반환
@@ -118,7 +117,8 @@ const components = {
 };
 
 function preprocessContent(content) {
-  return content.replace(
+  // 기존의 span과 mark 처리 로직 유지
+  content = content.replace(
     /<(span|mark) style="([^"]+)">([^<]+)<\/(span|mark)>/g,
     (match, tag, style, text) => {
       const styleObject = style.split(';').reduce((acc, item) => {
@@ -132,6 +132,18 @@ function preprocessContent(content) {
       return `<${tag} style={${JSON.stringify(styleObject)}}>${text}</${tag}>`;
     }
   );
+
+  // 콜아웃 처리 로직 수정
+  content = content.replace(
+    /^>\s*\[!(faq|info|warning|success)\]-?\s*(.+)\n((?:>.*(?:\n|$))*)/gm,
+    (match, type, title, content) => {
+      const isCollapsible = match.includes(`[!${type}]-`);
+      const processedContent = content.replace(/^>\s?/gm, '').trim();
+      return `<Callout type="${type}" title="${title}" isCollapsible={${isCollapsible}}>${processedContent}</Callout>`;
+    }
+  );
+
+  return content;
 }
 
 export default function Post({ source, frontMatter, posts, slug, folderStructure }) {
@@ -205,7 +217,7 @@ export async function getStaticProps({ params }) {
 
   const mdxSource = await serialize(preprocessedContent, {
     mdxOptions: {
-      remarkPlugins: [remarkCallouts],
+      remarkPlugins: [],
       rehypePlugins: [],
     },
     scope: post.frontMatter,

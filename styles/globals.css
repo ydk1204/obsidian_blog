@@ -231,129 +231,70 @@ h4 {
 
 /* 콜아웃 스타일 */
 .callout {
-  border-radius: 10px;
-}
-
-.callout:has(> .faq) {
-  border: 2px solid #63dd17;
-  background-color: #63dd1710;
-}
-
-.callout:has(> .info) {
-  border: 2px solid #38a169;
-  background-color: #38a16910;
-}
-
-.callout:has(> .warning) {
-  border: 2px solid #d69e2e;
-  background-color: #d69e2e10;
-}
-
-.callout:has(> .success) {
-  border: 2px solid #38a169;
-  background-color: #38a16910;
-}
-
-.callout:has(> .faq) .callout-title {
-  color: #63dd17;
-}
-
-.callout:has(> .info) .callout-title {
-  color: #38a169;
-}
-
-.callout:has(> .warning) .callout-title {
-  color: #d69e2e;
-}
-
-.callout:has(> .success) .callout-title {
-  color: #38a169;
+  border-left: 4px solid;
+  border-radius: 4px;
+  padding: 1em;
+  margin-bottom: 1em;
 }
 
 .callout-header {
   display: flex;
   align-items: center;
-  padding: 0.5em 1em;
+  cursor: pointer;
 }
 
 .callout-icon-wrapper {
-  display: flex;
-  align-items: center;
   margin-right: 0.5em;
 }
 
-.callout-icon {
-  font-size: 1.3em;
-}
-
 .callout-title {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
   font-weight: bold;
-  font-size: 1.2em;
+  flex-grow: 1;
 }
 
-.callout-title span {
-  padding-right: 0.5em;
-  padding-left: 0.3em;
+.callout-toggle {
+  margin-left: 0.5em;
 }
 
 .callout-content {
-  padding: 0.5em 1em 1em;
+  margin-top: 0.5em;
 }
 
-/* 각 콜아웃 타입에 대한 색상 설정 */
-
-
-/* 아이콘 색상 설정 */
-.callout-faq .callout-icon {
-  color: #4299e1;
+.callout-faq {
+  border-color: #4299e1;
+  background-color: #ebf8ff;
 }
 
-.callout-info .callout-icon {
-  color: #38a169;
+.callout-info {
+  border-color: #38a169;
+  background-color: #e6fffa;
 }
 
-.callout-warning .callout-icon {
-  color: #d69e2e;
+.callout-warning {
+  border-color: #d69e2e;
+  background-color: #fffbeb;
 }
 
-.callout-success .callout-icon {
-  color: #38a169;
+.callout-success {
+  border-color: #38a169;
+  background-color: #f0fff4;
 }
 
 /* 다크 모드 스타일 */
-.dark .callout-faq, .dark .callout-faq .callout-content {
-  background-color: #1a2942;
-}
-
-.dark .callout-info, .dark .callout-info .callout-content {
-  background-color: #1c3329;
-}
-
-.dark .callout-warning, .dark .callout-warning .callout-content {
-  background-color: #3d3424;
-}
-
-.dark .callout-success, .dark .callout-success .callout-content {
-  background-color: #1c3329;
-}
-
 .dark .callout-faq {
-  border-color: #4299e1;
+  background-color: #2a4365;
 }
 
 .dark .callout-info {
-  border-color: #38a169;
+  background-color: #234e52;
 }
 
 .dark .callout-warning {
-  border-color: #d69e2e;
+  background-color: #744210;
 }
 
 .dark .callout-success {
-  border-color: #38a169;
+  background-color: #22543d;
 }
 
 /* 일반 텍스트 스타일 */
@@ -469,3 +410,14 @@ p, li {
 .icon-exit {
   animation: iconExit 0.5s forwards;
 }
+
+/* 기존 콜아웃 스타일 제거 또는 수정 */
+.callout {
+  /* 새로운 스타일 정의 */
+}
+
+/* blockquote 스타일 재정의 */
+blockquote.callout {
+  /* 새로운 스타일 정의 */
+}
+
