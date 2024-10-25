@@ -18,15 +18,13 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
     const updateDimensions = () => {
       const container = ref.current
       const width = container.clientWidth
-      const height = Math.min(200, width * 0.8)  // 높이를 너비의 80%로 설정하되, 최대 200px로 제한
+      const height = Math.min(200, width * 0.8)
 
-      // SVG 크기 업데이트
       d3.select(ref.current)
         .select('svg')
         .attr('width', width)
         .attr('height', height)
 
-      // 시뮬레이션 중심점 업데이트
       if (simulationRef.current) {
         simulationRef.current.force('center', d3.forceCenter(width / 2, height / 2))
       }
@@ -35,7 +33,6 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
     updateDimensions()
     window.addEventListener('resize', updateDimensions)
 
-    // currentSlug를 문자열로 변환
     const normalizedCurrentSlug = Array.isArray(currentSlug) ? currentSlug.join('/') : currentSlug
 
     const width = ref.current.clientWidth
@@ -60,42 +57,78 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
 
     svg.call(zoom)
 
-    const isMainPage = normalizedCurrentSlug === ""
-    let relatedPosts, relatedTags
+    let nodes = []
+    let links = []
 
-    if (filteredPosts) {
-      // 태그 페이지나 폴더 페이지인 경우
-      relatedPosts = filteredPosts
-      relatedTags = [...new Set(filteredPosts.flatMap(post => post.frontMatter?.tags || []))]
-    } else if (isMainPage) {
-      relatedPosts = posts
-      relatedTags = [...new Set(posts.flatMap(post => post.frontMatter?.tags || []))]
+    // 페이지 타입에 따라 노드와 링크 생성
+    if (router.pathname === '/') {
+      // 인덱스 페이지: 모든 노드 표시
+      nodes = [
+        ...posts.map(post => ({ id: post.slug, type: 'post', ...post })),
+        ...Array.from(new Set(posts.flatMap(post => post.frontMatter?.tags || []))).map(tag => ({ id: tag, type: 'tag', label: tag }))
+      ]
+      links = createLinks(posts)
+    } else if (router.pathname === '/tags/[tag]') {
+      // 태그 페이지: 해당 태그를 가진 페이지와 그 태그들 표시
+      const tag = router.query.tag
+      const postsWithTag = posts.filter(post => post.frontMatter?.tags?.includes(tag))
+      nodes = [
+        ...postsWithTag.map(post => ({ id: post.slug, type: 'post', ...post })),
+        ...Array.from(new Set(postsWithTag.flatMap(post => post.frontMatter?.tags || []))).map(tag => ({ id: tag, type: 'tag', label: tag }))
+      ]
+      links = createLinks(postsWithTag)
+    } else if (router.pathname === '/folders/[...folder]') {
+      // 폴더 페이지: 해당 폴더 내의 페이지와 그 태그들 표시
+      const folderPath = router.query.folder.join('/')
+      const postsInFolder = posts.filter(post => post.slug.startsWith(folderPath))
+      nodes = [
+        ...postsInFolder.map(post => ({ id: post.slug, type: 'post', ...post })),
+        ...Array.from(new Set(postsInFolder.flatMap(post => post.frontMatter?.tags || []))).map(tag => ({ id: tag, type: 'tag', label: tag }))
+      ]
+      links = createLinks(postsInFolder)
     } else {
+      // 기타 페이지: 기존 로직 유지
       const currentPost = posts.find(post => post.slug === normalizedCurrentSlug)
-      relatedPosts = findRelatedPosts(posts, currentPost)
-      relatedTags = currentPost?.frontMatter?.tags || []
-    }
+      let relatedPosts = currentPost ? [currentPost] : []
+      let relatedTags = new Set(currentPost?.frontMatter?.tags || [])
 
-    // 현재 페이지가 관련 포스트에 없다면 추가
-    if (!isMainPage && !relatedPosts.some(post => post.slug === normalizedCurrentSlug)) {
-      const currentPost = posts.find(post => post.slug === normalizedCurrentSlug)
-      if (currentPost) {
-        relatedPosts.push(currentPost)
+      if (currentPost && currentPost.content) {
+        const backlinkedPosts = posts.filter(post => 
+          currentPost.content.includes(`[[${post.slug}]]`)
+        )
+        relatedPosts = [...relatedPosts, ...backlinkedPosts]
       }
+
+      if (currentPost && currentPost.frontMatter && currentPost.frontMatter.tags) {
+        posts.forEach(post => {
+          if (post.frontMatter?.tags) {
+            const hasCommonTag = post.frontMatter.tags.some(tag => relatedTags.has(tag))
+            if (hasCommonTag) {
+              relatedPosts.push(post)
+            }
+          }
+        })
+      }
+
+      relatedPosts = Array.from(new Set(relatedPosts))
+
+      relatedPosts.forEach(post => {
+        post.frontMatter?.tags?.forEach(tag => relatedTags.add(tag))
+      })
+
+      nodes = [
+        ...relatedPosts.map(post => ({ id: post.slug, type: 'post', ...post })),
+        ...Array.from(relatedTags).map(tag => ({ id: tag, type: 'tag', label: tag }))
+      ]
+
+      links = createLinks(relatedPosts, Array.from(relatedTags), normalizedCurrentSlug)
     }
 
-    const nodes = [
-      ...relatedPosts.map(post => ({ id: post.slug, type: 'post', ...post })),
-      ...relatedTags.map(tag => ({ id: tag, type: 'tag', label: tag }))
-    ]
-
-    const links = createLinks(relatedPosts, relatedTags)
-
-    simulationRef.current = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(50))
-      .force('charge', d3.forceManyBody().strength(-150))
+    const simulation = d3.forceSimulation(nodes)
+      .force('link', d3.forceLink(links).id(d => d.id).distance(30))
+      .force('charge', d3.forceManyBody().strength(-100))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(nodeRadius * 2.5))
+      .force('collision', d3.forceCollide().radius(10))
 
     const link = g.append('g')
       .selectAll('line')
@@ -117,28 +150,28 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
         event.preventDefault()
         event.stopPropagation()
         if (d.type === 'post') {
-          router.push(`/posts/${d.id}`)
+          router.push(`/posts/${d.slug}`)
         } else if (d.type === 'tag') {
           router.push(`/tags/${d.id}`)
         }
       })
 
     node.append('circle')
-      .attr('r', d => d.type === 'tag' ? nodeRadius * 1.5 : nodeRadius)
+      .attr('r', d => d.type === 'tag' ? 5 : 7)
       .attr('fill', d => getNodeColor(d, theme, normalizedCurrentSlug))
 
     const labels = node.append('text')
-      .text(d => d.type === 'post' ? d.frontMatter?.title || d.slug : d.label)
-      .attr('x', 8)
-      .attr('y', '0.31em')
-      .style('font-size', '10px')
+      .text(d => d.frontMatter?.title || d.label || d.slug)
+      .attr('x', d => d.type === 'tag' ? 8 : 10)
+      .attr('y', 3)
       .attr('fill', theme === 'dark' ? '#e2e8f0' : '#4a5568')
+      .style('font-size', '10px')
 
-    function updateNodeLabels(scale) {
-      labels.attr('display', scale > 0.5 ? null : 'none')
+    function updateNodeLabels(k) {
+      labels.attr('display', k > 0.5 ? 'block' : 'none')
     }
 
-    simulationRef.current.on('tick', () => {
+    simulation.on('tick', () => {
       link
         .attr('x1', d => d.source.x)
         .attr('y1', d => d.source.y)
@@ -150,7 +183,7 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
     })
 
     function dragstarted(event) {
-      if (!event.active) simulationRef.current.alphaTarget(0.3).restart()
+      if (!event.active) simulation.alphaTarget(0.3).restart()
       event.subject.fx = event.subject.x
       event.subject.fy = event.subject.y
     }
@@ -161,22 +194,18 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
     }
 
     function dragended(event) {
-      if (!event.active) simulationRef.current.alphaTarget(0)
+      if (!event.active) simulation.alphaTarget(0)
       event.subject.fx = null
       event.subject.fy = null
     }
 
+    simulationRef.current = simulation
+
     return () => {
-      if (simulationRef.current) {
-        simulationRef.current.stop()
-      }
       window.removeEventListener('resize', updateDimensions)
+      simulation.stop()
     }
   }, [posts, currentSlug, router, theme, filteredPosts])
-
-  const openFullGraphView = () => {
-    setIsFullViewOpen(true)
-  }
 
   return (
     <div>
@@ -199,46 +228,60 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
   )
 }
 
-function findRelatedPosts(posts, currentPost) {
-  if (!currentPost) return []
-
-  return posts.filter(post => {
-    if (post.slug === currentPost.slug) return true
-
-    const hasCommonTags = currentPost.frontMatter?.tags?.some(tag => 
-      post.frontMatter?.tags?.includes(tag)
-    )
-
-    const isBacklinked = (currentPost.content && post.slug && currentPost.content.includes(post.slug)) || 
-                         (post.content && currentPost.slug && post.content.includes(currentPost.slug))
-
-    return hasCommonTags || isBacklinked
-  })
-}
-
-function createLinks(posts, tags) {
+function createLinks(posts, tags, currentSlug) {
   const links = []
-  posts.forEach(post => {
-    post.frontMatter?.tags?.forEach(tag => {
+  const currentPost = posts.find(post => post.slug === currentSlug)
+
+  if (currentPost) {
+    // 현재 포스트와 그 태그들 사이의 링크
+    currentPost.frontMatter?.tags?.forEach(tag => {
       if (tags.includes(tag)) {
+        links.push({ source: currentSlug, target: tag })
+      }
+    })
+
+    // 현재 페이지에서 백링크로 참조하고 있는 페이지들과의 링크
+    posts.forEach(post => {
+      if (currentPost.content && currentPost.content.includes(`[[${post.slug}]]`)) {
+        links.push({ source: currentSlug, target: post.slug })
+        
+        // 백링크로 참조된 페이지의 태그들과의 링크
+        post.frontMatter?.tags?.forEach(tag => {
+          if (tags.includes(tag)) {
+            links.push({ source: post.slug, target: tag })
+          }
+        })
+      }
+    })
+
+    // 같은 태그를 가진 페이지들 사이의 링크
+    posts.forEach(post => {
+      if (post.slug !== currentSlug) {
+        const commonTags = post.frontMatter?.tags?.filter(tag => 
+          currentPost.frontMatter?.tags?.includes(tag)
+        )
+        if (commonTags && commonTags.length > 0) {
+          links.push({ source: currentSlug, target: post.slug })
+        }
+      }
+    })
+  } else {
+    // 현재 포스트가 없는 경우 (인덱스, 태그, 폴더 페이지 등)
+    posts.forEach(post => {
+      // 포스트와 태그 사이의 링크
+      post.frontMatter?.tags?.forEach(tag => {
         links.push({ source: post.slug, target: tag })
-      }
+      })
+
+      // 포스트 간의 링크 (백링크)
+      posts.forEach(otherPost => {
+        if (post.slug !== otherPost.slug && post.content && post.content.includes(`[[${otherPost.slug}]]`)) {
+          links.push({ source: post.slug, target: otherPost.slug })
+        }
+      })
     })
+  }
 
-    posts.forEach(otherPost => {
-      if (post.slug === otherPost.slug) return
-
-      const hasCommonTags = post.frontMatter?.tags?.some(tag => 
-        otherPost.frontMatter?.tags?.includes(tag)
-      )
-      const isBacklinked = (post.content && otherPost.slug && post.content.includes(otherPost.slug)) || 
-                           (otherPost.content && post.slug && otherPost.content.includes(post.slug))
-
-      if (hasCommonTags || isBacklinked) {
-        links.push({ source: post.slug, target: otherPost.slug })
-      }
-    })
-  })
   return links
 }
 

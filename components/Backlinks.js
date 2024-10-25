@@ -24,14 +24,14 @@ export default function Backlinks({ currentSlug, posts }) {
         <ul>
           {linkedPosts.map(post => (
             <li key={post.slug}>
-              <Link href={`/posts/${post.slug}`} className="text-blue-500 hover:underline">
+              <Link href={`/posts/${post.slug}`} className="text-gray-500 hover:underline">
                 {post.frontMatter.title || post.slug}
               </Link>
-              {post.frontMatter.tags && (
+              {/* {post.frontMatter.tags && (
                 <span className="ml-2 text-sm text-gray-500">
                   {post.frontMatter.tags.map(tag => `#${tag}`).join(', ')}
                 </span>
-              )}
+              )} */}
             </li>
           ))}
         </ul>
