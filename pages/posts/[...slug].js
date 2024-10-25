@@ -12,6 +12,8 @@ import slugify from 'slugify'
 import Link from 'next/link'
 import { useTheme } from '../../contexts/ThemeContext'
 import { inlineStylePlugin } from '../../lib/mdxPlugins'
+import { useRouter } from 'next/router'
+import React from 'react'
 
 // Prism 언어 지원을 위한 import
 import 'prismjs/components/prism-javascript'
@@ -114,6 +116,88 @@ const components = {
     console.log('DisqusComments rendered from MDX')
     return null // 임시로 null을 반환
   },
+  a: ({ href, children }) => {
+    if (href.startsWith('[[') && href.endsWith(']]')) {
+      const fileName = href.slice(2, -2)
+      return (
+        <ul className="mb-4">
+          <li>
+            <Link href={`/posts/${fileName}`} className="text-gray-500 no-underline">
+              {children}
+            </Link>
+          </li>
+        </ul>
+      )
+    }
+    return <a href={href}>{children}</a>
+  },
+  p: ({ children }) => {
+    if (Array.isArray(children)) {
+      return (
+        <p className="mb-4">
+          {children.map((child, index) => {
+            if (typeof child === 'string' && child.match(/\[\[.*?\]\]/)) {
+              const links = child.match(/\[\[.*?\]\]/g);
+              const parts = child.split(/\[\[.*?\]\]/);
+              return (
+                <React.Fragment key={index}>
+                  {parts.map((part, i) => (
+                    <React.Fragment key={i}>
+                      {part}
+                      {links[i] && (
+                        <Link href={`/posts/${links[i].slice(2, -2)}`} className="text-gray-500 no-underline">
+                          {links[i].slice(2, -2)}
+                        </Link>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </React.Fragment>
+              );
+            }
+            return child;
+          })}
+        </p>
+      );
+    }
+    return <p>{children}</p>;
+  },
+  ul: ({ children }) => {
+    return (
+      <ul className="mb-4">
+        {React.Children.map(children, (child) => {
+          if (React.isValidElement(child) && child.type === 'li') {
+            const liChildren = React.Children.toArray(child.props.children);
+            return (
+              <li>
+                {liChildren.map((liChild, index) => {
+                  if (typeof liChild === 'string' && liChild.match(/\[\[.*?\]\]/)) {
+                    const links = liChild.match(/\[\[.*?\]\]/g);
+                    const parts = liChild.split(/\[\[.*?\]\]/);
+                    return (
+                      <React.Fragment key={index}>
+                        {parts.map((part, i) => (
+                          <React.Fragment key={i}>
+                            {part}
+                            {links[i] && (
+                              <Link href={`/posts/${links[i].slice(2, -2)}`} className="text-gray-500 no-underline">
+                                {links[i].slice(2, -2)}
+                              </Link>
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </React.Fragment>
+                    );
+                  }
+                  return liChild;
+                })}
+              </li>
+            );
+          }
+          return child;
+        })}
+      </ul>
+    );
+  },
 };
 
 function preprocessContent(content) {
@@ -151,6 +235,7 @@ function preprocessContent(content) {
 export default function Post({ source, frontMatter, posts, slug, folderStructure }) {
   const contentRef = useRef(null);
   const { theme } = useTheme();
+  const router = useRouter();
 
   const folderPath = useMemo(() => slug.split('/').slice(0, -1), [slug]);
   const breadcrumbs = useMemo(() => [
