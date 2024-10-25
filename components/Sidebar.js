@@ -48,8 +48,8 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
 
   return (
     <div>
-      <Link href="/" className="block mb-4">
-        <h1 className="text-2xl font-bold mt-4">My Blog</h1>
+      <Link href="/" className="mb-4 group h-10 flex items-center">
+        <h1 className="text-3xl font-bold mt-4 group-hover:text-2xl">공<span className="hidden nameLogo group-hover:inline-block group-hover:text-3xl">?</span>부</h1>
       </Link>
       <button 
         onClick={onSearchClick} 
@@ -61,7 +61,7 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
       >
         Search
       </button>
-      <h2 className="text-lg font-semibold mb-2">Pages</h2>
+      <h2 className="text-lg font-semibold mb-2">탐색기</h2>
       {folderStructure ? (
         renderFolder(folderStructure)
       ) : (
