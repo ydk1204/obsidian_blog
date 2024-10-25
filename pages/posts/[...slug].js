@@ -14,7 +14,6 @@ import { useTheme } from '../../contexts/ThemeContext'
 import { inlineStylePlugin } from '../../lib/mdxPlugins'
 import { useRouter } from 'next/router'
 import React from 'react'
-import Backlinks from '../../components/Backlinks'
 
 // Prism 언어 지원을 위한 import
 import 'prismjs/components/prism-javascript'
@@ -287,7 +286,6 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
           <MDXRemote {...source} components={components} />
         </article>
       </div>
-      <Backlinks currentSlug={slug} posts={posts} />
       {frontMatter.disqus && (
         <DisqusComments key={slug} slug={slug} title={frontMatter.title} />
       )}
