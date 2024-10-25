@@ -22,7 +22,7 @@ export default function Layout({ children, initialPosts, folderStructure, filter
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [posts, setPosts] = useState(initialPosts || [])
   const router = useRouter()
-  const currentSlug = router.query.slug || ''
+  const currentSlug = router.query.slug ? router.query.slug.join('/') : ''
   const isPostPage = router.pathname === '/posts/[slug]'
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(false)
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false)
