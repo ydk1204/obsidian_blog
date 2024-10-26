@@ -14,7 +14,7 @@ export default function Backlinks({ currentSlug, posts }) {
 
   // 링크에 해당하는 포스트를 찾습니다
   const linkedPosts = posts.filter(post => 
-    links.includes(post.slug) || links.includes(post.frontMatter.title)
+    links.includes(post.slug) || links.includes(post.frontMatter.title) || links.includes(post.slug.split('/').pop())
   )
 
   return (
@@ -27,11 +27,6 @@ export default function Backlinks({ currentSlug, posts }) {
               <Link href={`/posts/${post.slug}`} className="text-gray-500 hover:underline">
                 {post.frontMatter.title || post.slug}
               </Link>
-              {/* {post.frontMatter.tags && (
-                <span className="ml-2 text-sm text-gray-500">
-                  {post.frontMatter.tags.map(tag => `#${tag}`).join(', ')}
-                </span>
-              )} */}
             </li>
           ))}
         </ul>

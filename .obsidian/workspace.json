@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/컴퓨터공학/네트워크/2차 테스트.md",
+                "file": "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2차 테스트"
+              "title": "로컬스토리지의 개념"
             }
           }
         ]
@@ -93,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "content/컴퓨터공학/네트워크/2차 테스트.md",
+                "file": "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "2차 테스트의 백링크"
+              "title": "로컬스토리지의 개념의 백링크"
             }
           },
           {
@@ -112,12 +112,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "content/컴퓨터공학/네트워크/2차 테스트.md",
+                "file": "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "2차 테스트의 나가는 링크"
+              "title": "로컬스토리지의 개념의 나가는 링크"
             }
           },
           {
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "content/컴퓨터공학/네트워크/2차 테스트.md"
+                "file": "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md"
               },
               "icon": "lucide-list",
-              "title": "2차 테스트 개요"
+              "title": "로컬스토리지의 개념 개요"
             }
           }
         ]
@@ -165,18 +165,18 @@
   "active": "e9014fad9df47498",
   "lastOpenFiles": [
     "out/index.html",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/posts/컴퓨터공학/네트워크/로컬스토리지의 개념.json",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/posts/컴퓨터공학/네트워크/2차 테스트.json",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/posts/컴퓨터공학/네트워크",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/folders/컴퓨터공학/네트워크.json",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/tags/컴퓨터공학.json",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/tags/네트워크.json",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/tags/Test.json",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/tags/API.json",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/posts/테스트 파일.json",
-    "out/_next/data/RYcDi-UAXeTe6zI2pfn9R/posts/컴퓨터공학",
-    "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/posts/컴퓨터공학/네트워크/로컬스토리지의 개념.json",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/posts/컴퓨터공학/네트워크/2차 테스트.json",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/folders/컴퓨터공학/네트워크.json",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/posts/컴퓨터공학/네트워크",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/tags/Test.json",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/tags/컴퓨터공학.json",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/tags/네트워크.json",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/posts/테스트 파일.json",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/folders/컴퓨터공학.json",
+    "out/_next/data/2786DP_C7Hz_A9bJexHmR/tags/API.json",
     "content/컴퓨터공학/네트워크/2차 테스트.md",
+    "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
     "content/테스트 파일.md",
     "node_modules/@types/node/README.md",
     "node_modules/undici-types/README.md",
