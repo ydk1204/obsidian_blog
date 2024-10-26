@@ -129,6 +129,16 @@ const components = {
         </ul>
       )
     }
+    if (href.startsWith('http') || href.startsWith('https')) {
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
+          {children}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4 ml-1">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      )
+    }
     return <a href={href}>{children}</a>
   },
   p: ({ children }) => {
@@ -187,6 +197,20 @@ const components = {
                         ))}
                       </React.Fragment>
                     );
+                  } else if (React.isValidElement(liChild) && liChild.type === 'a' && (liChild.props.href.startsWith('http') || liChild.props.href.startsWith('https'))) {
+                    return React.cloneElement(liChild, {
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                      className: "inline-flex items-center",
+                      children: (
+                        <>
+                          {liChild.props.children}
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-3 h-3 ml-1">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </>
+                      )
+                    });
                   }
                   return liChild;
                 })}
