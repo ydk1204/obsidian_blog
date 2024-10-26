@@ -5,26 +5,38 @@ import Layout from '../../components/Layout'
 import { getAllPosts, getFolderStructure } from '../../lib/mdxUtils'
 import { useTheme } from '@/contexts/ThemeContext'
 
-export default function TagPage({ posts, initialTag, folderStructure }) {
+export default function TagPage({ posts, folderStructure, initialTag }) {
   const router = useRouter()
   const { theme } = useTheme()
-  const [selectedTag, setSelectedTag] = useState(initialTag)
+  const [selectedTag, setSelectedTag] = useState('')
   const [filteredPosts, setFilteredPosts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (router.query.tag) {
       setSelectedTag(router.query.tag)
+      setIsLoading(false)
     }
   }, [router.query.tag])
 
   useEffect(() => {
-    setFilteredPosts(posts.filter(post => 
-      post.frontMatter.tags && post.frontMatter.tags.includes(selectedTag)
-    ))
+    if (posts && posts.length > 0 && selectedTag) {
+      setFilteredPosts(posts.filter(post => 
+        post.frontMatter && post.frontMatter.tags && post.frontMatter.tags.includes(selectedTag)
+      ))
+    }
   }, [selectedTag, posts])
 
   const handleTagClick = (tag) => {
-    router.push(`/tags/${tag}`, undefined, { shallow: true })
+    router.push(`/tags/${tag}`)
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (!posts || posts.length === 0) {
+    return <div>No posts found</div>
   }
 
   return (
@@ -44,7 +56,7 @@ export default function TagPage({ posts, initialTag, folderStructure }) {
               {new Date(post.frontMatter.date).toLocaleDateString('ko-KR')}
             </p>
             <div className="mt-2">
-              {post.frontMatter.tags.map(tag => (
+              {post.frontMatter.tags && post.frontMatter.tags.map(tag => (
                 <span
                   key={tag}
                   className="inline-block rounded-xl px-3 py-1 text-sm font-semibold mr-2 mb-2 cursor-pointer"
@@ -77,14 +89,13 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const posts = getAllPosts()
-  const { tag } = params
   const folderStructure = getFolderStructure(posts)
 
   return {
     props: {
       posts,
-      initialTag: tag,
-      folderStructure
+      folderStructure,
+      initialTag: params.tag
     }
   }
 }

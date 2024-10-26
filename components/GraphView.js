@@ -228,16 +228,14 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
   )
 }
 
-function createLinks(posts, tags, currentSlug) {
+function createLinks(posts, tags = [], currentSlug = '') {
   const links = []
   const currentPost = posts.find(post => post.slug === currentSlug)
 
   posts.forEach(post => {
     // 포스트와 태그 사이의 링크
     post.frontMatter?.tags?.forEach(tag => {
-      if (tags.length === 0 || tags.includes(tag)) {
-        links.push({ source: post.slug, target: tag })
-      }
+      links.push({ source: post.slug, target: tag })
     })
 
     // 백링크로 참조된 페이지들 간의 직접 연결
