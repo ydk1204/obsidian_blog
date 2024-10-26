@@ -71,7 +71,7 @@ const PreComponent = ({ children }) => {
   );
 };
 
-const components = {
+const createComponents = (posts) => ({
   span: ({ children, style, ...props }) => {
     let styleObject = style;
     if (typeof style === 'string') {
@@ -188,11 +188,22 @@ const components = {
                         {parts.map((part, i) => (
                           <React.Fragment key={i}>
                             {part}
-                            {links[i] && (
-                              <Link href={`/posts/${links[i].slice(2, -2)}`} className="text-gray-500 no-underline">
-                                {links[i].slice(2, -2)}
-                              </Link>
-                            )}
+                            {links[i] && (() => {
+                              const linkText = links[i].slice(2, -2);
+                              const linkedPost = posts.find(post => 
+                                post.frontMatter.title === linkText || 
+                                post.slug === linkText ||
+                                post.slug.endsWith(linkText)
+                              );
+                              if (linkedPost) {
+                                return (
+                                  <Link href={`/posts/${linkedPost.slug}`} className="text-gray-500 no-underline">
+                                    {linkText}
+                                  </Link>
+                                );
+                              }
+                              return linkText;
+                            })()}
                           </React.Fragment>
                         ))}
                       </React.Fragment>
@@ -222,7 +233,7 @@ const components = {
       </ul>
     );
   },
-};
+});
 
 function preprocessContent(content) {
   // 기존의 span과 mark 처리 로직 유지
@@ -273,6 +284,27 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
   useEffect(() => {
     Prism.highlightAll();
   }, [source]);
+
+  // 백링크 처리를 위한 함수 수정
+  const processBacklinks = (content) => {
+    const linkRegex = /\[\[(.*?)\]\]/g;
+    return content.replace(linkRegex, (match, p1) => {
+      const linkedPost = posts.find(post => 
+        post.frontMatter.title === p1 || 
+        post.slug === p1 ||
+        post.slug.endsWith(p1)
+      );
+      if (linkedPost) {
+        return `<a href="/posts/${linkedPost.slug}">${p1}</a>`;
+      }
+      return match;
+    });
+  };
+
+  // source.compiledSource에서 백링크 처리
+  const processedContent = processBacklinks(source.compiledSource);
+
+  const components = createComponents(posts);
 
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
