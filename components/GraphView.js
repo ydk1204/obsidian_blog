@@ -62,12 +62,12 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
 
     // 페이지 타입에 따라 노드와 링크 생성
     if (router.pathname === '/') {
-      // 인덱스 페이지: 모든 노드 표시
+      // 메인 페이지: FullGraphView와 유사한 방식으로 모든 노드와 링크 표시
       nodes = [
         ...posts.map(post => ({ id: post.slug, type: 'post', ...post })),
         ...Array.from(new Set(posts.flatMap(post => post.frontMatter?.tags || []))).map(tag => ({ id: tag, type: 'tag', label: tag }))
       ]
-      links = createLinks(posts)
+      links = createFullLinks(posts)
     } else if (router.pathname === '/tags/[tag]') {
       // 태그 페이지: 해당 태그를 가진 페이지와 그 태그들 표시
       const tag = router.query.tag
@@ -92,45 +92,35 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
       let relatedPosts = currentPost ? [currentPost] : []
       let relatedTags = new Set(currentPost?.frontMatter?.tags || [])
 
-      // 백링크로 참조된 페이지 추가
       if (currentPost && currentPost.content) {
         const backlinkedPosts = posts.filter(post => 
-          currentPost.content.includes(`[[${post.slug}]]`) || 
-          currentPost.content.includes(`[[${post.frontMatter.title}]]`)
+          currentPost.content.includes(`[[${post.slug}]]`)
         )
         relatedPosts = [...relatedPosts, ...backlinkedPosts]
       }
 
-      // 공통 태그를 가진 페이지 추가
-      posts.forEach(post => {
-        if (post.frontMatter?.tags) {
-          const hasCommonTag = post.frontMatter.tags.some(tag => relatedTags.has(tag))
-          if (hasCommonTag && !relatedPosts.some(p => p.slug === post.slug)) {
-            relatedPosts.push(post)
+      if (currentPost && currentPost.frontMatter && currentPost.frontMatter.tags) {
+        posts.forEach(post => {
+          if (post.frontMatter?.tags) {
+            const hasCommonTag = post.frontMatter.tags.some(tag => relatedTags.has(tag))
+            if (hasCommonTag) {
+              relatedPosts.push(post)
+            }
           }
-        }
-      })
+        })
+      }
 
-      // 중복 제거
       relatedPosts = Array.from(new Set(relatedPosts))
 
-      // 관련 태그 수집
       relatedPosts.forEach(post => {
         post.frontMatter?.tags?.forEach(tag => relatedTags.add(tag))
       })
 
-      // 노드 생성
       nodes = [
-        ...relatedPosts.map(post => ({ 
-          id: post.slug, 
-          type: 'post', 
-          ...post,
-          isCurrentPage: post.slug === normalizedCurrentSlug
-        })),
+        ...relatedPosts.map(post => ({ id: post.slug, type: 'post', ...post })),
         ...Array.from(relatedTags).map(tag => ({ id: tag, type: 'tag', label: tag }))
       ]
 
-      // 링크 생성
       links = createLinks(relatedPosts, Array.from(relatedTags), normalizedCurrentSlug)
     }
 
@@ -238,7 +228,7 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
   )
 }
 
-function createLinks(posts, tags = [], currentSlug = '') {
+function createLinks(posts, tags, currentSlug) {
   const links = []
   const currentPost = posts.find(post => post.slug === currentSlug)
 
@@ -259,6 +249,32 @@ function createLinks(posts, tags = [], currentSlug = '') {
     }
   })
 
+  return links
+}
+
+function createFullLinks(posts) {
+  const links = []
+  posts.forEach(post => {
+    // 포스트와 태그 사이의 링크
+    post.frontMatter?.tags?.forEach(tag => {
+      links.push({ source: post.slug, target: tag })
+    })
+
+    // 포스트 간의 링크
+    posts.forEach(otherPost => {
+      if (post.slug === otherPost.slug) return
+
+      const hasCommonTags = post.frontMatter?.tags?.some(tag => 
+        otherPost.frontMatter?.tags?.includes(tag)
+      )
+      const isBacklinked = (post.content && otherPost.slug && post.content.includes(otherPost.slug)) || 
+                           (otherPost.content && post.slug && otherPost.content.includes(post.slug))
+
+      if (hasCommonTags || isBacklinked) {
+        links.push({ source: post.slug, target: otherPost.slug })
+      }
+    })
+  })
   return links
 }
 
