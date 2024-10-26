@@ -87,40 +87,50 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
       ]
       links = createLinks(postsInFolder)
     } else {
-      // 기타 페이지: 기존 로직 유지
+      // 일반 페이지: 현재 페이지, 관련 태그, 백링크, 공통 태그를 가진 페이지 표시
       const currentPost = posts.find(post => post.slug === normalizedCurrentSlug)
       let relatedPosts = currentPost ? [currentPost] : []
       let relatedTags = new Set(currentPost?.frontMatter?.tags || [])
 
+      // 백링크로 참조된 페이지 추가
       if (currentPost && currentPost.content) {
         const backlinkedPosts = posts.filter(post => 
-          currentPost.content.includes(`[[${post.slug}]]`)
+          currentPost.content.includes(`[[${post.slug}]]`) || 
+          currentPost.content.includes(`[[${post.frontMatter.title}]]`)
         )
         relatedPosts = [...relatedPosts, ...backlinkedPosts]
       }
 
-      if (currentPost && currentPost.frontMatter && currentPost.frontMatter.tags) {
-        posts.forEach(post => {
-          if (post.frontMatter?.tags) {
-            const hasCommonTag = post.frontMatter.tags.some(tag => relatedTags.has(tag))
-            if (hasCommonTag) {
-              relatedPosts.push(post)
-            }
+      // 공통 태그를 가진 페이지 추가
+      posts.forEach(post => {
+        if (post.frontMatter?.tags) {
+          const hasCommonTag = post.frontMatter.tags.some(tag => relatedTags.has(tag))
+          if (hasCommonTag && !relatedPosts.some(p => p.slug === post.slug)) {
+            relatedPosts.push(post)
           }
-        })
-      }
+        }
+      })
 
+      // 중복 제거
       relatedPosts = Array.from(new Set(relatedPosts))
 
+      // 관련 태그 수집
       relatedPosts.forEach(post => {
         post.frontMatter?.tags?.forEach(tag => relatedTags.add(tag))
       })
 
+      // 노드 생성
       nodes = [
-        ...relatedPosts.map(post => ({ id: post.slug, type: 'post', ...post })),
+        ...relatedPosts.map(post => ({ 
+          id: post.slug, 
+          type: 'post', 
+          ...post,
+          isCurrentPage: post.slug === normalizedCurrentSlug
+        })),
         ...Array.from(relatedTags).map(tag => ({ id: tag, type: 'tag', label: tag }))
       ]
 
+      // 링크 생성
       links = createLinks(relatedPosts, Array.from(relatedTags), normalizedCurrentSlug)
     }
 
@@ -228,59 +238,26 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
   )
 }
 
-function createLinks(posts, tags, currentSlug) {
+function createLinks(posts, tags = [], currentSlug = '') {
   const links = []
   const currentPost = posts.find(post => post.slug === currentSlug)
 
-  if (currentPost) {
-    // 현재 포스트와 그 태그들 사이의 링크
-    currentPost.frontMatter?.tags?.forEach(tag => {
-      if (tags.includes(tag)) {
-        links.push({ source: currentSlug, target: tag })
-      }
-    })
-
-    // 현재 페이지에서 백링크로 참조하고 있는 페이지들과의 링크
-    posts.forEach(post => {
-      if (currentPost.content && currentPost.content.includes(`[[${post.slug}]]`)) {
-        links.push({ source: currentSlug, target: post.slug })
-        
-        // 백링크로 참조된 페이지의 태그들과의 링크
-        post.frontMatter?.tags?.forEach(tag => {
-          if (tags.includes(tag)) {
-            links.push({ source: post.slug, target: tag })
-          }
-        })
-      }
-    })
-
-    // 같은 태그를 가진 페이지들 사이의 링크
-    posts.forEach(post => {
-      if (post.slug !== currentSlug) {
-        const commonTags = post.frontMatter?.tags?.filter(tag => 
-          currentPost.frontMatter?.tags?.includes(tag)
-        )
-        if (commonTags && commonTags.length > 0) {
-          links.push({ source: currentSlug, target: post.slug })
-        }
-      }
-    })
-  } else {
-    // 현재 포스트가 없는 경우 (인덱스, 태그, 폴더 페이지 등)
-    posts.forEach(post => {
-      // 포스트와 태그 사이의 링크
-      post.frontMatter?.tags?.forEach(tag => {
+  posts.forEach(post => {
+    // 포스트와 태그 사이의 링크
+    post.frontMatter?.tags?.forEach(tag => {
+      if (tags.length === 0 || tags.includes(tag)) {
         links.push({ source: post.slug, target: tag })
-      })
-
-      // 포스트 간의 링크 (백링크)
-      posts.forEach(otherPost => {
-        if (post.slug !== otherPost.slug && post.content && post.content.includes(`[[${otherPost.slug}]]`)) {
-          links.push({ source: post.slug, target: otherPost.slug })
-        }
-      })
+      }
     })
-  }
+
+    // 백링크로 참조된 페이지들 간의 직접 연결
+    if (currentPost && currentPost.content) {
+      if (currentPost.content.includes(`[[${post.slug}]]`) || 
+          currentPost.content.includes(`[[${post.frontMatter.title}]]`)) {
+        links.push({ source: currentSlug, target: post.slug })
+      }
+    }
+  })
 
   return links
 }
