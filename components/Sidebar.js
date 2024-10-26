@@ -7,7 +7,7 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
   const { openFolders, toggleFolder } = useSidebar()
   const { theme } = useTheme()
 
-  const renderFolder = (folder, path = []) => {
+  const renderFolder = (folder, path = [], depth = 0) => {
     if (!folder || typeof folder !== 'object') {
       console.error('Invalid folder structure:', folder)
       return null
@@ -15,7 +15,7 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
 
     const entries = Object.entries(folder)
     return (
-      <ul className="pl-4">
+      <ul className={`${depth === 0 ? '' : 'pl-4'}`}>
         {entries.map(([key, value]) => {
           const newPath = [...path, key]
           const isOpen = openFolders[newPath.join('/')]
@@ -26,15 +26,17 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
                   onClick={() => toggleFolder(newPath.join('/'))}
                   className="flex items-center text-left w-full"
                 >
-                  <span className={`mr-1 ${isOpen ? 'transform rotate-90' : ''}`}>▶</span>
+                  <span className={`mr-1 transition-transform duration-300 ${isOpen ? 'transform rotate-90' : ''}`}>▶</span>
                   {key}
                 </button>
-                {isOpen && renderFolder(value, newPath)}
+                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+                  {renderFolder(value, newPath, depth + 1)}
+                </div>
               </li>
             )
           } else {
             return (
-              <li key={key} className="my-1 pl-4">
+              <li key={key} className="my-1">
                 <Link href={`/posts/${value.slug}`} className="hover:underline">
                   {value.frontMatter.title}
                 </Link>
