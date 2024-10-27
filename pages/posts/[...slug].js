@@ -15,6 +15,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import SocialShare from '../../components/SocialShare'
 
 // Prism 언어 지원을 위한 import
 import 'prismjs/components/prism-javascript'
@@ -302,7 +303,7 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
     <Layout initialPosts={posts} folderStructure={folderStructure}>
       <Head>
         <title>{frontMatter.title}</title>
-        <meta name="description" content={frontMatter.description || '포스트 내용'} />
+        <meta name="description" content={frontMatter.description || `${frontMatter.title}에 대한 포스트입니다.`} />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
@@ -336,6 +337,9 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
           </div>
         )}
         <MDXRemote {...source} components={components} />
+        <div className="mt-8 mb-4 border-t pt-4">
+          <SocialShare url={`https://unknown97.pages.dev/posts/${slug}`} title={frontMatter.title} />
+        </div>
       </article>
       {/* Disqus 컴포넌트를 동적으로 로드 */}
       <DynamicDisqusComments slug={slug} title={frontMatter.title} />
