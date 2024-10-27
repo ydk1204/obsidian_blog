@@ -15,6 +15,8 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import { BreadcrumbJsonLd } from 'next-seo';
+import SocialShare from '../../components/SocialShare'
 
 // Prism 언어 지원을 위한 import
 import 'prismjs/components/prism-javascript'
@@ -180,7 +182,7 @@ const createComponents = (posts) => ({
   },
   ul: ({ children }) => {
     return (
-      <ul className="mb-4">
+      <ul className="my-4">
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child) && child.type === 'li') {
             const liChildren = React.Children.toArray(child.props.children);
@@ -301,13 +303,13 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
       <Head>
-        <title>{frontMatter.title}</title>
-        <meta name="description" content={frontMatter.description || '포스트 내용'} />
+        <title>{`${frontMatter.title} | YDK의 기술 블로그`}</title>
+        <meta name="description" content={frontMatter.description || `${frontMatter.title}에 대한 포스트입니다.`} />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
       </Head>
-      <article className="prose dark:prose-invert max-w-none">
+      <article className="prose dark:prose-dark max-w-none">
         <div className="my-4 text-gray-500">
           <Link href="/" className="hover:underline">Home</Link>
           {folderPath.map((folder, index) => (
@@ -336,9 +338,26 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
           </div>
         )}
         <MDXRemote {...source} components={components} />
+        <div className="mt-8 mb-4 border-t pt-4">
+          <SocialShare url={`https://unknown97.pages.dev/posts/${slug}`} title={frontMatter.title} />
+        </div>
       </article>
       {/* Disqus 컴포넌트를 동적으로 로드 */}
       <DynamicDisqusComments slug={slug} title={frontMatter.title} />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          {
+            position: 1,
+            name: 'Home',
+            item: 'https://unknown97.pages.dev',
+          },
+          {
+            position: 2,
+            name: frontMatter.title,
+            item: `https://unknown97.pages.dev/posts/${slug}`,
+          },
+        ]}
+      />
     </Layout>
   )
 }

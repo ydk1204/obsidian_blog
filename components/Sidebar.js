@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { useSidebar } from '../contexts/SidebarContext'
 import { useTheme } from '../contexts/ThemeContext'
 import Image from 'next/image'
+import { useState } from 'react'
+import { FaRss, FaSearch } from 'react-icons/fa'
 
 export default function Sidebar({ onSearchClick, posts, folderStructure }) {
   const { openFolders, toggleFolder } = useSidebar()
@@ -56,15 +58,26 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
       </Link>
       <button 
         onClick={onSearchClick} 
-        className="w-full p-2 rounded mb-4 transition-colors"
+        className="w-full p-2 rounded mb-2 transition-colors flex items-center justify-center"
         style={{
           backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
           color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
         }}
         aria-label="검색"
       >
-        Search
+        <FaSearch className="mr-2" /> Search
       </button>
+      <Link 
+        href="/api/feed" 
+        className="w-full p-2 rounded mb-4 transition-colors flex items-center justify-center"
+        style={{
+          backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
+          color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
+        }}
+        aria-label="RSS 피드"
+      >
+        <FaRss className="mr-2" /> RSS Feed
+      </Link>
       <h2 className="text-lg font-semibold mb-2">탐색기</h2>
       {folderStructure ? (
         renderFolder(folderStructure)
