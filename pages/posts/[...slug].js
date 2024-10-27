@@ -14,6 +14,7 @@ import { useTheme } from '../../contexts/ThemeContext'
 import { useRouter } from 'next/router'
 import React from 'react'
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 
 // Prism 언어 지원을 위한 import
 import 'prismjs/components/prism-javascript'
@@ -23,6 +24,12 @@ import 'prismjs/components/prism-jsx'
 import 'prismjs/components/prism-tsx'
 import 'prismjs/components/prism-css'
 import 'prismjs/components/prism-markdown'
+
+// Disqus 컴포넌트를 동적으로 import
+const DynamicDisqusComments = dynamic(
+  () => import('../../components/DisqusComments'),
+  { ssr: false, loading: () => <p>댓글을 불러오는 중...</p> }
+)
 
 const PreComponent = ({ children }) => {
   const [isMounted, setIsMounted] = useState(false);
@@ -314,7 +321,8 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
         )}
         <MDXRemote {...source} components={components} />
       </article>
-      <DisqusComments slug={slug} title={frontMatter.title} />
+      {/* Disqus 컴포넌트를 동적으로 로드 */}
+      <DynamicDisqusComments slug={slug} title={frontMatter.title} />
     </Layout>
   )
 }
