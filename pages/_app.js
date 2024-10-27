@@ -28,10 +28,22 @@ function MyApp({ Component, pageProps }) {
     pageProps.folderStructure = folderStructure
   }
 
+  useEffect(() => {
+    // 웹폰트 최적화를 위한 코드
+    if (typeof window !== 'undefined') {
+      const WebFont = require('webfontloader');
+      WebFont.load({
+        google: {
+          families: ['Roboto:400,700', 'Open Sans:400,700']
+        }
+      });
+    }
+  }, []);
+
   return (
     <ThemeProvider>
       <SidebarProvider>
-        <Component {...pageProps} key={router.asPath} />
+        <Component {...pageProps} />
       </SidebarProvider>
     </ThemeProvider>
   )

@@ -3,7 +3,7 @@ import { serialize } from 'next-mdx-remote/serialize'
 import Layout from '../../components/Layout'
 import PostHeader from '../../components/PostHeader'
 import DisqusComments from '../../components/DisqusComments'
-import Callout from '../../components/Callout'  // Callout 컴포넌트 import
+import Callout from '../../components/Callout'
 import { getPostBySlug, getAllPosts, getFolderStructure } from '../../lib/mdxUtils'
 import { useEffect, useRef, useMemo, useState } from 'react'
 import Prism from 'prismjs'
@@ -11,10 +11,9 @@ import { FaCopy } from 'react-icons/fa'
 import slugify from 'slugify'
 import Link from 'next/link'
 import { useTheme } from '../../contexts/ThemeContext'
-import { inlineStylePlugin } from '../../lib/mdxPlugins'
 import { useRouter } from 'next/router'
 import React from 'react'
-import Head from 'next/head'  // Head 컴포넌트 import 추가
+import Head from 'next/head'
 
 // Prism 언어 지원을 위한 import
 import 'prismjs/components/prism-javascript'
@@ -112,7 +111,7 @@ const createComponents = (posts) => ({
     return <mark style={styleObject} {...props}>{children}</mark>;
   },
   pre: PreComponent,
-  Callout: Callout,  // Callout 컴포넌트 추가
+  Callout: Callout,
   DisqusComments: () => {
     console.log('DisqusComments rendered from MDX')
     return null // 임시로 null을 반환
@@ -269,99 +268,65 @@ function preprocessContent(content) {
 }
 
 export default function Post({ source, frontMatter, posts, slug, folderStructure }) {
-  const contentRef = useRef(null);
-  const { theme } = useTheme();
-  const router = useRouter();
+  const components = useMemo(() => createComponents(posts), [posts])
+  const router = useRouter()
+  const { theme } = useTheme()
 
-  const folderPath = useMemo(() => slug.split('/').slice(0, -1), [slug]);
-  const breadcrumbs = useMemo(() => [
-    { name: 'Home', href: '/' },
-    ...folderPath.map((folder, index) => ({
-      name: folder,
-      href: `/folders/${folderPath.slice(0, index + 1).join('/')}`,
-    })),
-  ], [folderPath]);
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
 
-  useEffect(() => {
-    Prism.highlightAll();
-  }, [source]);
-
-  // 백링크 처리를 위한 함수 수정
-  const processBacklinks = (content) => {
-    const linkRegex = /\[\[(.*?)\]\]/g;
-    return content.replace(linkRegex, (match, p1) => {
-      const linkedPost = posts.find(post => 
-        post.frontMatter.title === p1 || 
-        post.slug === p1 ||
-        post.slug.endsWith(p1)
-      );
-      if (linkedPost) {
-        return `<a href="/posts/${linkedPost.slug}">${p1}</a>`;
-      }
-      return match;
-    });
-  };
-
-  // source.compiledSource에서 백링크 처리
-  const processedContent = processBacklinks(source.compiledSource);
-
-  const components = createComponents(posts);
+  const folderPath = slug.split('/').slice(0, -1)
 
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
       <Head>
         <title>{frontMatter.title}</title>
-        <meta name="description" content={frontMatter.description} />
+        <meta name="description" content={frontMatter.description || '포스트 내용'} />
       </Head>
-      <div className="mb-2 mt-4">
-        {breadcrumbs.map((crumb, index) => (
-          <span key={crumb.href}>
-            <Link href={crumb.href} className="text-gray-500 hover:underline">
-              {crumb.name}
-            </Link>
-            {index < breadcrumbs.length - 1 && <span className="mx-1 text-gray-500">/</span>}
-          </span>
-        ))}
-      </div>
-      <div ref={contentRef}>
-        <article className="prose dark:prose-dark max-w-none">
-          <h1 className="text-3xl font-bold mb-4 mt-0">{frontMatter.title}</h1>
-          <div className="text-sm text-gray-500 mb-4">
-            {new Date(frontMatter.date).toLocaleDateString('ko-KR')}
-          </div>
+      <article className="prose dark:prose-invert max-w-none">
+        <div className="my-4 text-gray-500">
+          <Link href="/" className="hover:underline">Home</Link>
+          {folderPath.map((folder, index) => (
+            <React.Fragment key={folder}>
+              {' / '}
+              <Link href={`/folders/${folderPath.slice(0, index + 1).join('/')}`} className="hover:underline">
+                {folder}
+              </Link>
+            </React.Fragment>
+          ))}
+        </div>
+        <h1 className="text-3xl font-bold mb-4 mt-0">{frontMatter.title}</h1>
+        <div className="mb-4 text-gray-600 dark:text-gray-400">
+          {new Date(frontMatter.date).toLocaleDateString()}
+        </div>
+        {frontMatter.tags && (
           <div className="mb-4">
-            {frontMatter.tags && frontMatter.tags.map(tag => (
-              <Link key={tag} href={`/tags/${tag}`}>
-                <span 
-                  className="inline-block rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2"
-                  style={{
-                    backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
-                    color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
-                  }}
-                >
-                  #{tag}
-                </span>
+            {frontMatter.tags.map(tag => (
+              <Link key={tag} href={`/tags/${tag}`} className="mr-2 px-2 py-1 rounded-full text-sm" style={{
+                backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
+                color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
+              }}>
+                #{tag}
               </Link>
             ))}
           </div>
-          <MDXRemote {...source} components={components} />
-        </article>
-      </div>
-      {frontMatter.disqus && (
-        <DisqusComments key={slug} slug={slug} title={frontMatter.title} />
-      )}
+        )}
+        <MDXRemote {...source} components={components} />
+      </article>
+      <DisqusComments slug={slug} title={frontMatter.title} />
     </Layout>
   )
 }
 
 export async function getStaticProps({ params }) {
-  const slug = Array.isArray(params.slug) ? params.slug.join('/') : params.slug;
+  const slug = Array.isArray(params.slug) ? params.slug.join('/') : params.slug
   const post = getPostBySlug(slug)
   if (!post) {
     return { notFound: true }
   }
 
-  const preprocessedContent = preprocessContent(post.content);
+  const preprocessedContent = preprocessContent(post.content)
 
   const mdxSource = await serialize(preprocessedContent, {
     mdxOptions: {
@@ -372,7 +337,7 @@ export async function getStaticProps({ params }) {
   })
   const posts = getAllPosts().map(post => ({
     ...post,
-    content: post.content // 여기서 content를 포함시킵니다
+    content: post.content
   }))
   const folderStructure = getFolderStructure(posts)
 

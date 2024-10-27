@@ -22,9 +22,11 @@
     "rehype-raw": "^7.0.0",
     "remark-callouts": "^2.0.0",
     "slugify": "^1.6.6",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^10.2.3",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
