@@ -68,7 +68,7 @@ function generateSiteMap(posts) {
 function generateAndSaveSitemap() {
   const posts = getAllPosts()
   const sitemap = generateSiteMap(posts)
-  fs.writeFileSync(path.join(process.cwd(), 'out', 'sitemap.xml'), sitemap)
+  fs.writeFileSync(path.join(process.cwd(), 'public', 'sitemap.xml'), sitemap)
   console.log('Sitemap generated successfully')
 }
 

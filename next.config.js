@@ -13,6 +13,14 @@ const nextConfig = {
     })
     return config
   },
+  async rewrites() {
+    return [
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap',
+      },
+    ]
+  },
 };
 
 // 환경 변수에 따라 번들 분석기를 조건부로 활성화
