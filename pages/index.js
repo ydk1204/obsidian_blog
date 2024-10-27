@@ -5,11 +5,22 @@ import Link from 'next/link'
 import Head from 'next/head'
 
 export default function Home({ posts, folderStructure }) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "My Obsidian Blog",
+    "url": "https://unknown97.pages.dev",
+    "description": "블로그 홈페이지"
+  };
+
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
       <Head>
         <title>Homepage</title>
         <meta name="description" content="블로그 홈페이지" />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Head>
       <h1 className="text-3xl font-bold mb-4 mt-4">Welcome to My Obsidian Blog</h1>
       <div className="mb-8">

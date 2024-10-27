@@ -285,11 +285,27 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
 
   const folderPath = slug.split('/').slice(0, -1)
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": frontMatter.title,
+    "datePublished": frontMatter.date,
+    "dateModified": frontMatter.date,
+    "author": {
+      "@type": "Person",
+      "name": "YDK"  // 이름
+    },
+    "description": frontMatter.description || '포스트 내용'
+  };
+
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
       <Head>
         <title>{frontMatter.title}</title>
         <meta name="description" content={frontMatter.description || '포스트 내용'} />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Head>
       <article className="prose dark:prose-invert max-w-none">
         <div className="my-4 text-gray-500">
