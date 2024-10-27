@@ -27,13 +27,15 @@ export default function FolderPage({ folderName, posts }) {
           className={`mr-2 px-3 py-1 rounded ${sortBy === 'name' ? 'font-bold' : ''}`}
           onClick={() => setSortBy('name')}
           style={sortBy === 'name' ? buttonStyle : {}}
+          aria-label="이름순"
         >
           이름순
         </button>
         <button
           className={`px-3 py-1 rounded ${sortBy === 'date' ? 'font-bold' : ''}`}
           onClick={() => setSortBy('date')}
-          style={sortBy === 'date' ? buttonStyle : {}}
+          style={sortBy === 'date' ? buttonStyle : {}} 
+          aria-label="날자순" 
         >
           날짜순
         </button>

@@ -14,6 +14,7 @@ import { useTheme } from '../../contexts/ThemeContext'
 import { inlineStylePlugin } from '../../lib/mdxPlugins'
 import { useRouter } from 'next/router'
 import React from 'react'
+import Head from 'next/head'  // Head 컴포넌트 import 추가
 
 // Prism 언어 지원을 위한 import
 import 'prismjs/components/prism-javascript'
@@ -59,7 +60,7 @@ const PreComponent = ({ children }) => {
           </div>
         ))}
       </code>
-      <button className="copy-button absolute top-2 right-2" onClick={handleCopy}>
+      <button className="copy-button absolute top-2 right-2" onClick={handleCopy} aria-label="코드 복사">
         <FaCopy />
       </button>
       {isCopied && (
@@ -308,6 +309,10 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
 
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
+      <Head>
+        <title>{frontMatter.title}</title>
+        <meta name="description" content={frontMatter.description} />
+      </Head>
       <div className="mb-2 mt-4">
         {breadcrumbs.map((crumb, index) => (
           <span key={crumb.href}>

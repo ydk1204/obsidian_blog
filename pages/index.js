@@ -2,10 +2,15 @@ import Layout from '../components/Layout'
 import GraphView from '../components/GraphView'
 import { getAllPosts, getFolderStructure } from '../lib/mdxUtils'
 import Link from 'next/link'
+import Head from 'next/head'
 
 export default function Home({ posts, folderStructure }) {
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
+      <Head>
+        <title>Homepage</title>
+        <meta name="description" content="블로그 홈페이지" />
+      </Head>
       <h1 className="text-3xl font-bold mb-4 mt-4">Welcome to My Obsidian Blog</h1>
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Graph View</h2>

@@ -25,6 +25,7 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
                 <button
                   onClick={() => toggleFolder(newPath.join('/'))}
                   className="flex items-center text-left w-full"
+                  aria-label={`${key} 폴더 열기/닫기`}
                 >
                   <span className={`mr-1 transition-transform duration-300 ${isOpen ? 'transform rotate-90' : ''}`}>▶</span>
                   {key}
@@ -60,6 +61,7 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
           backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
           color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
         }}
+        aria-label="검색"
       >
         Search
       </button>

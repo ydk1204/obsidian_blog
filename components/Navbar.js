@@ -8,7 +8,7 @@ export default function Navbar({ onSearchClick }) {
           My Obsidian Blog
         </Link>
         <div>
-          <button onClick={onSearchClick} className="ml-4">
+          <button onClick={onSearchClick} className="ml-4" aria-label="검색">
             Search
           </button>
         </div>

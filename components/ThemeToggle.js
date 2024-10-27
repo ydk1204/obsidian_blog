@@ -26,6 +26,7 @@ export default function ThemeToggle() {
       onClick={handleToggle}
       className="fixed bottom-4 right-4 p-2 rounded-full transition-all duration-300 ease-in-out"
       style={{ width: '40px', height: '40px', overflow: 'hidden', backgroundColor: '#1F2937' }}
+      aria-label="테마 변경"
     >
       <div className="relative w-full h-full">
         <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isAnimating ? 'icon-exit' : ''}`}>
