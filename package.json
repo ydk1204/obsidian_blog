@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && npm run generate-sitemap && mkdir -p out && cp public/sitemap.xml out/",
+    "build": "next build && npm run generate-sitemap && cp public/sitemap.xml out/",
     "start": "next start",
     "lint": "next lint",
     "generate-sitemap": "node scripts/generate-sitemap.js"

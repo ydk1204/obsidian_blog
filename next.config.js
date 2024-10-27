@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // output: 'export', // 이 줄을 제거하거나 주석 처리하세요
+  // output: 'export',
   images: {
     unoptimized: true,
   },
@@ -27,6 +27,8 @@ module.exports = withBundleAnalyzer({
   images: {
     domains: ['i.imgur.com'], // 외부 이미지 도메인 추가
     formats: ['image/avif', 'image/webp'],
+    loader: 'custom',
+    loaderFile: './imageLoader.js',
   },
   
   // 정적 페이지 생성 최적화
