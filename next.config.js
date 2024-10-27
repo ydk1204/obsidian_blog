@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // output: 'export',
+  output: 'export',
   images: {
     unoptimized: true,
   },
@@ -13,26 +13,40 @@ const nextConfig = {
     })
     return config
   },
+  async rewrites() {
+    return [
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap',
+      },
+    ]
+  },
 };
 
 // 환경 변수에 따라 번들 분석기를 조건부로 활성화
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+const withBundleAnalyzer = process.env.ANALYZE === 'true'
+  ? require('@next/bundle-analyzer')()
+  : (config) => config;
 
 module.exports = withBundleAnalyzer({
   ...nextConfig,
-  
-  // 이미지 최적화
-  images: {
-    domains: ['i.imgur.com'], // 외부 이미지 도메인 추가
-    formats: ['image/avif', 'image/webp'],
-    loader: 'custom',
-    loaderFile: './imageLoader.js',
+  compress: true,
+  webpack: (config, { dev, isServer }) => {
+    // 프로덕션 빌드에서만 최적화 적용
+    if (!dev && !isServer) {
+      config.optimization.splitChunks.cacheGroups = {
+        ...config.optimization.splitChunks.cacheGroups,
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      };
+    }
+    // nextConfig의 webpack 설정을 유지
+    if (typeof nextConfig.webpack === 'function') {
+      config = nextConfig.webpack(config, { dev, isServer });
+    }
+    return config;
   },
-  
-  // 정적 페이지 생성 최적화
-  experimental: {
-    optimizeCss: true,
-  },
-})
+});
