@@ -30,12 +30,17 @@ function MyApp({ Component, pageProps }) {
   }
 
   useEffect(() => {
-    // 웹폰트 최적화를 위한 코드
+    // 웹폰트 최적화
     if (typeof window !== 'undefined') {
       const WebFont = require('webfontloader');
       WebFont.load({
         google: {
-          families: ['Roboto:400,700', 'Open Sans:400,700']
+          families: ['Roboto:400,700', 'Open Sans:400,700'],
+          text: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-_~#$%^&*(){}[]<>|/:;\'"`', // 필요한 문자만 로드
+        },
+        timeout: 2000, // 2초 후 폴백 폰트 사용
+        active: function() {
+          sessionStorage.setItem('fontsLoaded', 'true');
         }
       });
     }

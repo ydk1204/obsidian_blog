@@ -26,10 +26,19 @@ import 'prismjs/components/prism-tsx'
 import 'prismjs/components/prism-css'
 import 'prismjs/components/prism-markdown'
 
-// Disqus 컴포넌트를 동적으로 import
+// Disqus 컴포넌트를 동적으로 import하되, 뷰포트에 들어올 때만 로드하도록 수정
 const DynamicDisqusComments = dynamic(
   () => import('../../components/DisqusComments'),
-  { ssr: false, loading: () => <p>댓글을 불러오는 중...</p> }
+  { 
+    ssr: false,
+    loading: () => <p>댓글을 불러오는 중...</p>,
+    // viewport에 들어올 때만 로드
+    loading: () => (
+      <div className="my-4 p-4 bg-gray-100 dark:bg-gray-800 rounded">
+        <p className="text-center text-gray-600 dark:text-gray-400">댓글을 불러오는 중...</p>
+      </div>
+    )
+  }
 )
 
 const PreComponent = ({ children }) => {
@@ -342,7 +351,11 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
         </div>
       </article>
       {/* Disqus 컴포넌트를 동적으로 로드 */}
-      <DynamicDisqusComments slug={slug} title={frontMatter.title} />
+      {frontMatter.disqus && (
+        <div className="mt-8">
+          <DynamicDisqusComments slug={slug} title={frontMatter.title} />
+        </div>
+      )}
     </Layout>
   )
 }
