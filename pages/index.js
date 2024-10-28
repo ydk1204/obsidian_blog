@@ -5,11 +5,14 @@ import Link from 'next/link'
 import Head from 'next/head'
 
 export default function Home({ posts, folderStructure }) {
+  const canonicalUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "My Obsidian Blog",
-    "url": "https://unknown97.pages.dev",
+    "url": canonicalUrl,
+    "@id": canonicalUrl,
     "description": "블로그 홈페이지"
   };
 
@@ -20,8 +23,9 @@ export default function Home({ posts, folderStructure }) {
         <meta name="description" content="블로그 홈페이지" />
         <link 
           rel="canonical" 
-          href={process.env.NEXT_PUBLIC_SITE_URL} 
+          href={canonicalUrl}
         />
+        <meta property="og:url" content={canonicalUrl} />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
