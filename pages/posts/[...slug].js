@@ -31,8 +31,7 @@ const DynamicDisqusComments = dynamic(
   () => import('../../components/DisqusComments'),
   { 
     ssr: false,
-    loading: () => <p>댓글을 불러오는 중...</p>,
-    // viewport에 들어올 때만 로드
+    // loading prop 중복 제거
     loading: () => (
       <div className="my-4 p-4 bg-gray-100 dark:bg-gray-800 rounded">
         <p className="text-center text-gray-600 dark:text-gray-400">댓글을 불러오는 중...</p>
@@ -56,10 +55,36 @@ const PreComponent = ({ children }) => {
     }
   }, []);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000); // 2초 후에 메시지 숨김
+  const handleCopy = async () => {
+    try {
+      // 기본적으로 Clipboard API 사용 시도
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(code);
+        setIsCopied(true);
+      } else {
+        // Clipboard API를 사용할 수 없는 경우 폴백 방식 사용
+        const textArea = document.createElement('textarea');
+        textArea.value = code;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+          document.execCommand('copy');
+          textArea.remove();
+          setIsCopied(true);
+        } catch (err) {
+          console.error('Fallback: Oops, unable to copy', err);
+          textArea.remove();
+        }
+      }
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
   };
 
   if (!isMounted) {

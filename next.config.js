@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export',
   images: {
     unoptimized: true,
   },
+  productionBrowserSourceMaps: true, // 소스맵 생성 활성화
   // ... 다른 설정들
   webpack: (config, { isServer }) => {
     config.module.rules.push({
