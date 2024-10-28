@@ -77,6 +77,7 @@ export default function SocialShare({ url, title }) {
         target="_blank"
         rel="noopener noreferrer"
         className="text-black hover:text-gray-700"
+        aria-label="twitter x"
       >
         <FaXTwitter size={24} />
       </a>
@@ -85,6 +86,7 @@ export default function SocialShare({ url, title }) {
         target="_blank"
         rel="noopener noreferrer"
         className="text-blue-600 hover:text-blue-800"
+        aria-label="facebook"
       >
         <FaFacebook size={24} />
       </a>
@@ -93,6 +95,7 @@ export default function SocialShare({ url, title }) {
         target="_blank"
         rel="noopener noreferrer"
         className="text-blue-700 hover:text-blue-900"
+        aria-label="linkedin"
       >
         <FaLinkedin size={24} />
       </a>
@@ -101,12 +104,14 @@ export default function SocialShare({ url, title }) {
         target="_blank"
         rel="noopener noreferrer"
         className="text-green-500 hover:text-green-700"
+        aria-label="Line"
       >
         <FaLine size={24} />
       </a>
       <button
         onClick={handleKakaoShare}
         className="text-yellow-400 hover:text-yellow-600"
+        aria-label="kakao"
       >
         <RiKakaoTalkFill size={24} />
       </button>
