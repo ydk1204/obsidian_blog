@@ -30,6 +30,7 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   transition: background-color 0.3s, color 0.3s;
+  will-change: background-color, color;
 }
 
 li:has(a) {
@@ -57,6 +58,7 @@ li:has(a) {
 .nameLogo {
   position: relative;
   animation: nameLogoMove 0.1s;
+  will-change: transform, opacity;
 }
 
 /* 기존 스타일 아래에 추가 */
@@ -276,7 +278,7 @@ h4 {
   margin-top: 0.5em;
 }
 
-/* 콜아웃 내부 여백 조정 */
+/* 콜아웃 내�� 여백 조정 */
 .callout-content > p:first-child {
   margin-top: 0;
 }
@@ -609,3 +611,4 @@ blockquote.callout {
 .dark .prose ol:not(.sidebar-list):not(.toc-list) > li::marker {
   color: #9CA3AF;
 }
+

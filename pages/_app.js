@@ -30,17 +30,27 @@ function MyApp({ Component, pageProps }) {
   }
 
   useEffect(() => {
-    // 웹폰트 최적화
     if (typeof window !== 'undefined') {
+      // 폰트가 이미 로드되었는지 확인
+      if (sessionStorage.getItem('fontsLoaded')) {
+        document.documentElement.classList.add('fonts-loaded');
+        return;
+      }
+
       const WebFont = require('webfontloader');
       WebFont.load({
         google: {
           families: ['Roboto:400,700', 'Open Sans:400,700'],
-          text: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-_~#$%^&*(){}[]<>|/:;\'"`', // 필요한 문자만 로드
+          text: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-_~#$%^&*(){}[]<>|/:;\'"`',
         },
-        timeout: 2000, // 2초 후 폴백 폰트 사용
+        timeout: 2000,
         active: function() {
           sessionStorage.setItem('fontsLoaded', 'true');
+          document.documentElement.classList.add('fonts-loaded');
+        },
+        inactive: function() {
+          sessionStorage.setItem('fontsLoaded', 'true');
+          document.documentElement.classList.add('fonts-loaded');
         }
       });
     }
