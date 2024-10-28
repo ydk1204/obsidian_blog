@@ -333,6 +333,10 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
     "description": frontMatter.description || '포스트 내용'
   };
 
+  // canonical URL을 위한 경로 생성
+  const canonicalPath = Array.isArray(slug) ? slug.join('/') : slug;
+  const canonicalUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${canonicalPath}`;
+
   return (
     <Layout initialPosts={posts} folderStructure={folderStructure}>
       <Head>
@@ -340,7 +344,7 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
         <meta name="description" content={frontMatter.description || `${frontMatter.title}에 대한 포스트입니다.`} />
         <link 
           rel="canonical" 
-          href={`${process.env.NEXT_PUBLIC_SITE_URL}/posts/${encodeURIComponent(slug)}`} 
+          href={canonicalUrl}
         />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
