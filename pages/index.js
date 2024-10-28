@@ -18,6 +18,10 @@ export default function Home({ posts, folderStructure }) {
       <Head>
         <title>Homepage</title>
         <meta name="description" content="블로그 홈페이지" />
+        <link 
+          rel="canonical" 
+          href={process.env.NEXT_PUBLIC_SITE_URL} 
+        />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>

@@ -338,6 +338,10 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
       <Head>
         <title>{frontMatter.title}</title>
         <meta name="description" content={frontMatter.description || `${frontMatter.title}에 대한 포스트입니다.`} />
+        <link 
+          rel="canonical" 
+          href={`${process.env.NEXT_PUBLIC_SITE_URL}/posts/${slug}`} 
+        />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
