@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: 'export', // static export를 위해 필요
   images: {
     unoptimized: true,
   },
-  productionBrowserSourceMaps: true, // 소스맵 생성 활성화
+  productionBrowserSourceMaps: true,
   // ... 다른 설정들
   webpack: (config, { isServer }) => {
     config.module.rules.push({
@@ -30,23 +31,32 @@ const withBundleAnalyzer = process.env.ANALYZE === 'true'
 
 module.exports = withBundleAnalyzer({
   ...nextConfig,
-  compress: true,
+  // webpack 설정을 단순화
   webpack: (config, { dev, isServer }) => {
-    // 프로덕션 빌드에서만 최적화 적용
-    if (!dev && !isServer) {
-      config.optimization.splitChunks.cacheGroups = {
-        ...config.optimization.splitChunks.cacheGroups,
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-        },
-      };
-    }
-    // nextConfig의 webpack 설정을 유지
+    // nextConfig의 webpack 설정을 먼저 적용
     if (typeof nextConfig.webpack === 'function') {
       config = nextConfig.webpack(config, { dev, isServer });
     }
+
+    // 프로덕션 빌드에서만 최적화 적용
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            commons: {
+              name: 'commons',
+              chunks: 'all',
+              minChunks: 2,
+            },
+          },
+        },
+      };
+    }
+
     return config;
   },
 });
