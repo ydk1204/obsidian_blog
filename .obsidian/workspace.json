@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/컴퓨터공학/네트워크/2차 테스트.md",
+                "file": "content/컴퓨터공학/네트워크/HTTPS와 TLS.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2차 테스트"
+              "title": "HTTPS와 TLS"
             }
           }
         ]
@@ -93,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "content/컴퓨터공학/네트워크/2차 테스트.md",
+                "file": "content/컴퓨터공학/네트워크/HTTPS와 TLS.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "2차 테스트의 백링크"
+              "title": "HTTPS와 TLS의 백링크"
             }
           },
           {
@@ -112,12 +112,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "content/컴퓨터공학/네트워크/2차 테스트.md",
+                "file": "content/컴퓨터공학/네트워크/HTTPS와 TLS.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "2차 테스트의 나가는 링크"
+              "title": "HTTPS와 TLS의 나가는 링크"
             }
           },
           {
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "content/컴퓨터공학/네트워크/2차 테스트.md"
+                "file": "content/컴퓨터공학/네트워크/HTTPS와 TLS.md"
               },
               "icon": "lucide-list",
-              "title": "2차 테스트 개요"
+              "title": "HTTPS와 TLS 개요"
             }
           }
         ]
@@ -164,17 +164,19 @@
   },
   "active": "e9014fad9df47498",
   "lastOpenFiles": [
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/posts/컴퓨터공학/네트워크/로컬스토리지의 개념.json",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/posts/컴퓨터공학/네트워크/2차 테스트.json",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/folders/컴퓨터공학/네트워크.json",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/posts/컴퓨터공학/네트워크",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/tags/컴퓨터공학.json",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/tags/네트워크.json",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/tags/Test.json",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/tags/API.json",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/posts/테스트 파일.json",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/posts/컴퓨터공학",
-    "out/_next/data/tfFJvsp29dpFEu8Kq6wYO/folders/컴퓨터공학.json",
+    "out/posts/컴퓨터공학/네트워크/HTTPS와 TLS.html",
+    "out/posts/테스트 파일.html",
+    "out/index.html",
+    "out/_next/data/uPpUZPQODcRkB3XWi2Yd2/posts/컴퓨터공학/네트워크/2차 테스트.json",
+    "out/_next/data/uPpUZPQODcRkB3XWi2Yd2/posts/컴퓨터공학/네트워크/HTTPS와 TLS.json",
+    "out/_next/data/uPpUZPQODcRkB3XWi2Yd2/posts/컴퓨터공학/네트워크/로컬스토리지의 개념.json",
+    "out/_next/data/uPpUZPQODcRkB3XWi2Yd2/folders/컴퓨터공학/네트워크.json",
+    "out/_next/data/uPpUZPQODcRkB3XWi2Yd2/posts/컴퓨터공학/네트워크",
+    "out/_next/data/uPpUZPQODcRkB3XWi2Yd2/tags/프로토콜.json",
+    "out/_next/data/uPpUZPQODcRkB3XWi2Yd2/tags/컴퓨터공학.json",
+    "out/_next/data/uPpUZPQODcRkB3XWi2Yd2/tags/네트워크.json",
+    "content/컴퓨터공학/네트워크/2차 테스트.md",
+    "content/컴퓨터공학/네트워크/HTTPS와 TLS.md",
     "out/404pageImage.png",
     "public/404pageImage.png",
     "node_modules/@react-icons/all-files/README.md",
@@ -200,8 +202,6 @@
     "node_modules/mime-db/HISTORY.md",
     "node_modules/@next/bundle-analyzer/readme.md",
     "node_modules/@next/bundle-analyzer/license.md",
-    "node_modules/lodash/release.md",
-    "node_modules/lodash/README.md",
     "node_modules/highlight.js/styles/brown-papersq.png",
     "node_modules/highlight.js/styles/pojoaque.jpg",
     "node_modules/next-mdx-remote/header.png"

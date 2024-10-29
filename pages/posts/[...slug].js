@@ -25,8 +25,9 @@ import 'prismjs/components/prism-jsx'
 import 'prismjs/components/prism-tsx'
 import 'prismjs/components/prism-css'
 import 'prismjs/components/prism-markdown'
+import 'prismjs/components/prism-bash'
 
-// Disqus 컴포넌트를 동적으로 import하되, 뷰포트에 들어올 때만 로드하도록 수정
+// Disqus 컴포넌트 동적으로 import하되, 뷰포트에 들어올 때만 로드하도록 수정
 const DynamicDisqusComments = dynamic(
   () => import('../../components/DisqusComments'),
   { 
@@ -278,6 +279,9 @@ const createComponents = (posts) => ({
 });
 
 function preprocessContent(content) {
+  // <br> 태그를 마크다운 줄바꿈으로 변환
+  content = content.replace(/<br>/g, '  \n');
+  
   // 기존의 span과 mark 처리 로직 유지
   content = content.replace(
     /<(span|mark) style="([^"]+)">([^<]+)<\/(span|mark)>/g,
@@ -294,7 +298,7 @@ function preprocessContent(content) {
     }
   );
 
-  // 콜아웃 처리 로직 수정
+  // 기존의 콜아웃 처리 로직 유지
   content = content.replace(
     /^>\s*\[!(note|abstract|info|tip|success|question|warning|fail|error|bug|example|quote|faq)\](\+|-|)\s*(.*)\n((?:>\s*.*(?:\n|$))*)/gm,
     (match, type, collapsibleState, title, content) => {
@@ -412,8 +416,10 @@ export async function getStaticProps({ params }) {
       remarkPlugins: [],
       rehypePlugins: [],
     },
+    parseFrontmatter: true,
     scope: post.frontMatter,
   })
+
   const posts = getAllPosts().map(post => ({
     ...post,
     content: post.content
