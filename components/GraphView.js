@@ -125,10 +125,10 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
     }
 
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(10))
+      .force('link', d3.forceLink(links).id(d => d.id).distance(15))
       .force('charge', d3.forceManyBody().strength(-1))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(15))
+      .force('collision', d3.forceCollide().radius(22))
       .force('circular', function(alpha) {
         const center = {x: width / 2, y: height / 2};
         
@@ -146,7 +146,7 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
             const angleStep = (2 * Math.PI) / relatedTags.length;
             relatedTags.forEach((tagNode, index) => {
               const angle = angleStep * index;
-              const radius = 15; // 태그 노드의 반지름을 더 줄임
+              const radius = 22;
               
               // 현재 페이지 노드가 아닌 경우에만 위치 조정
               if (node.id !== normalizedCurrentSlug) {
@@ -192,6 +192,46 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
         } else if (d.type === 'tag') {
           router.push(`/tags/${d.id}`)
         }
+      })
+      .on('mouseover', function(event, d) {
+        const connectedNodeIds = new Set()
+        connectedNodeIds.add(d.id)
+        
+        // d3 transition을 사용하여 하이라이팅 효과 적용
+        link
+          .transition()
+          .duration(300)
+          .style('stroke-opacity', l => {
+            if (l.source.id === d.id || l.target.id === d.id) {
+              connectedNodeIds.add(l.source.id)
+              connectedNodeIds.add(l.target.id)
+              return 1
+            }
+            return 0.1
+          })
+          .style('stroke-width', l => 
+            (l.source.id === d.id || l.target.id === d.id) ? 2 : 1
+          )
+
+        node
+          .transition()
+          .duration(300)
+          .style('opacity', n => 
+            connectedNodeIds.has(n.id) ? 1 : 0.1
+          )
+      })
+      .on('mouseout', function(event, d) {
+        // d3 transition을 사용하여 원래 상태로 복구
+        link
+          .transition()
+          .duration(300)
+          .style('stroke-opacity', 0.6)
+          .style('stroke-width', 1)
+        
+        node
+          .transition()
+          .duration(300)
+          .style('opacity', 1)
       })
 
     node.append('circle')
