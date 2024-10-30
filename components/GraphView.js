@@ -125,10 +125,48 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
     }
 
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(30))
-      .force('charge', d3.forceManyBody().strength(-100))
+      .force('link', d3.forceLink(links).id(d => d.id).distance(10))
+      .force('charge', d3.forceManyBody().strength(-1))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(10))
+      .force('collision', d3.forceCollide().radius(15))
+      .force('circular', function(alpha) {
+        const center = {x: width / 2, y: height / 2};
+        
+        nodes.forEach(node => {
+          if (node.type === 'post') {
+            // 각 페이지 노드를 중심으로 하는 원자 모양 배치
+            const relatedTags = nodes.filter(n => 
+              n.type === 'tag' && 
+              links.some(l => 
+                (l.source.id === node.id && l.target.id === n.id) ||
+                (l.source.id === n.id && l.target.id === node.id)
+              )
+            );
+            
+            const angleStep = (2 * Math.PI) / relatedTags.length;
+            relatedTags.forEach((tagNode, index) => {
+              const angle = angleStep * index;
+              const radius = 15; // 태그 노드의 반지름을 더 줄임
+              
+              // 현재 페이지 노드가 아닌 경우에만 위치 조정
+              if (node.id !== normalizedCurrentSlug) {
+                const dx = node.x + radius * Math.cos(angle) - tagNode.x;
+                const dy = node.y + radius * Math.sin(angle) - tagNode.y;
+                tagNode.x += dx * alpha;
+                tagNode.y += dy * alpha;
+              }
+            });
+          }
+        });
+      })
+
+    // 초기 위치만 중앙에 설정하고, fx, fy는 설정하지 않음
+    nodes.forEach(node => {
+      if (node.id === normalizedCurrentSlug) {
+        node.x = width / 2;
+        node.y = height / 2;
+      }
+    })
 
     const link = g.append('g')
       .selectAll('line')
@@ -171,6 +209,7 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
       labels.attr('display', k > 0.5 ? 'block' : 'none')
     }
 
+    // tick 이벤트에서 중앙 노드 위치 고정 제거
     simulation.on('tick', () => {
       link
         .attr('x1', d => d.source.x)

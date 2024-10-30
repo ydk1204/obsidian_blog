@@ -42,10 +42,34 @@ export default function FullGraphView({ posts, isOpen, onClose }) {
     const links = createLinks(posts)
 
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(100))
-      .force('charge', d3.forceManyBody().strength(-300))
+      .force('link', d3.forceLink(links).id(d => d.id).distance(30))
+      .force('charge', d3.forceManyBody().strength(-3))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(30))
+      .force('collision', d3.forceCollide().radius(45))
+      .force('circular', function(alpha) {
+        nodes.forEach(node => {
+          if (node.type === 'post') {
+            // 각 페이지 노드를 중심으로 하는 원자 모양 배치
+            const relatedTags = nodes.filter(n => 
+              n.type === 'tag' && 
+              links.some(l => 
+                (l.source.id === node.id && l.target.id === n.id) ||
+                (l.source.id === n.id && l.target.id === node.id)
+              )
+            );
+            
+            const angleStep = (2 * Math.PI) / relatedTags.length;
+            relatedTags.forEach((tagNode, index) => {
+              const angle = angleStep * index;
+              const radius = 45;
+              const dx = node.x + radius * Math.cos(angle) - tagNode.x;
+              const dy = node.y + radius * Math.sin(angle) - tagNode.y;
+              tagNode.x += dx * alpha;
+              tagNode.y += dy * alpha;
+            });
+          }
+        });
+      })
 
     const link = g.append('g')
       .selectAll('line')
