@@ -94,22 +94,32 @@ const PreComponent = ({ children }) => {
 
   return (
     <pre className={`language-${language} relative`}>
-      <code ref={codeRef} className={`language-${language}`}>
-        {lines.map((line, index) => (
-          <div key={index} className="table-row">
-            <span className="table-cell text-right pr-4 select-none text-gray-500 dark:text-gray-400" style={{userSelect: 'none', width: '2em'}}>{index + 1}</span>
-            <span className="table-cell" dangerouslySetInnerHTML={{ __html: Prism.highlight(line, Prism.languages[language], language) }} />
-          </div>
-        ))}
-      </code>
-      <button className="copy-button absolute top-2 right-2" onClick={handleCopy} aria-label="코드 복사">
-        <FaCopy />
-      </button>
-      {isCopied && (
-        <span className="absolute top-2 right-8 bg-gray-800 text-white px-2 py-1 rounded text-sm" style={{ zIndex: 10 }}>
-          Copy!
-        </span>
-      )}
+      <div className="flex">
+        <div className="flex-none sticky left-0 bg-[var(--code-bg)] z-10">
+          {lines.map((_, index) => (
+            <div key={index} className="text-right pr-4 select-none text-gray-500 dark:text-gray-400" style={{height: '1.5rem', width: '2em', userSelect: 'none'}}>
+              {index + 1}
+            </div>
+          ))}
+        </div>
+        <div className="overflow-x-auto flex-grow">
+          <code ref={codeRef} className={`language-${language} block`}>
+            {lines.map((line, index) => (
+              <div key={index} style={{height: '1.5rem'}} dangerouslySetInnerHTML={{ __html: Prism.highlight(line, Prism.languages[language], language) }} />
+            ))}
+          </code>
+        </div>
+      </div>
+      <div className="absolute right-2 top-2" style={{ zIndex: 20 }}>
+        <button className="copy-button" onClick={handleCopy} aria-label="코드 복사">
+          <FaCopy />
+        </button>
+        {isCopied && (
+          <span className="absolute top-0 right-8 bg-gray-800 text-white px-2 py-1 rounded text-sm">
+            Copy!
+          </span>
+        )}
+      </div>
     </pre>
   );
 };
