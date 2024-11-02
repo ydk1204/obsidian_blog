@@ -95,7 +95,7 @@ const PreComponent = ({ children }) => {
   return (
     <pre className={`language-${language} relative`}>
       <div className="flex">
-        <div className="flex-none sticky left-0 bg-[var(--code-bg)] z-10">
+        <div className="flex-none sticky left-0 z-10">
           {lines.map((_, index) => (
             <div key={index} className="text-right pr-4 select-none text-gray-500 dark:text-gray-400" style={{height: '1.5rem', width: '2em', userSelect: 'none'}}>
               {index + 1}
