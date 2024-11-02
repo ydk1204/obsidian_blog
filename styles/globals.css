@@ -466,7 +466,7 @@ article {
 /* 본문 글자 간격 조정 */
 p, li {
   font-weight: 400;
-  line-height: 1.2;
+  line-height: 1.6;
   margin-bottom: 1.2em;
 }
 
@@ -618,3 +618,10 @@ blockquote.callout {
   color: #9CA3AF;
 }
 
+/* 인라인 코드 스타일 추가 */
+code:not(pre code) {
+  background-color: rgba(194, 194, 194, 0.154);
+  border-radius: 4px;
+  padding: 2px 4px;
+  /* font-size: 0.9em; */
+}
