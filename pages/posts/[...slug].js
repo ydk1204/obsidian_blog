@@ -106,7 +106,7 @@ const PreComponent = ({ children }) => {
         <FaCopy />
       </button>
       {isCopied && (
-        <span className="absolute top-10 right-2 bg-gray-800 text-white px-2 py-1 rounded text-sm">
+        <span className="absolute top-2 right-8 bg-gray-800 text-white px-2 py-1 rounded text-sm" style={{ zIndex: 10 }}>
           Copy!
         </span>
       )}
