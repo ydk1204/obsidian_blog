@@ -97,7 +97,7 @@ const PreComponent = ({ children }) => {
       <div className="flex">
         <div className="flex-none sticky left-0 z-10">
           {lines.map((_, index) => (
-            <div key={index} className="text-right pr-4 select-none text-gray-500 dark:text-gray-400" style={{height: '1.5rem', width: '2em', userSelect: 'none'}}>
+            <div key={index} className="text-right pr-4 select-none text-gray-500 dark:text-gray-400 mb-[0.3em]" style={{height: '1.5rem', width: '2em', userSelect: 'none'}}>
               {index + 1}
             </div>
           ))}
@@ -105,7 +105,7 @@ const PreComponent = ({ children }) => {
         <div className="overflow-x-auto flex-grow">
           <code ref={codeRef} className={`language-${language} block`}>
             {lines.map((line, index) => (
-              <div key={index} style={{height: '1.5rem'}} dangerouslySetInnerHTML={{ __html: Prism.highlight(line, Prism.languages[language], language) }} />
+              <div key={index} style={{height: '1.5rem', marginBottom: '0.3em'}} dangerouslySetInnerHTML={{ __html: Prism.highlight(line, Prism.languages[language], language) }} />
             ))}
           </code>
         </div>
@@ -115,7 +115,7 @@ const PreComponent = ({ children }) => {
           <FaCopy />
         </button>
         {isCopied && (
-          <span className="absolute top-0 right-8 bg-gray-800 text-white px-2 py-1 rounded text-sm">
+          <span className="absolute top-1 right-8 bg-gray-800 text-white px-2 py-1 rounded text-sm">
             Copy!
           </span>
         )}

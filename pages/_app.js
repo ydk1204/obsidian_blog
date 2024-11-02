@@ -40,8 +40,11 @@ function MyApp({ Component, pageProps }) {
       const WebFont = require('webfontloader');
       WebFont.load({
         google: {
-          families: ['Roboto:400,700', 'Open Sans:400,700'],
-          text: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-_~#$%^&*(){}[]<>|/:;\'"`',
+          families: [
+            'Schibsted Grotesk:400,700',
+            'Source Sans Pro:400,700',
+            'IBM Plex Mono:400,700'
+          ]
         },
         timeout: 2000,
         active: function() {

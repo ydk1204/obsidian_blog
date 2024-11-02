@@ -11,10 +11,14 @@
             "id": "299199b89134df51",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "그래프 뷰"
+              "type": "markdown",
+              "state": {
+                "file": "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "로컬스토리지의 개념"
             }
           }
         ]
