@@ -82,7 +82,12 @@ function TableOfContents() {
   }
 
   return (
-    <nav className="sticky top-0 max-h-screen overflow-y-auto">
+    <nav 
+      className="sticky top-0 overflow-y-auto scrollbar-hide" 
+      style={{ 
+        height: '100%'
+      }}
+    >
       <ul>
         {headings.map(heading => (
           <li key={heading.id} style={{ marginLeft: `${(heading.level - 1) * 1}rem` }}>
