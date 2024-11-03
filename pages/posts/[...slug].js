@@ -476,9 +476,9 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
           {new Date(frontMatter.date).toLocaleDateString()}
         </div>
         {frontMatter.tags && (
-          <div className="mb-4">
+          <div className="mb-4 flex flex-wrap gap-2">
             {frontMatter.tags.map(tag => (
-              <Link key={tag} href={`/tags/${tag}`} className="mr-2 px-2 py-1 rounded-full text-sm" style={{
+              <Link key={tag} href={`/tags/${tag}`} className="px-2 py-1 rounded-full text-sm" style={{
                 backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
                 color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
               }}>
