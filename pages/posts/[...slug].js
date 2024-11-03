@@ -124,6 +124,35 @@ const PreComponent = ({ children }) => {
   );
 };
 
+const createHeadingComponent = (level) => {
+  const HeadingComponent = ({ children }) => {
+    // children이 문자열이 아닌 경우 처리
+    const text = React.Children.toArray(children)
+      .map(child => {
+        if (typeof child === 'string') return child;
+        if (typeof child === 'object' && 'props' in child) {
+          return child.props.children;
+        }
+        return '';
+      })
+      .join('');
+
+    // slugify 옵션 설정
+    const id = slugify(text, {
+      lower: true,           // 소문자 변환
+      strict: false,         // 특수문자 허용
+      locale: 'ko',          // 한글 지원
+      remove: /[*+~()'"!:@]/g  // 제거할 특수문자 지정
+    });
+
+    const HeadingTag = `h${level}`;
+    return <HeadingTag id={id}>{children}</HeadingTag>;
+  };
+
+  HeadingComponent.displayName = `Heading${level}`;
+  return HeadingComponent;
+};
+
 const createComponents = (posts) => ({
   span: ({ children, style, ...props }) => {
     let styleObject = style;
@@ -170,7 +199,10 @@ const createComponents = (posts) => ({
     return null // 임시로 null을 반환
   },
   a: ({ href, children }) => {
-    if (href.startsWith('[[') && href.endsWith(']]')) {
+    if (href?.startsWith('#')) {
+      return <a href={href}>{children}</a>;
+    }
+    if (href?.startsWith('[[') && href?.endsWith(']]')) {
       const fileName = href.slice(2, -2)
       return (
         <ul className="mb-4">
@@ -182,7 +214,7 @@ const createComponents = (posts) => ({
         </ul>
       )
     }
-    if (href.startsWith('http') || href.startsWith('https')) {
+    if (href?.startsWith('http') || href?.startsWith('https')) {
       return (
         <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
           {children}
@@ -286,6 +318,12 @@ const createComponents = (posts) => ({
       </ul>
     );
   },
+  h1: createHeadingComponent(1),
+  h2: createHeadingComponent(2),
+  h3: createHeadingComponent(3),
+  h4: createHeadingComponent(4),
+  h5: createHeadingComponent(5),
+  h6: createHeadingComponent(6),
 });
 
 function preprocessContent(content) {

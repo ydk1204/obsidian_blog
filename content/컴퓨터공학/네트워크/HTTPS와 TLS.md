@@ -23,27 +23,27 @@ disqus: true
 TLS 핸드셰이크는 클라이언트와 서버가 안전한 통신을 설정하기 위해 수행하는 일련의 단계다. <br>
 아래는 이 과정의 설명이다.
 
-#### 1. **Client Hello**
+#### 1.Client Hello
 - 클라이언트가 서버에게 <mark style="background: #FF5582A6;">Client Hello</mark> 메시지를 전송한다. 이 메시지에는 클라이언트가 지원하는 TLS 버전, 지원되는 암호화 알고리즘(Cipher Suites), 클라이언트 무작위 데이터, 세션 ID, 및 서버명(SNI)이 포함된다.
 
-#### 2. **Server Hello**
+#### 2.Server Hello
 - 서버는 <mark style="background: #FF5582A6;">Server Hello</mark> 메시지를 클라이언트에게 전송한다. 이 메시지에는 서버가 선택한 TLS 버전, 선택한 암호화 알고리즘, 서버 무작위 데이터, 및 서버의 TLS 인증서가 포함된다.
 
-#### 3. **인증서 전달 및 인증**
+#### 3.안증서 전달 및 인증
 - 서버는 자신의 TLS 인증서를 클라이언트에게 전달한다. 이 인증서는 서버의 공개 키와 도메인 소유자에 대한 정보를 포함하며, [CA(Certificate Authority)](#ca)가 서명한 것이다. 클라이언트는 이 인증서를 사용하여 서버의 신원을 확인한다. 클라이언트는 내장된 CA 공개 키로 인증서를 복호화하여 정상적으로 발급된 것인지 확인한다.
 
-#### 4. **키 교환 (Key Exchange)**
+#### 4.키 교환 (Key Exchange)
 - 클라이언트와 서버는 키 교환 알고리즘을 사용하여 대칭키(세션 키)를 생성한다.
   - **RSA 키 교환**: 클라이언트는 `premaster secret`을 생성하고, 이를 서버의 공개 키로 암호화하여 전송한다. 서버는 자신의 개인 키로 이를 복호화한다.
   - **Diffie-Hellman (DH) 및 ECDHE**: 클라이언트와 서버는 DH 매개변수를 교환하여 동일한 `premaster secret`을 생성한다. ECDHE는 타원곡선 암호를 사용한 DH 알고리즘으로, 보안성이 높고 효율적이다.
 
-#### 5. **세션 키 생성**
+#### 5.세션 키 생성
 - 클라이언트와 서버는 클라이언트 무작위 데이터, 서버 무작위 데이터, 및 `premaster secret`을 사용하여 대칭키인 세션 키를 생성한다. 이 세션 키는 이후의 통신에서 데이터를 암호화하고 복호화하는 데 사용된다.
 
-#### 6. **Change Cipher Spec**
+#### 6.Change Cipher Spec
 - 클라이언트와 서버는 <mark style="background: #FF5582A6;">Change Cipher Spec</mark> 메시지를 전송하여 이후의 모든 패킷이 협상된 알고리즘과 키를 사용하여 암호화됨을 알린다.
 
-#### 7. **Finished**
+#### 7.Finished
 - 클라이언트와 서버는 <mark style="background: #FF5582A6;">Finished</mark> 메시지를 전송하여 TLS 핸드셰이크가 성공적으로 완료되었음을 확인한다. 이제부터 모든 통신은 세션 키를 사용하여 암호화된다.
 
 ---
