@@ -173,7 +173,7 @@ export default function Layout({ children, initialPosts, folderStructure, filter
           ></div>
           
           {/* Left Sidebar */}
-          <div ref={leftSidebarRef} className={`sidebar lg:sticky lg:top-0 lg:h-screen lg:w-64 w-4/5 overflow-y-auto pt-8 px-4 transition-transform duration-300 ease-in-out ${leftSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed top-0 left-0 h-full z-50`}
+          <div ref={leftSidebarRef} className={`sidebar rounded-r-2xl lg:rounded-none lg:sticky lg:top-0 lg:h-screen lg:w-64 w-4/5  overflow-y-auto pt-8 px-4 transition-transform duration-300 ease-in-out ${leftSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed top-0 left-0 h-full z-50`}
                style={{ minHeight: '110vh' }}>
             <Sidebar onSearchClick={toggleSearch} posts={posts} folderStructure={folderStructure} />
           </div>
@@ -186,7 +186,7 @@ export default function Layout({ children, initialPosts, folderStructure, filter
           </main>
 
           {/* Right Sidebar */}
-          <div ref={rightSidebarRef} className={`sidebar lg:sticky lg:top-0 lg:h-screen lg:w-64 w-4/5 pt-8 flex flex-col px-4 transition-transform duration-300 ease-in-out ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0 fixed top-0 right-0 h-full z-50`}
+          <div ref={rightSidebarRef} className={`sidebar rounded-l-2xl lg:rounded-none lg:sticky lg:top-0 lg:h-screen lg:w-64 w-4/5 pt-8 flex flex-col px-4 transition-transform duration-300 ease-in-out ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0 fixed top-0 right-0 h-full z-50`}
                style={{ minHeight: '110vh' }}>
             <div className="flex flex-col h-full">
               {!router.pathname.startsWith('/tags/') && router.pathname !== '/' && (
