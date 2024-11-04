@@ -1,9 +1,12 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useTheme } from '../contexts/ThemeContext'
+import { useRouter } from 'next/router'
 
 export default function FolderPage({ folderName, posts }) {
   const { theme } = useTheme()
+  const router = useRouter()
+  
   const [sortBy, setSortBy] = useState('name')
 
   const sortedPosts = [...posts].sort((a, b) => {
@@ -17,6 +20,10 @@ export default function FolderPage({ folderName, posts }) {
   const buttonStyle = {
     backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
     color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
+  }
+
+  const handleTagClick = (tag) => {
+    router.push(`/tags/${tag}`)
   }
 
   return (
@@ -41,30 +48,32 @@ export default function FolderPage({ folderName, posts }) {
         </button>
       </div>
       <div className="grid grid-cols-1 gap-4">
+        <ul>
         {sortedPosts.map((post) => (
-          <Link key={post.slug} href={`/posts/${post.slug}`}>
-            <div className="border rounded-lg p-4 hover:shadow-md transition-shadow duration-200 flex justify-between items-center">
-              <div>
-                <h2 className="text-lg font-semibold mb-2">{post.frontMatter.title}</h2>
-                {post.frontMatter.description && (
-                  <p className="text-sm text-gray-500 mb-2">{post.frontMatter.description}</p>
-                )}
-                {post.frontMatter.tags && post.frontMatter.tags.length > 0 && (
-                  <div className="flex flex-wrap">
-                    {post.frontMatter.tags.map(tag => (
-                      <span key={tag} className="text-xs mr-2 mb-1 px-2 py-1 rounded-full" style={buttonStyle}>
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <p className="text-sm text-gray-500 ml-4">
-                {new Date(post.frontMatter.date).toLocaleDateString()}
-              </p>
-            </div>
+          <li key={post.slug} className="mb-6 p-4 border border-gray-200 rounded-lg">
+          <Link href={`/posts/${post.slug}`} className="text-xl font-semibold hover:underline">
+            {post.frontMatter.title}
           </Link>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            {new Date(post.frontMatter.date).toLocaleDateString('ko-KR')}
+          </p>
+          <div className="mt-2">
+            {post.frontMatter.tags && post.frontMatter.tags.map(tag => (
+              <span
+                key={tag}
+                className="inline-block rounded-xl px-3 py-1 text-sm font-semibold mr-2 mb-2 cursor-pointer"
+                onClick={() => handleTagClick(tag)}
+                style={{
+                  backgroundColor: theme === 'dark' ? '#1F2937' : '#DEE5D4',
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </li>
         ))}
+        </ul>
       </div>
     </div>
   )
