@@ -30,7 +30,7 @@ export default function Home({ posts, folderStructure }) {
           {JSON.stringify(structuredData)}
         </script>
       </Head>
-      <h1 className="text-3xl font-bold mb-4 mt-4">Welcome to My Obsidian Blog</h1>
+      <h1 className="text-3xl font-bold mb-4 mt-4">From Word to World</h1>
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Graph View</h2>
         <GraphView posts={posts} currentSlug="" />
