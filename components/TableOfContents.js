@@ -84,27 +84,50 @@ function TableOfContents() {
   return (
     <nav 
       className="sticky top-0 overflow-y-auto scrollbar-hide" 
-      style={{ 
-        height: '100%'
-      }}
+      style={{ height: '100%' }}
     >
-      <ul>
-        {headings.map(heading => (
-          <li key={heading.id} style={{ marginLeft: `${(heading.level - 1) * 1}rem` }}>
-            <a 
-              href={`#${heading.id}`} 
-              className={`hover:underline cursor-pointer transition-colors duration-200 ${
-                activeId === heading.id ? 'text-orange-500 font-bold' : 'text-gray-500'
-              }`}
-              onClick={(e) => {
-                e.preventDefault()
-                scrollToHeading(heading.id)
+      <ul className="relative">
+        {headings.map((heading, index) => {
+          const depth = heading.level - 1;
+          return (
+            <li 
+              key={heading.id} 
+              className="relative"
+              style={{ 
+                paddingLeft: depth > 0 ? `${depth * 0.9}rem` : '0',
+                marginBottom: '0'
               }}
             >
-              {heading.text}
-            </a>
-          </li>
-        ))}
+              {depth > 0 && (
+                <>
+                  {Array.from({ length: depth }).map((_, i) => (
+                    <span
+                      key={i}
+                      className="absolute border-l-2 border-gray-500 dark:border-gray-500"
+                      style={{
+                        left: `${i * 0.9}rem`,
+                        top: 0,
+                        bottom: 0,
+                      }}
+                    />
+                  ))}
+                </>
+              )}
+              <a 
+                href={`#${heading.id}`} 
+                className={`hover:underline cursor-pointer transition-colors duration-200 ${
+                  activeId === heading.id ? 'text-orange-500 font-bold' : 'text-gray-500'
+                }`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToHeading(heading.id)
+                }}
+              >
+                {heading.text}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   )

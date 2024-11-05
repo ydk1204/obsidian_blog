@@ -17,21 +17,35 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
 
     const entries = Object.entries(folder)
     return (
-      <ul className={`${depth === 0 ? '' : 'pl-4'}`}>
-        {entries.map(([key, value]) => {
+      <ul className={`${depth === 0 ? '' : 'pl-4'} relative`}>
+        {entries.map(([key, value], index) => {
           const newPath = [...path, key]
           const isOpen = openFolders[newPath.join('/')]
+          
           if (typeof value === 'object' && !value.slug) {
             return (
-              <li key={key} className="my-1">
-                <button
-                  onClick={() => toggleFolder(newPath.join('/'))}
-                  className="flex items-center text-left w-full"
-                  aria-label={`${key} 폴더 열기/닫기`}
-                >
-                  <span className={`mr-1 transition-transform duration-300 ${isOpen ? 'transform rotate-90' : ''}`}>▶</span>
-                  {key}
-                </button>
+              <li key={key} className="mb-0 relative">
+                {depth > 0 && Array.from({ length: depth }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="absolute border-l-2 border-gray-300 dark:border-gray-600"
+                    style={{
+                      left: `${-0.7 - i}rem`,
+                      top: 0,
+                      height: '100%'
+                    }}
+                  />
+                ))}
+                <div className="flex items-center">
+                  <button
+                    onClick={() => toggleFolder(newPath.join('/'))}
+                    className="flex items-center text-left w-full mb-1"
+                    aria-label={`${key} 폴더 열기/닫기`}
+                  >
+                    <span className={`mr-1 transition-transform duration-300 ${isOpen ? 'transform rotate-90' : ''}`}>▶</span>
+                    {key}
+                  </button>
+                </div>
                 <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
                   {renderFolder(value, newPath, depth + 1)}
                 </div>
@@ -39,7 +53,18 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
             )
           } else {
             return (
-              <li key={key} className="my-1">
+              <li key={key} className="mb-0 relative">
+                {depth > 0 && Array.from({ length: depth }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="absolute border-l-2 border-gray-300 dark:border-gray-600"
+                    style={{
+                      left: `${-0.7 - i}rem`,
+                      top: 0,
+                      height: '100%'
+                    }}
+                  />
+                ))}
                 <Link href={`/posts/${value.slug}`} className="hover:underline">
                   {value.frontMatter.title}
                 </Link>

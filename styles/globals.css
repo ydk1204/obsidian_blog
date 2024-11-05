@@ -504,7 +504,7 @@ p, li {
 }
 
 .sidebar li {
-  margin-bottom: 0.2em;
+  /* margin-bottom: 0.2em; */
 }
 
 @keyframes rotate360 {
