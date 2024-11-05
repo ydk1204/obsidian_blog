@@ -486,8 +486,8 @@ article {
 /* 사이드바와 메인 컨텐츠 영역 스타일 */
 .sidebar {
   background-color: var(--sidebar-bg);
-  transition: background-color 0.3s ease;
-  will-change: background-color;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  will-change: transform, background-color;
 }
 
 .main-content {
