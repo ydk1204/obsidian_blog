@@ -125,10 +125,10 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
     }
 
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(15))
-      .force('charge', d3.forceManyBody().strength(-1))
+      .force('link', d3.forceLink(links).id(d => d.id).distance(40))
+      .force('charge', d3.forceManyBody().strength(150))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(22))
+      .force('collision', d3.forceCollide().radius(30))
       .force('circular', function(alpha) {
         const center = {x: width / 2, y: height / 2};
         

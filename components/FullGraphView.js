@@ -42,10 +42,10 @@ export default function FullGraphView({ posts, isOpen, onClose }) {
     const links = createLinks(posts)
 
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(45))
-      .force('charge', d3.forceManyBody().strength(-3))
-      .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(67))
+      .force('link', d3.forceLink(links).id(d => d.id).distance(95))
+      .force('charge', d3.forceManyBody().strength(300))
+      .force('center', d3.forceCenter(width / 8, height / 8))
+      .force('collision', d3.forceCollide().radius(80))
       .force('circular', function(alpha) {
         nodes.forEach(node => {
           if (node.type === 'post') {

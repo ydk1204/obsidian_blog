@@ -1,3 +1,9 @@
 {
-  "cssTheme": "AnuPpuccin"
+  "cssTheme": "AnuPpuccin",
+  "enabledCssSnippets": [
+    "custom-rainbow-colors",
+    "dashboard",
+    "extended-colorschemes",
+    "minimal-cards"
+  ]
 }

@@ -54,7 +54,7 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
   return (
     <div>
       <Link href="/" className="my-4 group h-10 flex items-center hover:justify-end duration-300 ease-in-out">
-        <h1 className="text-2xl font-bold mt-4 group-hover:text-3xl group-hover:text-[#EA9900] duration-100"><span className="group-hover:hidden">From</span><span className="hidden nameLogo group-hover:inline-block">To</span>  Wor<span className="hidden nameLogo2 group-hover:inline-block text-3xl text-[#EA9900]">l</span>d</h1>
+        <h1 className="text-2xl font-bold mt-4 group-hover:text-3xl group-hover:text-[#FE640C] duration-100"><span className="group-hover:hidden">From</span><span className="hidden nameLogo group-hover:inline-block">To</span>  Wor<span className="hidden nameLogo2 group-hover:inline-block text-3xl text-[#FE640C]">l</span>d</h1>
       </Link>
       <button 
         onClick={onSearchClick} 

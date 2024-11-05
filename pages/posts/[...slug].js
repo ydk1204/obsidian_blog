@@ -398,11 +398,11 @@ function preprocessContent(content) {
     }
   );
 
-  // 기존의 콜아웃 처리 로직 유지
+  // 콜아웃 처리 로직 수정 - 줄 시작 부분의 공백 처리 추가
   content = content.replace(
-    /^>\s*\[!(note|abstract|info|tip|success|question|warning|fail|error|bug|example|quote|faq)\](\+|-|)\s*(.*)\n((?:>\s*.*(?:\n|$))*)/gm,
-    (match, type, collapsibleState, title, content) => {
-      const processedContent = content.replace(/^>\s?/gm, '').trim();
+    /^(>[\s]*)\[!(note|abstract|info|tip|success|question|warning|fail|error|bug|example|quote|faq)\](\+|-|)\s*(.*)\n((?:>[\s]*.*(?:\n|$))*)/gm,
+    (match, prefix, type, collapsibleState, title, content) => {
+      const processedContent = content.replace(/^>[\s]*/gm, '').trim();
       const isCollapsible = collapsibleState === '+' || collapsibleState === '-';
       const isInitiallyOpen = collapsibleState === '+' || collapsibleState === '';
       const finalTitle = title.trim() || type;
@@ -460,7 +460,7 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
         </script>
       </Head>
       <article className="prose dark:prose-invert max-w-none">
-        <div className="my-4 text-gray-500">
+        <div className="mt-[1.45rem] mb-4 text-gray-500">
           <Link href="/" className="hover:underline">Home</Link>
           {folderPath.map((folder, index) => (
             <React.Fragment key={folder}>
@@ -471,7 +471,9 @@ export default function Post({ source, frontMatter, posts, slug, folderStructure
             </React.Fragment>
           ))}
         </div>
-        <h1 className="text-3xl font-bold mb-4 mt-0">{frontMatter.title}</h1>
+        <h1 className="text-3xl font-bold mb-4 mt-0" style={{
+          color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
+        }}>{frontMatter.title}</h1>
         <div className="mb-4 text-gray-600 dark:text-gray-400">
           {new Date(frontMatter.date).toLocaleDateString()}
         </div>
