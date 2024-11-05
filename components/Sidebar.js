@@ -46,7 +46,7 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
                     {key}
                   </button>
                 </div>
-                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className={`overflow-hidden transition-max-h-screen transition-opacity duration-300 ease-in-out ${isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
                   {renderFolder(value, newPath, depth + 1)}
                 </div>
               </li>
