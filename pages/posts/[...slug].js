@@ -16,6 +16,8 @@ import React from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import SocialShare from '../../components/SocialShare'
+import { DiJavascript1, DiPython, DiCss3, DiMarkdown, DiJava, DiGo, DiHtml5 } from "react-icons/di";
+import { SiTypescript, SiRust, SiCplusplus, SiC, SiKotlin, SiSwift, SiGnubash } from "react-icons/si";
 
 // Prism 언어 지원을 위한 import
 import 'prismjs/components/prism-javascript'
@@ -49,6 +51,139 @@ const PreComponent = ({ children }) => {
   const language = children.props.className ? children.props.className.replace('language-', '') : '';
   const lines = code.split('\n');
   
+  // 언어별 아이콘 색상 매핑
+  const getIconColor = (lang) => {
+    switch (lang.toLowerCase()) {
+      case 'javascript':
+      case 'js':
+        return 'text-[#F7DF1E]'; // JavaScript 노란색
+      case 'typescript':
+      case 'ts':
+        return 'text-[#3178C6]'; // TypeScript 파란색
+      case 'python':
+      case 'py':
+        return 'text-[#3776AB]'; // Python 파란색
+      case 'css':
+        return 'text-[#1572B6]'; // CSS 파란색
+      case 'markdown':
+      case 'md':
+        return 'text-[#000000] dark:text-[#FFFFFF]'; // Markdown
+      case 'java':
+        return 'text-[#007396]'; // Java 파란색
+      case 'rust':
+        return 'text-[#DEA584]'; // Rust 주황색
+      case 'cpp':
+      case 'c++':
+        return 'text-[#00599C]'; // C++ 파란색
+      case 'c':
+        return 'text-[#A8B9CC]'; // C 회색
+      case 'go':
+        return 'text-[#00ADD8]'; // Go 하늘색
+      case 'kotlin':
+        return 'text-[#7F52FF]'; // Kotlin 보라색
+      case 'swift':
+        return 'text-[#FA7343]'; // Swift 주황색
+      case 'html':
+        return 'text-[#E34F26]'; // HTML 주황색
+      case 'bash':
+      case 'shell':
+      case 'sh':
+        return 'text-[#4EAA25]'; // Bash 초록색
+      default:
+        return 'text-gray-700 dark:text-gray-300';
+    }
+  };
+
+  // 언어별 아이콘 매핑 수정
+  const getLanguageIcon = (lang) => {
+    const iconProps = { 
+      className: `inline-block mr-1 ${getIconColor(lang)}`, 
+      size: "1.1em" 
+    };
+    switch (lang.toLowerCase()) {
+      case 'javascript':
+      case 'js':
+        return <DiJavascript1 {...iconProps} />;
+      case 'typescript':
+      case 'ts':
+        return <SiTypescript {...iconProps} />;
+      case 'python':
+      case 'py':
+        return <DiPython {...iconProps} />;
+      case 'css':
+        return <DiCss3 {...iconProps} />;
+      case 'markdown':
+      case 'md':
+        return <DiMarkdown {...iconProps} />;
+      case 'java':
+        return <DiJava {...iconProps} />;
+      case 'rust':
+        return <SiRust {...iconProps} />;
+      case 'cpp':
+      case 'c++':
+        return <SiCplusplus {...iconProps} />;
+      case 'c':
+        return <SiC {...iconProps} />;
+      case 'go':
+        return <DiGo {...iconProps} />;
+      case 'kotlin':
+        return <SiKotlin {...iconProps} />;
+      case 'swift':
+        return <SiSwift {...iconProps} />;
+      case 'html':
+        return <DiHtml5 {...iconProps} />;
+      case 'bash':
+      case 'shell':
+      case 'sh':
+        return <SiGnubash {...iconProps} />;
+      default:
+        return null;
+    }
+  };
+
+  // 언어별 파스텔톤 배경색 매핑
+  const getLanguageColor = (lang) => {
+    switch (lang.toLowerCase()) {
+      case 'javascript':
+      case 'js':
+        return 'bg-[#fff7e6] dark:bg-[#2d2b17]'; // 노란색 계열
+      case 'typescript':
+      case 'ts':
+        return 'bg-[#e6f3ff] dark:bg-[#172a3a]'; // 파란색 계열
+      case 'python':
+      case 'py':
+        return 'bg-[#e6ffe6] dark:bg-[#172a17]'; // 초록색 계열
+      case 'css':
+        return 'bg-[#ffe6f3] dark:bg-[#2a172a]'; // 분홍색 계열
+      case 'markdown':
+      case 'md':
+        return 'bg-[#f3e6ff] dark:bg-[#261726]'; // 보라색 계열
+      case 'java':
+        return 'bg-[#ffe6e6] dark:bg-[#2a1717]'; // 빨간색 계열
+      case 'rust':
+        return 'bg-[#ffe6cc] dark:bg-[#2a1f17]'; // 주황색 계열
+      case 'cpp':
+      case 'c++':
+        return 'bg-[#e6fff9] dark:bg-[#172a27]'; // 민트색 계열
+      case 'c':
+        return 'bg-[#e6f9ff] dark:bg-[#17262a]'; // 하늘색 계열
+      case 'go':
+        return 'bg-[#e6fffa] dark:bg-[#172a29]'; // 청록색 계열
+      case 'kotlin':
+        return 'bg-[#fff2e6] dark:bg-[#2a2017]'; // 살구색 계열
+      case 'swift':
+        return 'bg-[#ffe6e6] dark:bg-[#2a1717]'; // 연한 빨간색 계열
+      case 'html':
+        return 'bg-[#ffe6cc] dark:bg-[#2a1f17]'; // 주황색 계열
+      case 'bash':
+      case 'shell':
+      case 'sh':
+        return 'bg-[#e6e6e6] dark:bg-[#202020]'; // 회색 계열
+      default:
+        return 'bg-gray-100 dark:bg-gray-800'; // 기본 색상
+    }
+  };
+
   useEffect(() => {
     setIsMounted(true);
     if (codeRef.current) {
@@ -93,32 +228,44 @@ const PreComponent = ({ children }) => {
   }
 
   return (
-    <pre className={`language-${language} relative`}>
-      <div className="flex">
-        <div className="flex-none sticky left-0 z-10">
-          {lines.map((_, index) => (
-            <div key={index} className="text-right pr-4 select-none text-gray-500 dark:text-gray-400 mb-[0.3em]" style={{height: '1.5rem', width: '2em', userSelect: 'none'}}>
-              {index + 1}
-            </div>
-          ))}
+    <pre className={`language-${language} relative p-0 overflow-hidden`}>
+      {language && (
+        <div className={`w-full ${getLanguageColor(language)} border-b border-gray-200 py-2 px-4 flex items-center justify-between`}>
+          <div className="flex items-center">
+            {getLanguageIcon(language)}
+            <span className="text-sm text-gray-700 dark:text-gray-300">{language}</span>
+          </div>
+          <button 
+            className="copy-button flex items-center text-gray-600 hover:text-gray-800"
+            onClick={handleCopy} 
+            aria-label="코드 복사"
+          >
+            <FaCopy className="text-gray-600 hover:text-gray-800" size="1em" />
+            {isCopied && (
+              <span className="ml-2 text-xs text-gray-600">
+                Copy!
+              </span>
+            )}
+          </button>
         </div>
-        <div className="overflow-x-auto flex-grow">
-          <code ref={codeRef} className={`language-${language} block`}>
-            {lines.map((line, index) => (
-              <div key={index} style={{height: '1.5rem', marginBottom: '0.3em'}} dangerouslySetInnerHTML={{ __html: Prism.highlight(line, Prism.languages[language], language) }} />
+      )}
+      <div className="p-4">
+        <div className="flex">
+          <div className="flex-none sticky left-0 z-10">
+            {lines.map((_, index) => (
+              <div key={index} className="text-right pr-4 select-none text-gray-500 mb-[0.3em]" style={{height: '1.2rem', width: '2em', userSelect: 'none'}}>
+                {index + 1}
+              </div>
             ))}
-          </code>
+          </div>
+          <div className="overflow-x-auto flex-grow">
+            <code ref={codeRef} className={`language-${language} block`}>
+              {lines.map((line, index) => (
+                <div key={index} style={{height: '1.2rem', marginBottom: '0.3em'}} dangerouslySetInnerHTML={{ __html: Prism.highlight(line, Prism.languages[language], language) }} />
+              ))}
+            </code>
+          </div>
         </div>
-      </div>
-      <div className="absolute right-2 top-2" style={{ zIndex: 20 }}>
-        <button className="copy-button" onClick={handleCopy} aria-label="코드 복사">
-          <FaCopy />
-        </button>
-        {isCopied && (
-          <span className="absolute top-1 right-8 bg-gray-800 text-white px-2 py-1 rounded text-sm">
-            Copy!
-          </span>
-        )}
       </div>
     </pre>
   );
@@ -626,7 +773,7 @@ export async function getStaticProps({ params }) {
     scope: post.frontMatter,
   })
 
-  // frontMatter가 undefined일 경우 빈 객체로 초기화
+  // frontMatter가 undefined일 경우  객체로 초기화
   const sanitizedFrontMatter = post.frontMatter ? Object.fromEntries(
     Object.entries(post.frontMatter).map(([key, value]) => [
       key,
