@@ -4,10 +4,13 @@ import { useTheme } from '../contexts/ThemeContext'
 import Image from 'next/image'
 import { useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
+import { useRouter } from 'next/router'
 
 export default function Sidebar({ onSearchClick, posts, folderStructure }) {
   const { openFolders, toggleFolder } = useSidebar()
   const { theme } = useTheme()
+  const router = useRouter()
+  const currentPath = router.asPath.replace('/posts/', '')
 
   const renderFolder = (folder, path = [], depth = 0) => {
     if (!folder || typeof folder !== 'object') {
@@ -22,17 +25,22 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
           const newPath = [...path, key]
           const isOpen = openFolders[newPath.join('/')]
           
+          const normalizedCurrentPath = decodeURIComponent(currentPath).toLowerCase()
+          const normalizedSlug = value.slug ? decodeURIComponent(value.slug).toLowerCase() : ''
+          const isCurrentPage = normalizedSlug === normalizedCurrentPath
+          
           if (typeof value === 'object' && !value.slug) {
             return (
               <li key={key} className="mb-0 relative">
                 {depth > 0 && Array.from({ length: depth }).map((_, i) => (
                   <span
                     key={i}
-                    className="absolute border-l-2 border-gray-300 dark:border-gray-600"
+                    className="absolute border-l-2"
                     style={{
                       left: `${-0.7 - i}rem`,
                       top: 0,
-                      height: '100%'
+                      height: '100%',
+                      borderColor: theme === 'dark' ? 'white' : 'black'
                     }}
                   />
                 ))}
@@ -57,16 +65,22 @@ export default function Sidebar({ onSearchClick, posts, folderStructure }) {
                 {depth > 0 && Array.from({ length: depth }).map((_, i) => (
                   <span
                     key={i}
-                    className="absolute border-l-2 border-gray-300 dark:border-gray-600"
+                    className="absolute border-l-2"
                     style={{
                       left: `${-0.7 - i}rem`,
                       top: 0,
-                      height: '100%'
+                      height: '100%',
+                      borderColor: theme === 'dark' ? 'white' : 'black'
                     }}
                   />
                 ))}
-                <Link href={`/posts/${value.slug}`} className="hover:underline">
-                  {value.frontMatter.title}
+                <Link 
+                  href={`/posts/${value.slug}`} 
+                  className={`hover:underline ${
+                    isCurrentPage ? 'text-[#FE640C] font-semibold' : ''
+                  }`}
+                >
+                  {value.frontMatter?.title || key}
                 </Link>
               </li>
             )

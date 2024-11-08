@@ -342,7 +342,6 @@ const createComponents = (posts) => ({
   pre: PreComponent,
   Callout: Callout,
   DisqusComments: () => {
-    console.log('DisqusComments rendered from MDX')
     return null // 임시로 null을 반환
   },
   Link: function Link({ href, children }) {
