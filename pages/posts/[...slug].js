@@ -63,7 +63,7 @@ const PreComponent = ({ children }) => {
         await navigator.clipboard.writeText(code);
         setIsCopied(true);
       } else {
-        // Clipboard API를 사용할 수 없는 경우 폴백 방식 사용
+        // Clipboard API를 사용할 수 없는 경우 폴백 사용
         const textArea = document.createElement('textarea');
         textArea.value = code;
         textArea.style.position = 'fixed';
@@ -376,13 +376,117 @@ const createComponents = (posts) => ({
     }
     return <a href={href}>{children}</a>
   },
+
+  // 테이블 컴포넌트 수정
+  table: ({ children }) => (
+    <div style={{
+      overflowX: 'auto',
+      margin: '1rem 0',
+      width: '100%'
+    }}>
+      <table style={{
+        width: '100%',
+        borderCollapse: 'collapse',
+        border: '1px solid var(--border-color)',
+        margin: '0 auto'
+      }}>
+        {children}
+      </table>
+    </div>
+  ),
+  thead: ({ children }) => (
+    <thead style={{
+      backgroundColor: 'var(--header-bg)',
+      color: 'var(--header-text)'
+    }}>
+      {children}
+    </thead>
+  ),
+  tbody: ({ children }) => (
+    <tbody>
+      {children}
+    </tbody>
+  ),
+  tr: ({ children }) => (
+    <tr style={{
+      borderBottom: '1px solid var(--border-color)'
+    }}>
+      {children}
+    </tr>
+  ),
+  th: ({ children }) => (
+    <th style={{
+      padding: '0.75rem 1rem',
+      textAlign: 'center',
+      fontWeight: '600',
+      borderRight: '1px solid var(--border-color)',
+      backgroundColor: 'var(--header-bg)',
+      color: 'var(--header-text)'
+    }}>
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td style={{
+      padding: '0.75rem 1rem',
+      textAlign: 'center',
+      borderRight: '1px solid var(--border-color)'
+    }}>
+      {children}
+    </td>
+  ),
 });
 
 function preprocessContent(content) {
-  // <br> 태그를 마크다운 줄바꿈으로 변환
+  if (!content) return '';
+
+  // 테이블 전체를 찾아서 처리
+  content = content.replace(
+    /\|([^\n]+)\|\n\|([-|\s]+)\|\n((?:\|[^\n]+\|\n)+)/g,
+    (match, headerRow, separatorRow, bodyRows) => {
+      // 헤더 처리
+      const headers = headerRow.split('|')
+        .filter(cell => cell.trim())
+        .map(cell => cell.trim());
+      
+      const headerHtml = headers
+        .map(header => `<th style={{padding:'0.75rem 1rem',textAlign:'center',fontWeight:'600',borderRight:'1px solid var(--border-color)',backgroundColor:'var(--header-bg)',color:'var(--header-text)'}}>
+          ${header}
+        </th>`)
+        .join('');
+
+      // 본문 처리
+      const rows = bodyRows
+        .trim()
+        .split('\n')
+        .map(row => {
+          const cells = row
+            .split('|')
+            .filter(cell => cell.trim())
+            .map(cell => `<td style={{padding:'0.75rem 1rem',textAlign:'center',borderRight:'1px solid var(--border-color)'}}>
+              ${cell.trim()}
+            </td>`)
+            .join('');
+          
+          return `<tr style={{borderBottom:'1px solid var(--border-color)'}}>${cells}</tr>`;
+        })
+        .join('\n');
+
+      return `<div style={{overflowX:'auto',margin:'1rem 0',width:'100%'}}>
+        <table style={{width:'100%',borderCollapse:'collapse',border:'1px solid var(--border-color)',margin:'0 auto'}}>
+          <thead style={{backgroundColor:'var(--header-bg)',color:'var(--header-text)'}}>
+            <tr>${headerHtml}</tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+    }
+  );
+
+  // 기존 처리 로직들 유지
   content = content.replace(/<br>/g, '  \n');
   
-  // 기존의 span과 mark 처리 로직 유지
+  // span과 mark 처리 (기존 코드 유지)
   content = content.replace(
     /<(span|mark) style="([^"]+)">([^<]+)<\/(span|mark)>/g,
     (match, tag, style, text) => {
@@ -398,7 +502,7 @@ function preprocessContent(content) {
     }
   );
 
-  // 콜아웃 처리 로직 수정 - 줄 시작 부분의 공백 처리 추가
+  // 콜아웃 처리 (기존 코드 유지)
   content = content.replace(
     /^(>[\s]*)\[!(note|abstract|info|tip|success|question|warning|fail|error|bug|example|quote|faq)\](\+|-|)\s*(.*)\n((?:>[\s]*.*(?:\n|$))*)/gm,
     (match, prefix, type, collapsibleState, title, content) => {
@@ -522,16 +626,31 @@ export async function getStaticProps({ params }) {
     scope: post.frontMatter,
   })
 
+  // frontMatter가 undefined일 경우 빈 객체로 초기화
+  const sanitizedFrontMatter = post.frontMatter ? Object.fromEntries(
+    Object.entries(post.frontMatter).map(([key, value]) => [
+      key,
+      value === undefined ? null : value
+    ])
+  ) : {}
+
   const posts = getAllPosts().map(post => ({
     ...post,
-    content: post.content
+    content: post.content,
+    frontMatter: post.frontMatter ? Object.fromEntries(
+      Object.entries(post.frontMatter).map(([key, value]) => [
+        key,
+        value === undefined ? null : value
+      ])
+    ) : {}
   }))
+
   const folderStructure = getFolderStructure(posts)
 
   return {
     props: {
       source: mdxSource,
-      frontMatter: post.frontMatter,
+      frontMatter: sanitizedFrontMatter,
       posts,
       slug,
       folderStructure,

@@ -13,6 +13,9 @@
   --header-one: #161618;
   --code-text: #333333;
   --internal-link-color: #4a5568;
+  --border-color: #e5e7eb;
+  --header-bg: #f3f4f6;
+  --header-text: #111827;
 }
 
 .dark {
@@ -26,6 +29,9 @@
   --header-one: #e2e8f0;
   --code-text: #f8f8f2;
   --internal-link-color: #e2e8f0;
+  --border-color: #374151;
+  --header-bg: #1f2937;
+  --header-text: #f3f4f6;
 }
 
 body {
