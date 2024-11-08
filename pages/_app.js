@@ -63,13 +63,13 @@ function MyApp({ Component, pageProps }) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="YDK의 기술 블로그" />
-        <meta name="keywords" content="기술, 프로그래밍, 웹 개발" />
+        <meta name="description" content="공부하고 기록하기" />
+        <meta name="keywords" content="공부, 노트, 기술, 프로그래밍, 웹 개발, 코딩" />
         <meta name="author" content="YDK" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://unknown97.pages.dev" />
-        <meta property="og:title" content="YDK의 기술 블로그" />
-        <meta property="og:description" content="프로그래밍과 웹 개발에 대한 인사이트" />
+        <meta property="og:title" content="YDK의 공부노트" />
+        <meta property="og:description" content="프로그래밍과 웹 개발에 대한 노트" />
         <meta property="og:image" content="https://unknown97.pages.dev/og-image.jpg" />
         <link rel="canonical" href="https://unknown97.pages.dev" />
       </Head>
