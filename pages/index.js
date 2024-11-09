@@ -66,7 +66,7 @@ export default function Home({ posts, folderStructure }) {
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Recent Posts</h2>
         <ul>
-          {posts.map((post) => (
+          {posts.slice(0, 4).map((post) => (
             <li key={post.slug} className="mb-6 p-4 border border-gray-200 rounded-lg">
               <Link href={`/posts/${post.slug}`} className="text-xl font-semibold hover:underline">
                 {post.frontMatter.title}
