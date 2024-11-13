@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "96bc66cb2faedc5e",
+        "id": "93019e8718a26fb2",
         "type": "tabs",
         "children": [
           {
-            "id": "b5aa462a670e9757",
+            "id": "1a7a4f7879e929f3",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -158,23 +158,23 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "b5aa462a670e9757",
+  "active": "1a7a4f7879e929f3",
   "lastOpenFiles": [
-    "out/folders/컴퓨터공학.html",
     "out/posts/테스트 파일.html",
-    "out/posts/컴퓨터공학/네트워크/토큰 기반 인증.html",
-    "out/index.html",
-    "out/tags/TLS.html",
-    "out/tags/HTTPS.html",
-    "out/tags/Test.html",
+    "out/tags/HTTP.html",
     "out/tags/API.html",
-    "out/tags/토큰.html",
-    "out/_next/data/XM7BzM7eYuFRF92HJsu9g/posts/컴퓨터공학/네트워크/토큰 기반 인증.json",
-    "out/_next/data/XM7BzM7eYuFRF92HJsu9g/posts/컴퓨터공학/네트워크/캐싱과 쿠키.json",
-    "content/컴퓨터공학/네트워크/HTTPS와 TLS.md",
-    "content/컴퓨터공학/네트워크/세션 기반 인증.md",
+    "out/tags/HTTPS.html",
+    "out/tags/TLS.html",
+    "out/index.html",
+    "out/_next/data/9Fj4aFg9jjOnOT-_VHOGa/posts/컴퓨터공학/네트워크/토큰 기반 인증.json",
+    "out/_next/data/9Fj4aFg9jjOnOT-_VHOGa/posts/컴퓨터공학/네트워크/세션 기반 인증.json",
+    "out/_next/data/9Fj4aFg9jjOnOT-_VHOGa/posts/컴퓨터공학/네트워크/로컬스토리지와 오리진.json",
+    "out/_next/data/9Fj4aFg9jjOnOT-_VHOGa/posts/컴퓨터공학/네트워크/로컬스토리지의 개념.json",
+    "out/_next/data/9Fj4aFg9jjOnOT-_VHOGa/posts/컴퓨터공학/네트워크/캐싱과 쿠키.json",
     "content/컴퓨터공학/네트워크/토큰 기반 인증.md",
     "content/테스트 파일.md",
+    "content/컴퓨터공학/네트워크/HTTPS와 TLS.md",
+    "content/컴퓨터공학/네트워크/세션 기반 인증.md",
     "content/컴퓨터공학/네트워크/캐싱과 쿠키.md",
     "content/컴퓨터공학/네트워크/웹브라우저 저장소 비교.md",
     "Template/포스팅 템플릿.md",
