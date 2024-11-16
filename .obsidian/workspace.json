@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/알고리즘/알고리즘의 기초.md",
+                "file": "content/컴퓨터공학/네트워크/Base64에 대해.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "알고리즘의 기초"
+              "title": "Base64에 대해"
             }
           }
         ]
@@ -160,22 +160,23 @@
   },
   "active": "1a7a4f7879e929f3",
   "lastOpenFiles": [
-    "out/posts/컴퓨터공학/네트워크/리프레시 토큰.html",
-    "out/folders/컴퓨터공학.html",
-    "out/posts/알고리즘/알고리즘의 기초.html",
-    "out/tags/HTTP.html",
+    "out/posts/컴퓨터공학/네트워크/Base64에 대해.html",
     "out/index.html",
-    "out/tags/HTTPS.html",
-    "out/tags/BFS.html",
-    "out/tags/API.html",
-    "out/_next/data/91hXRq3drRblX0s_hMXOd/posts/알고리즘/BFS/토마토 7569번.json",
-    "out/_next/data/91hXRq3drRblX0s_hMXOd/posts/컴퓨터공학/네트워크/토큰 기반 인증.json",
-    "out/_next/data/91hXRq3drRblX0s_hMXOd/posts/컴퓨터공학/네트워크/캐싱과 쿠키.json",
+    "out/tags/인코딩.html",
+    "out/_next/data/c8kRUnRM_rT6eqcqmAsu3/posts/알고리즘/BFS/토마토 7569번.json",
+    "out/_next/data/c8kRUnRM_rT6eqcqmAsu3/posts/컴퓨터공학/네트워크/토큰 기반 인증.json",
+    "out/_next/data/c8kRUnRM_rT6eqcqmAsu3/posts/컴퓨터공학/네트워크/캐싱과 쿠키.json",
+    "out/_next/data/c8kRUnRM_rT6eqcqmAsu3/posts/컴퓨터공학/네트워크/웹브라우저 저장소 비교.json",
+    "out/_next/data/c8kRUnRM_rT6eqcqmAsu3/posts/컴퓨터공학/네트워크/세션스토리지.json",
+    "out/_next/data/c8kRUnRM_rT6eqcqmAsu3/posts/컴퓨터공학/네트워크/세션 기반 인증.json",
+    "out/_next/data/c8kRUnRM_rT6eqcqmAsu3/posts/컴퓨터공학/네트워크/리프레시 토큰.json",
+    "out/_next/data/c8kRUnRM_rT6eqcqmAsu3/posts/컴퓨터공학/네트워크/Base64에 대해.json",
+    "content/알고리즘/알고리즘의 기초.md",
+    "content/컴퓨터공학/네트워크/Base64에 대해.md",
     "content/컴퓨터공학/네트워크/리프레시 토큰.md",
     "content/테스트 파일.md",
     "content/컴퓨터공학/네트워크/로컬스토리지와 오리진.md",
     "content/컴퓨터공학/네트워크/토큰 기반 인증.md",
-    "content/알고리즘/알고리즘의 기초.md",
     "content/알고리즘/BFS/토마토 7569번.md",
     "content/컴퓨터공학/네트워크/HTTPS와 TLS.md",
     "content/컴퓨터공학/네트워크/HTTP에 대해2.md",
@@ -195,7 +196,6 @@
     "node_modules/remark-stringify/readme.md",
     "node_modules/mdast-util-gfm-footnote/readme.md",
     "node_modules/remark-gfm/readme.md",
-    "node_modules/mdast-util-gfm-task-list-item/readme.md",
     "out/404pageImage.png",
     "public/404pageImage.png",
     "node_modules/highlight.js/styles/brown-papersq.png",
