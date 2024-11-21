@@ -172,7 +172,7 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
       .selectAll('line')
       .data(links)
       .join('line')
-      .attr('stroke', '#999')
+      .attr('stroke', theme === 'dark' ? '#525252' : '#dbdbdb')
       .attr('stroke-opacity', 0.6)
       .attr('stroke-width', 1)
 
@@ -201,6 +201,14 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
         link
           .transition()
           .duration(300)
+          .attr('stroke', l => {
+            if (l.source.id === d.id || l.target.id === d.id) {
+              connectedNodeIds.add(l.source.id)
+              connectedNodeIds.add(l.target.id)
+              return theme === 'dark' ? '#525252' : '#DEE5D4'
+            }
+            return theme === 'dark' ? '#525252' : '#dbdbdb'
+          })
           .style('stroke-opacity', l => {
             if (l.source.id === d.id || l.target.id === d.id) {
               connectedNodeIds.add(l.source.id)
@@ -225,6 +233,7 @@ export default function GraphView({ posts, currentSlug, onOpenFullView, filtered
         link
           .transition()
           .duration(300)
+          .attr('stroke', theme === 'dark' ? '#525252' : '#dbdbdb')
           .style('stroke-opacity', 0.6)
           .style('stroke-width', 1)
         

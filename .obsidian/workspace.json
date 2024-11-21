@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "93019e8718a26fb2",
+        "id": "4cd85cb38e37ac4d",
         "type": "tabs",
         "children": [
           {
-            "id": "1a7a4f7879e929f3",
+            "id": "d9250daeda5b83bb",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/컴퓨터공학/네트워크/HTTP 메서드 GET과 POST.md",
+                "file": "content/알고리즘/BFS/미로탐색 2178번.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "HTTP 메서드 GET과 POST"
+              "title": "미로탐색 2178번"
             }
           }
         ]
@@ -93,6 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "content/알고리즘/BFS/미로탐색 2178번.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "백링크"
+              "title": "미로탐색 2178번의 백링크"
             }
           },
           {
@@ -145,8 +146,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -158,23 +158,25 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "1a7a4f7879e929f3",
+  "active": "d9250daeda5b83bb",
   "lastOpenFiles": [
-    "out/posts/컴퓨터공학/네트워크/HTTP 메서드 GET과 POST.html",
-    "out/posts/테스트 파일.html",
-    "out/tags/TLS.html",
-    "out/tags/API.html",
-    "out/tags/BFS.html",
-    "out/tags/DFS.html",
-    "out/tags/메서드.html",
-    "out/index.html",
-    "out/_next/data/qOdRkPqQa1eEq5khxYBee/posts/컴퓨터공학/네트워크/토큰 기반 인증.json",
-    "out/_next/data/qOdRkPqQa1eEq5khxYBee/posts/컴퓨터공학/네트워크/캐싱과 쿠키.json",
-    "out/_next/data/qOdRkPqQa1eEq5khxYBee/posts/컴퓨터공학/네트워크/웹브라우저 저장소 비교.json",
-    "content/컴퓨터공학/네트워크/HTTP 메서드 GET과 POST.md",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/folders/알고리즘/BFS.json",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/posts/알고리즘/알고리즘의 기초.json",
+    "out/posts/알고리즘/BFS/미로탐색 2178번.html",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/tags/알고리즘.json",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/folders/컴퓨터공학.json",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/folders/컴퓨터공학/네트워크.json",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/folders/컴퓨터공학",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/folders/알고리즘.json",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/posts/컴퓨터공학/네트워크/캐싱과 쿠키.json",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/posts/컴퓨터공학/네트워크/토큰 기반 인증.json",
+    "out/_next/data/uEJhZEXPEXoWd2yKpkB10/posts/컴퓨터공학/네트워크/웹브라우저 저장소 비교.json",
+    "content/컴퓨터공학/네트워크/HTTP 상태 코드.md",
+    "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
+    "content/알고리즘/BFS/미로탐색 2178번.md",
     "content/알고리즘/DFS/적록색약 10026번.md",
     "content/알고리즘/BFS/토마토 7569번.md",
-    "content/컴퓨터공학/네트워크/HTTP 상태 코드.md",
+    "content/컴퓨터공학/네트워크/HTTP 메서드 GET과 POST.md",
     "content/컴퓨터공학/네트워크/Base64에 대해.md",
     "content/알고리즘/알고리즘의 기초.md",
     "content/컴퓨터공학/네트워크/리프레시 토큰.md",
@@ -183,7 +185,6 @@
     "content/컴퓨터공학/네트워크/토큰 기반 인증.md",
     "content/컴퓨터공학/네트워크/HTTPS와 TLS.md",
     "content/컴퓨터공학/네트워크/HTTP에 대해2.md",
-    "content/컴퓨터공학/네트워크/로컬스토리지의 개념.md",
     "content/컴퓨터공학/네트워크/세션 기반 인증.md",
     "content/컴퓨터공학/네트워크/캐싱과 쿠키.md",
     "content/컴퓨터공학/네트워크/웹브라우저 저장소 비교.md",
@@ -195,7 +196,6 @@
     "node_modules/micromark-extension-gfm-strikethrough/readme.md",
     "node_modules/mdast-util-gfm-strikethrough/readme.md",
     "node_modules/mdast-util-gfm-autolink-literal/readme.md",
-    "node_modules/mdast-util-gfm/readme.md",
     "out/404pageImage.png",
     "public/404pageImage.png",
     "node_modules/highlight.js/styles/brown-papersq.png",
