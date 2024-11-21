@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/알고리즘/DFS/적록색약 10026번.md",
+                "file": "content/컴퓨터공학/네트워크/HTTP 메서드 GET과 POST.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "적록색약 10026번"
+              "title": "HTTP 메서드 GET과 POST"
             }
           }
         ]
@@ -160,19 +160,20 @@
   },
   "active": "1a7a4f7879e929f3",
   "lastOpenFiles": [
+    "out/posts/컴퓨터공학/네트워크/HTTP 메서드 GET과 POST.html",
     "out/posts/테스트 파일.html",
-    "out/folders/알고리즘/DFS.html",
-    "out/folders/알고리즘.html",
-    "out/tags/DFS.html",
-    "out/folders/컴퓨터공학.html",
-    "out/index.html",
+    "out/tags/TLS.html",
     "out/tags/API.html",
     "out/tags/BFS.html",
-    "out/_next/data/H2n7gdLKZfRpdM9AOo8bf/posts/컴퓨터공학/네트워크/웹브라우저 저장소 비교.json",
-    "out/_next/data/H2n7gdLKZfRpdM9AOo8bf/posts/알고리즘/DFS/적록색약 10026번.json",
-    "out/_next/data/H2n7gdLKZfRpdM9AOo8bf/posts/컴퓨터공학/네트워크/토큰 기반 인증.json",
-    "content/알고리즘/BFS/토마토 7569번.md",
+    "out/tags/DFS.html",
+    "out/tags/메서드.html",
+    "out/index.html",
+    "out/_next/data/qOdRkPqQa1eEq5khxYBee/posts/컴퓨터공학/네트워크/토큰 기반 인증.json",
+    "out/_next/data/qOdRkPqQa1eEq5khxYBee/posts/컴퓨터공학/네트워크/캐싱과 쿠키.json",
+    "out/_next/data/qOdRkPqQa1eEq5khxYBee/posts/컴퓨터공학/네트워크/웹브라우저 저장소 비교.json",
+    "content/컴퓨터공학/네트워크/HTTP 메서드 GET과 POST.md",
     "content/알고리즘/DFS/적록색약 10026번.md",
+    "content/알고리즘/BFS/토마토 7569번.md",
     "content/컴퓨터공학/네트워크/HTTP 상태 코드.md",
     "content/컴퓨터공학/네트워크/Base64에 대해.md",
     "content/알고리즘/알고리즘의 기초.md",
@@ -195,7 +196,6 @@
     "node_modules/mdast-util-gfm-strikethrough/readme.md",
     "node_modules/mdast-util-gfm-autolink-literal/readme.md",
     "node_modules/mdast-util-gfm/readme.md",
-    "node_modules/remark-stringify/readme.md",
     "out/404pageImage.png",
     "public/404pageImage.png",
     "node_modules/highlight.js/styles/brown-papersq.png",
